@@ -1,0 +1,89 @@
+
+
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/clinicalVLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:id="@+id/scrollView3"
+        android:layout_weight=".4">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Hist_presentIll"
+                android:hint="Chief Complaint"
+                android:layout_weight=".25" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Hist_past"
+                android:hint="Past History"
+                android:layout_weight=".25" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Hist_personal"
+                android:hint="Personal History"
+                android:layout_weight=".25" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Hist_family"
+                android:hint="Family History"
+                android:layout_weight=".25" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Photo"
+                android:id="@+id/Hist_add_photo"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight=".5"
+                android:onClick="addPhoto" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Video"
+                android:id="@+id/Hist_add_video"
+                android:layout_weight=".5"
+                android:onClick="addVideo" />
+        </LinearLayout>
+
+
+            <GridView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:id="@+id/Hist_grid"
+                android:focusable="false"
+                android:numColumns="3"
+                android:layout_weight=".5" />
+
+
+    </LinearLayout>
+
+

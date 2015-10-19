@@ -1,0 +1,97 @@
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:nestedScrollingEnabled="false"
+    android:onClick="showHistMedia">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/clinicalVLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Chief Complaint"
+            android:id="@+id/textView14"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Hist_presentIll_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Past History"
+            android:id="@+id/textView19"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Hist_past_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Personal History"
+            android:id="@+id/textView20"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Hist_personal_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Family History"
+            android:id="@+id/textView27"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6"
+            android:backgroundTintMode="src_over"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Hist_family_view"
+            android:textSize="18dp" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Media"
+            android:id="@+id/view_media_hist"
+            android:layout_gravity="center_horizontal"
+            android:onClick="showHistMedia" />
+
+    </LinearLayout>
+</ScrollView>
+

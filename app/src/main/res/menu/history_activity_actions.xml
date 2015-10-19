@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myapp="http://schemas.android.com/apk/res-auto">
+
+
+    <!-- Search, should appear as action button -->
+
+
+    <item android:title="Add Photo"
+        android:id="@+id/hist_action_take_photo"
+        android:icon="@drawable/ic_action_new_picture"
+
+        myapp:showAsAction="always"/>
+    <item android:title="Add Video"
+        android:id="@+id/hist_action_take_video"
+        android:icon="@drawable/ic_action_video"
+
+        myapp:showAsAction="always"/>
+    <item android:title="Add"
+        android:id="@+id/hist_action_add"
+        android:icon="@drawable/ic_action_forward"
+
+        myapp:showAsAction="always"/>
+    <!-- Settings, should always be in the overflow -->
+
+</menu>

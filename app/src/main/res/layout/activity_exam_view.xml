@@ -1,0 +1,67 @@
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/clinicalVLayout">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="General Examination"
+            android:id="@+id/textView28"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6"
+            android:backgroundTintMode="src_over"
+             />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Exam_general_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Local Examination"
+            android:id="@+id/textView29"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6"
+            android:backgroundTintMode="src_over"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Exam_local_view"
+            android:textSize="18dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Media"
+            android:id="@+id/view_media_exam"
+            android:layout_gravity="center_horizontal"
+            android:onClick="showHistMedia" />
+
+    </LinearLayout>
+</ScrollView>
+

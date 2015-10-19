@@ -1,0 +1,80 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/clinicalVLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:id="@+id/scrollView5"
+        android:layout_weight=".4">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Treat_diagnosis"
+                    android:hint="Diagnosis"/>
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Treat_treatment"
+                    android:hint="Treatment" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Treat_procedure"
+                    android:hint="Score" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Treat_implants"
+                    android:hint=" Implants Used" />
+            </LinearLayout>
+    </ScrollView>
+
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Post-Op Photo"
+                android:id="@+id/Treat_add_photo"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:onClick="addPhoto" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Post-Op Video"
+                android:id="@+id/Treat_add_video"
+                android:layout_weight="1"
+                android:onClick="addVideo" />
+        </LinearLayout>
+
+
+        <GridView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:id="@+id/Treat_grid"
+            android:layout_weight=".5"
+            android:numColumns="3" />
+
+    </LinearLayout>
+

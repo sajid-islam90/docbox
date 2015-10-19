@@ -1,0 +1,96 @@
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/clinicalVLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Diagnosis"
+            android:id="@+id/textView14"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Treatment_diagnosis_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Treatment"
+            android:id="@+id/textView19"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Treatment_treatment_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Score"
+            android:id="@+id/textView20"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Treatment_procedure_view"
+            android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Implants Used"
+            android:id="@+id/textView27"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="#ffcecfc6"
+            android:backgroundTintMode="src_over"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Treatment_implants_view"
+            android:textSize="18dp" />
+
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Media"
+            android:id="@+id/view_media_treat"
+            android:layout_gravity="center_horizontal"
+            android:onClick="showHistMedia" />
+
+    </LinearLayout>
+</ScrollView>
+

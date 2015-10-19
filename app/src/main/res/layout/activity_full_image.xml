@@ -1,0 +1,27 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="fill_parent"
+    android:layout_width="wrap_content">
+
+<RelativeLayout
+    android:layout_height="fill_parent"
+    tools:context="activity.FullImage"
+
+    android:layout_width="fill_parent">
+
+    <com.example.sajid.myapplication.ScaleImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/fullImage"
+        />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Document"
+        android:id="@+id/deleteDocument"
+        android:onClick="deleteDocument"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/fullImage" />
+</RelativeLayout>
+</ScrollView>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:uiOptions">splitActionBarWhenNarrow</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MainActivity" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <style name="TabbedActivity" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/MyActionBarTab</item>
+
+        <item name="actionBarTabTextStyle">@style/TabStyle</item>
+    </style>
+
+    <style name="TabStyle" parent="Widget.AppCompat.ActionBar.TabText">
+
+    <item name="android:textColor">#ff000000</item>
+
+    </style>
+
+<style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/green</item>
+
+
+
+    </style>
+
+    <style name="MyActionBarTab" parent="@style/Widget.AppCompat.Light.ActionBar">
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/green</item>
+        <item name="android:textColor">#006633</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+
+    </style>
+
+
+
+</resources>

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="activity.documents">
+
+
+    <item android:id="@+id/action_add_doc" android:title="Add New Document"
+        android:icon="@drawable/ic_action_new"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_upload_doc" android:title="Upload New Document"
+        android:icon="@drawable/ic_action_upload"
+        app:showAsAction="always" />
+</menu>

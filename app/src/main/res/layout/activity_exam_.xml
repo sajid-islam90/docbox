@@ -1,0 +1,67 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/examVLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:id="@+id/scrollView4"
+        android:layout_weight=".5">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Exam_general"
+                    android:hint="General Examination"/>
+
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Exam_local"
+                    android:hint="Local Examination" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pre-Op Photo"
+                android:id="@+id/Exam_add_photo"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:onClick="addPhoto" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pre-Op Video"
+                android:id="@+id/Exam_add_video"
+                android:layout_weight="1"
+                android:onClick="addVideo" />
+        </LinearLayout>
+        <GridView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/Exam_grid"
+            android:focusable="true"
+            android:numColumns="3"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+

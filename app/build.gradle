@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.example.sajid.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/android-async-http-1.4.8.jar')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/httpclient-4.3.3.jar')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/gson-1.1.jar')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/org.apache.servicemix.bundles.httpcore-4.0-alpha6_1.jar')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/json-simple-1.1.jar')
+    compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/ftp4j-1.7.2.jar')
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.google.android.gms:play-services:7.0.0'
+}
