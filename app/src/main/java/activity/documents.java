@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.sajid.myapplication.DatabaseHandler;
 import adapters.DocumentsAdapter;
@@ -31,6 +34,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +46,7 @@ import java.util.List;
 public class documents extends ActionBarActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1;
+    static final int PICKFILE_RESULT_CODE = 2;
     static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     static document_obj doc_obj = new document_obj();
     int pid ;
@@ -53,7 +59,7 @@ public class documents extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_documents);
         Intent intent = getIntent();
-         pid = intent.getIntExtra("id",0);
+         pid = intent.getIntExtra("id", 0);
         if(pid>0)
             getDocumentsList(pid);
 
@@ -125,9 +131,7 @@ public class documents extends ActionBarActivity {
                 displayDocument.setTitle(documentList.get(i).get_doc_name());
                 displayDocument.setDiagnosis(documentList.get(i).get_doc_path());
 
-                //Bitmap bmp = BitmapFactory.decodeFile(documentList.get(i).get_bmp());
-            /*displayDocument.setBmp(Bitmap.createScaledBitmap(bmp,120,120,false));*/
-                //displayDocument.setBmp(BitmapFactory.decodeFile(documentList.get(i).get_doc_path()));
+
                 if (documentList.get(i).get_bmp() == null) {
                     doc_obj = documentList.get(i);
                     doc_obj = PhotoHelper.addMissingBmp(doc_obj);
@@ -148,9 +152,10 @@ public class documents extends ActionBarActivity {
     public void startAddNotes(View view)
     {
         Intent curIntent = getIntent();
-        Intent intent =  new Intent(this, History_Activity.class);
+        Intent intent =  new Intent(this, AddClinicalNotesActivity.class);
         int pid = curIntent.getIntExtra("id",0);
-        intent.putExtra("id",pid);
+        intent.putExtra("parent",PatientProfileActivity.class.toString());
+        intent.putExtra("id", pid);
         startActivity(intent);
     }
 
@@ -199,7 +204,7 @@ public class documents extends ActionBarActivity {
         Intent intent = getIntent();
 
         final DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        int id = intent.getIntExtra("id",0);
+        int id = intent.getIntExtra("id", 0);
 
 
         // Ensure that there's a camera activity to handle the intent
@@ -253,6 +258,9 @@ public class documents extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Calendar c = Calendar.getInstance();
+        final DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+        Resources resources = getResources();
+        Patient patient = dbHandler.getPatient(pid);
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c.getTime());
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
@@ -279,11 +287,11 @@ public class documents extends ActionBarActivity {
             doc_obj = PhotoHelper.addMissingBmp(doc_obj);
             if(doc_obj.get_bmp()!=null) {
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                final DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+
                 String imageFileName = "IMG_" + timeStamp  ;
                 doc_obj.set_doc_name(imageFileName);
                 doc_obj.set_date(formattedDate);
-                Patient patient = dbHandler.getPatient(pid);
+
                 patient.set_last_seen_date(formattedDate);
                 dbHandler.updatePatient(patient);
                 dbHandler.addDocument(doc_obj);
@@ -297,17 +305,66 @@ public class documents extends ActionBarActivity {
 
 
         }
+        else if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null))) {
+            Uri uri = data.getData();
+            File file = null;
+            String file_name = "";
+            String file_path = "";
+            ; // "/mnt/sdcard/FileName.mp3"
+            try {
+                 file = new File(uri.getPath());
+                String a = file.getAbsolutePath();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (uri.getScheme().compareTo("content")==0) {
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
+                    Uri filePathUri = Uri.parse(cursor.getString(column_index));
+                    file_name = filePathUri.getLastPathSegment();
+                     file_path=filePathUri.getPath();
+                }
+            }
+            else{
+                    Uri filePathUri = Uri.fromFile(file);
+                     file_name = filePathUri.getLastPathSegment();
+                     file_path=filePathUri.getPath();
+            }
+                    if(file_name.contains(".doc"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_doc)));
+                    }
+                    else if (file_name.contains(".pdf"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_pdf)));
+                    }
+                    else if (file_name.contains(".txt"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_txt)));
+                    }
+                    else if ((file_name.contains(".jpg"))||(file_name.contains(".png")))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(file_path)));
+                    }
+
+                    doc_obj.set_doc_name(file_name);
+                    doc_obj.set_doc_path(file_path);
+                    doc_obj.set_id(pid);
+                    doc_obj.set_date(formattedDate);
+                    dbHandler.updatePatient(patient);
+                    dbHandler.addDocument(doc_obj);
+                Toast.makeText(this,"File Name & PATH are:"+file_name+"\n"+file_path, Toast.LENGTH_LONG).show();
+
+           // }
+        }
+
+
+        utility.recreateActivityCompat(documents.this);
     }
 
-    public void displayFullScreenImage(View view)
-    {
-        Intent intent = new Intent(this,FullImage.class);
-        Intent curIntent = getIntent();
-        int pid = curIntent.getIntExtra("id", 0);
-        intent.putExtra("id",pid);
-        startActivity(intent);
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -340,7 +397,7 @@ public class documents extends ActionBarActivity {
                 return true;
 
             case R.id.action_upload_doc:
-
+this.uploadDocument();
                 return true;
 
             case R.id.action_add_doc:
@@ -355,6 +412,19 @@ public class documents extends ActionBarActivity {
 
 
     }
+    public void uploadDoc(View view)
+    {
+        this.uploadDocument();
+    }
+
+    public void uploadDocument()
+    {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file/*");
+        startActivityForResult(intent,PICKFILE_RESULT_CODE);
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

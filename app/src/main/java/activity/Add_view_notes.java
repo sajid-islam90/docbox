@@ -46,7 +46,7 @@ public class Add_view_notes extends ActionBarActivity {
     public void startAddNotes(View view)
     {
 
-        Intent intent =  new Intent(this, History_Activity.class);
+        Intent intent =  new Intent(this, AddClinicalNotesActivity.class);
 
         intent.putExtra("id",pid);
         startActivity(intent);

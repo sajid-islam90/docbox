@@ -39,6 +39,7 @@ public class Treatment_Activity extends ActionBarActivity {
     private static final int REQUEST_TAKE_PHOTO = 100;
     private Uri fileUri;
     media_obj mediaObj = new media_obj();
+    treatment_obj treatmentObj = new treatment_obj();
     ArrayList<Item> media = new ArrayList<>();
 
     @Override
@@ -47,8 +48,13 @@ public class Treatment_Activity extends ActionBarActivity {
         setContentView(R.layout.activity_treatment_);
         Intent intent = getIntent();
         pid = intent.getIntExtra("id",0);
+        treatmentObj = intent.getExtras().getParcelable("treat_obj");
         media = utility.getMediaList(pid, this, 3);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        if(treatmentObj!= null)
+        {
+            displayAddedFields();
+        }
         this.displayAddedMedia(media);
 
     }
@@ -59,6 +65,18 @@ public class Treatment_Activity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.history_activity_actions, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+// do something on back.
+        addTreatmentNote();
+        Intent intent = new Intent();
+        intent.putExtra("treat_obj",  treatmentObj);
+        intent.putExtra("activity","treatment");
+        setResult(200, intent);
+        finish();
+        return;
     }
 
     @Override
@@ -73,10 +91,15 @@ public class Treatment_Activity extends ActionBarActivity {
             Toast.makeText(this, "Save selected", Toast.LENGTH_SHORT)
                     .show();
             this.addTreatmentNote();
-            Intent intent = new Intent(this, Other_Notes_Activity.class);
+           /* Intent intent = new Intent(this, Other_Notes_Activity.class);
             intent.putExtra("id",pid);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();*/
+            Intent intent = new Intent();
+            intent.putExtra("treat_obj",  treatmentObj);
+            intent.putExtra("activity","treatment");
+            setResult(200, intent);
             finish();
             return true;
 
@@ -101,6 +124,22 @@ public class Treatment_Activity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    public void displayAddedFields()
+    {
+        EditText editText = (EditText)findViewById(R.id.Treat_diagnosis);
+        EditText editText1 = (EditText)findViewById(R.id.Treat_treatment);
+        EditText editText2 = (EditText)findViewById(R.id.Treat_procedure);
+        EditText editText3 = (EditText)findViewById(R.id.Treat_implants);
+
+
+        editText.setText(treatmentObj.get_diagnosis());
+        editText1.setText(treatmentObj.get_treatment());
+        editText2.setText(treatmentObj.get_procedure());
+        editText3.setText(treatmentObj.get_implants());
+
+
+    }
+
 
 
     public void addVideo(View view) throws IOException {this.dispatchTakeVideoIntent();}
@@ -145,7 +184,7 @@ public class Treatment_Activity extends ActionBarActivity {
 
             mediaObj.set_pid(pid);
             mediaObj.set_section(3);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
             Toast.makeText(this, path, Toast.LENGTH_SHORT)
                     .show();
@@ -180,7 +219,7 @@ public class Treatment_Activity extends ActionBarActivity {
             mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
             mediaObj.set_pid(pid);
             mediaObj.set_section(3);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
 
             utility.recreateActivityCompat(Treatment_Activity.this);
@@ -256,8 +295,8 @@ public class Treatment_Activity extends ActionBarActivity {
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
         int version = dbHandler.getCurrentVersion(pid);
-        treatment_obj treatmentObj = new treatment_obj();
-        treatmentObj.set_version(version);
+
+        treatmentObj.set_version(version + 1);
         treatmentObj.set_diagnosis(diagnosis.getText().toString());
         treatmentObj.set_treatment(treatment.getText().toString());
         treatmentObj.set_procedure(procedure.getText().toString());
@@ -266,6 +305,6 @@ public class Treatment_Activity extends ActionBarActivity {
         treatmentObj.set_pid(pid);
         treatmentObj.set_date(formattedDate);
 
-        dbHandler.addTreatment(treatmentObj);
+       // dbHandler.addTreatment(treatmentObj);
     }
 }

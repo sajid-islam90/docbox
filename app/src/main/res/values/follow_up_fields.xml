@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="follow_up">
+        <item>followup item 1</item>
+        <item>followup item 2</item>
+        <item>followup item 3</item>
+        <item>followup item 4</item>
+        <item>followup item 5</item>
+    </string-array>
+</resources>

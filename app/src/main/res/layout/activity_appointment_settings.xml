@@ -1,0 +1,311 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="activity.appointment_settings">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activedaysLayout"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Toggle Active Days"
+            android:id="@+id/textView26"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:id="@+id/imageView4"
+            android:background="@color/green"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:id="@+id/settings"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:dividerPadding="5dp"
+        android:divider="@android:color/white"
+        android:baselineAligned="false"
+        android:layout_below="@+id/activedaysLayout"
+        android:layout_marginTop="10dp">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="S"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_margin="5dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/checkBox1"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="M"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox2"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="T"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox3"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="W"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox4"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="Th"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox5"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="F"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBox6"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:button="@android:color/transparent"
+            android:text="Sa"
+            android:gravity="center"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeLinearLayout"
+        android:layout_below="@+id/settings">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/selectTimeLayout"
+            android:layout_below="@+id/settings"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Select Time"
+                android:id="@+id/textView34"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/settings"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:id="@+id/imageView5"
+                android:background="@color/green"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/selectTimeLayout"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/time_layout"
+            android:divider="@color/green"
+            android:dividerPadding="2dp"
+            android:showDividers="middle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Start Time"
+                    android:id="@+id/textView35"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentEnd="false"
+                    android:layout_centerHorizontal="true" />
+
+                <AnalogClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/analogClock"
+                    android:layout_below="@+id/textView35"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentEnd="false"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone" />
+
+                <com.example.sajid.myapplication.MyAnalogClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/startClock"
+                    android:foregroundGravity="center"
+                    android:layout_below="@+id/textView35"
+
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/startAmPm"
+                    android:layout_below="@+id/startClock"
+                    android:layout_centerHorizontal="true"
+                    android:text="AM/PM"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="End Time"
+                    android:id="@+id/textView36"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_centerHorizontal="true" />
+
+                <AnalogClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/analogClock2"
+                    android:layout_below="@+id/textView36"
+                    android:layout_centerHorizontal="true"
+                    android:focusable="false"
+                    android:visibility="gone"/>
+                <com.example.sajid.myapplication.MyAnalogClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/endClock"
+                    android:layout_below="@+id/textView36"
+
+                    android:layout_centerInParent="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/endAmPm"
+                    android:layout_below="@+id/endClock"
+                    android:layout_centerHorizontal="true"
+                    android:text="AM/PM"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Average Number Of Patients To Attend"
+        android:id="@+id/textView37"
+        android:layout_below="@+id/timeLinearLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:id="@+id/imageView6"
+        android:background="@color/green"
+        android:layout_below="@+id/textView37"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView37"
+        android:gravity="center"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numberPicker"
+            android:orientation="horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+    </LinearLayout>
+
+</RelativeLayout>

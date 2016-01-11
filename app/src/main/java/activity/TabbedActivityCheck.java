@@ -1,10 +1,21 @@
 package activity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -13,32 +24,53 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.example.sajid.myapplication.DatabaseHandler;
+
+import objects.DataBaseEnums;
 import objects.Item;
 import objects.Patient;
+
+import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
-import adapters.TwoTextFieldsAdapter;
-import objects.exam_obj;
+import com.example.sajid.myapplication.utility;
+
+import adapters.*;
 import objects.history_obj;
-import objects.notes_obj;
+import objects.media_obj;
 import objects.other_obj;
-import objects.treatment_obj;
 
 
 public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.TabListener {
     static int pid;
     static  int version;
     static  String parent;
+    private static history_obj historyObj = null;
+    private static media_obj mediaObj = new media_obj() ;
+    private static Uri fileUri;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int TWO_TEXT_FIELDS = 1;
+    private static final int ONE_PHOTO = 2;
+    private static int Tabselected = 0;
+   private static  ArrayList<other_obj> otherObj = new ArrayList<>();
+    private static  ArrayList<ArrayList<other_obj>> OtherObjs = new ArrayList<ArrayList<other_obj>>();
+    private static  ArrayList<ArrayList<other_obj>> OtherObjsStatic = new ArrayList<ArrayList<other_obj>>(3);
+   public static ArrayList<ArrayList<Item>> NotesFields = new ArrayList<ArrayList<Item>>();
+    public static ArrayList<ArrayList<Item>> NotesFieldsStatic = new ArrayList<ArrayList<Item>>(3);
+
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -59,10 +91,32 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_activity_check);
         Intent intent = getIntent();
-        pid = intent.getIntExtra("id",0);
-        version = intent.getIntExtra("version",1);
+        pid = intent.getIntExtra("id", 0);
+        version = intent.getIntExtra("version", 1);
         parent  =intent.getStringExtra("parent");
-        getLatestVersionTitle();
+DatabaseHandler databaseHandler =new DatabaseHandler(TabbedActivityCheck.this);
+if(OtherObjsStatic.size()<3)
+{
+    for(int c=1;c<=3;c++){
+    ArrayList<other_obj> otherObj1 = new ArrayList<>();
+    OtherObjsStatic.add(otherObj1);}
+}
+        if(NotesFieldsStatic.size()<3)
+        {
+            for(int c=1;c<=3;c++){
+                ArrayList<Item> item = new ArrayList<>();
+                NotesFieldsStatic.add(item);}
+        }
+            NotesFields = new ArrayList<ArrayList<Item>>(3);
+        OtherObjs = new ArrayList<ArrayList<other_obj>>(3);
+        for(int y = 0;y<3;y++) {
+            ArrayList<Item> field = databaseHandler.getGenericNote(pid, y);
+            ArrayList<other_obj> other = databaseHandler.geOtherNote(pid, y);
+            NotesFields.add(field);
+            OtherObjs.add(other);
+        }
+                getLatestVersionTitle();
+       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -97,6 +151,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
 
                             .setTabListener(this));
         }
+        mViewPager.setCurrentItem(Tabselected);
     }
 
     public  void showHistMedia(View view)
@@ -110,11 +165,36 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
        // notes_obj notesObj  = dbHandler.getLatestNote(pid);
         Patient patient = dbHandler.getPatient(pid);
+        String title = null;
        history_obj historyObj =   dbHandler.getVersionedHistNote(pid,version);
+
+        if
+                (historyObj._date==null)
+        {
+           if( dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_EXAM)==null)
+           {
+               if( dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_TREATMENT)==null)
+               {
+                  title = dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_OTHER);
+               }
+               else
+               {
+                   title =  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_TREATMENT);
+               }
+           }
+            else
+           {
+               title =  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_EXAM);
+           }
+        }
+        else
+        {
+            title=  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_HISTORY);
+        }
 
        // int version = dbHandler.getCurrentVersion(pid);
         if (version >0) {
-            setTitle(historyObj.get_date());
+            setTitle(title);
 
             //displayNote(notesObj);
         }
@@ -126,6 +206,144 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
 
     }
 
+
+
+    public void displayAddedField(ArrayList<Item> fieldList,View view)
+    {
+
+        RecyclerView listView = (RecyclerView)view.findViewById(R.id.listViewOtherHist);
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        recyclerAdapter RecyclerAdapter = new recyclerAdapter(TabbedActivityCheck.this,TabbedActivityCheck.this,fieldList,TWO_TEXT_FIELDS,pid,version);
+
+        listView.setLayoutManager(layoutManager);
+        listView.setAdapter(RecyclerAdapter);
+    }
+
+    private void dispatchTakeVideoIntent() throws IOException {
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+        //fileUri = PhotoHelper.createVideoFile(pid);
+        if (intent.resolveActivity(TabbedActivityCheck.this.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File file = null;
+            try {
+                file = PhotoHelper.createVideoFile(pid, TabbedActivityCheck.this);
+                fileUri= Uri.fromFile(file);
+
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+        }
+        if (fileUri != null) {
+            // create a file to save the video
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
+
+            // start the Video Capture Intent
+            startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+        }
+    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent =getIntent();
+
+
+        final DatabaseHandler dbHandler = new DatabaseHandler(TabbedActivityCheck.this);
+
+
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(TabbedActivityCheck.this.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = PhotoHelper.createImageFileForNotes(pid,TabbedActivityCheck.this);
+
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra("output",
+                        Uri.fromFile(photoFile));
+                mediaObj.set_media_name(photoFile.getPath());
+                mediaObj.set_media_path(photoFile.getPath());
+
+
+
+
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
+
+            }
+        }
+    }
+   /* @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Uri videoUri = data.getData();
+            String path = videoUri.getPath();
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+            mediaObj.set_media_path(path);
+            mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+
+            mediaObj.set_pid(pid);
+            mediaObj.set_section((int)CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE/100);
+            mediaObj.set_version( 1);
+            databaseHandler.addMedia(mediaObj);
+
+            Intent intent = getIntent();
+
+            finish();
+            startActivity(intent);
+        }
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+
+            mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
+            Bitmap bitmap;
+            bitmap = BitmapFactory.decodeFile(mediaObj.get_media_path());
+            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+
+            // save image into gallery
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, ostream);
+
+            try {
+                FileOutputStream fout = new FileOutputStream(new File(mediaObj.get_media_path()));
+                fout.write(ostream.toByteArray());
+                fout.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            mediaObj.set_pid(pid);
+            mediaObj.set_section(REQUEST_TAKE_PHOTO);
+            mediaObj.set_version(1);
+            databaseHandler.addMedia(mediaObj);
+
+            Intent intent = getIntent();
+
+           finish();
+            startActivity(intent);
+
+
+
+        }
+
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -149,7 +367,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_notes) {
             this.startAddNotes();
-            finish();
+
 
             return true;
         }
@@ -159,14 +377,43 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
             intent.putExtra("id",pid);
             startActivity(intent);
         }
+        else if(id == R.id.action_save)
+        {
+           Fragment fragment =  mSectionsPagerAdapter.fragment; //(PlaceholderFragment) getSupportFragmentManager().findFragmentById(R.id.pager);// mSectionsPagerAdapter.fragment;
+            //ArrayList<other_obj> otherObj = fragment.
+           DatabaseHandler databaseHandler =new DatabaseHandler(getApplicationContext());
+            for(int y = 0;y<3;y++){
+            for(int i = 1;i<=OtherObjsStatic.get(y).size();i++){
+                databaseHandler.addOther(OtherObjsStatic.get(y).get(i-1));
+            }}
+            for(int i = 0 ;i<NotesFields.size();i++)
+            {
+                databaseHandler.saveGenericNote(NotesFields.get(i));
+            }
+            Patient patient = databaseHandler.getPatient(pid);
+            databaseHandler.updatePatient(patient,0);
+            historyObj = null;
+            otherObj = null;
+            OtherObjsStatic = null;
+            OtherObjsStatic=  new ArrayList<ArrayList<other_obj>>(3);
+            otherObj = new ArrayList<other_obj>();
+            NotesFields =  null;
+            finish();
+
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
     public void startAddNotes()
     {
         Intent curIntent = getIntent();
-        Intent intent =  new Intent(this, History_Activity.class);
+        DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+        int version  =  databaseHandler.getMaxFollowupVersion(pid);
+        Intent intent =  new Intent(this, followUp.class);
         int pid = curIntent.getIntExtra("id",0);
+        intent.putExtra("version",version+1);
+        intent.putExtra("parent",PatientProfileActivity.class.toString());
         intent.putExtra("id",pid);
         startActivity(intent);
     }
@@ -192,6 +439,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        Fragment fragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -199,22 +447,15 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0)
-            return PlaceholderFragment.newInstance(position + 1);
-            else if (position == 1 )
-                return PlaceholderFragment1.newInstance1(position + 1);
-            else if (position == 2)
-                return   PlaceholderFragment2.newInstance2(position + 1);
-            else
-                return   PlaceholderFragment3.newInstance(position + 1);
+
+
+            return PlaceholderFragment1.newInstance1(position );
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
 
         @Override
@@ -233,6 +474,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
             return null;
         }
 
+
     }
 
 
@@ -240,113 +482,6 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
     /**
      * A placeholder fragment containing history view.
      */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-
-            View rootView ;
-
-                 rootView = inflater.inflate(R.layout.activity_history_view, container, false);
-                getAndDisplayHistNotes(this, rootView);
-            Button button = (Button)rootView.findViewById(R.id.view_media_hist);
-            button.setOnClickListener(this);
-
-
-
-            return rootView;
-        }
-
-        public void displayHistNote(notes_obj notesObj,Fragment f,View rootView)
-        {
-            TextView presentIll = (TextView)rootView.findViewById(R.id.Hist_presentIll_view);
-            TextView pastHist = (TextView)rootView.findViewById(R.id.Hist_past_view);
-            TextView personalHist = (TextView)rootView.findViewById(R.id.Hist_personal_view);
-            TextView familyHist = (TextView)rootView.findViewById(R.id.Hist_family_view);
-
-
-
-
-            presentIll.setText(notesObj.get_hist_present_illness());
-            pastHist.setText(notesObj.get_past_hist());
-            personalHist.setText(notesObj.get_personal_hist());
-            familyHist.setText(notesObj.get_family_hist());
-
-
-
-
-        }
-
-        public void getAndDisplayHistNotes(Fragment f,View rootView)
-        {
-            DatabaseHandler dbHandler = new DatabaseHandler(f.getActivity().getApplicationContext());
-            history_obj historyObj = new history_obj();
-            historyObj = dbHandler.getVersionedHistNote(pid, version);
-            //exam_obj examObj = dbHandler.getLatestExamNote(pid);
-
-            notes_obj notesObj  = new notes_obj();
-
-            notesObj.set_date(historyObj.get_date());
-            notesObj.set_past_hist(historyObj.get_past_illness());
-            notesObj.set_hist_present_illness(historyObj.get_present_illness());
-            notesObj.set_family_hist(historyObj.get_family_hist());
-            notesObj.set_personal_hist(historyObj.get_personal_hist());
-
-            //getLatestVersionTitle();
-            //int version = dbHandler.getCurrentVersion(pid);
-            if (version>=1)
-                this.displayHistNote(notesObj, this, rootView);
-
-
-
-
-
-
-
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            int a = v.getId();
-            View b = v.findViewById(R.id.view_media_hist);
-
-            Intent intent = new Intent(v.getContext(),View_Media_notes_grid.class);
-            intent.putExtra("id",pid);
-            intent.putExtra("section",1);
-            intent.putExtra("version",version);
-            startActivity(intent);
-
-            int c = b.getId();
-            c= R.id.view_media_hist;
-            Toast.makeText(this.getActivity().getApplicationContext(),"button pressed",Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     public static class PlaceholderFragment1 extends Fragment implements View.OnClickListener    {
         /**
@@ -354,6 +489,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static ArrayList<Item> media = new ArrayList<>();
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -362,6 +498,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         public static PlaceholderFragment1 newInstance1(int sectionNumber) {
             PlaceholderFragment1 fragment1 = new PlaceholderFragment1();
             Bundle args = new Bundle();
+           // section = sectionNumber;
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment1.setArguments(args);
             return fragment1;
@@ -375,65 +512,335 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.activity_exam_view, container, false);
-            Button button = (Button)rootView.findViewById(R.id.view_media_exam);
-            button.setOnClickListener(this);
-            /* Button button = (Button)rootView.findViewById(R.id.button9);
-           final TextView textView = (TextView)rootView.findViewById(R.id.textView13);
-            button.setOnClickListener(new View.OnClickListener()
-            {
+
+
+
+            View rootView = inflater.inflate(R.layout.activity_generic_notes, container, false);
+            FloatingActionButton floatingActionButton1 = (FloatingActionButton)rootView.findViewById(R.id.view2);
+            floatingActionButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
-                    Toast.makeText(getActivity(), textView.getText(), Toast.LENGTH_SHORT)
-                            .show();
+                public void onClick(View v) {
+                    try {
+                        addVideo(v);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-            });*/
-            getAndDisplayExamNotes(this, rootView);
+            });
+            FloatingActionButton floatingActionButton2 = (FloatingActionButton)rootView.findViewById(R.id.view3);
+            floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        addPhoto(v);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            FloatingActionButton floatingActionButton3 = (FloatingActionButton)rootView.findViewById(R.id.view4);
+            floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addHistField(v);
+
+                }
+            });
+
+            doWork(rootView);
             return rootView;
         }
+        private void doWork(View view) {
 
 
-        public void displayExamNote(notes_obj notesObj,Fragment f,View rootView)
-        {
+            DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+            Bundle args = getArguments();
+            int section = args.getInt(ARG_SECTION_NUMBER);
+            media = utility.getMediaList(pid, getActivity(), section);
+            final ArrayList<Item> listOfItems = NotesFields.get(section );
+            ListView listView1 = (ListView)view.findViewById(R.id.filedsList);
+            InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(getActivity(),listOfItems);
+            ArrayList<Item> field = displayOtherNotes(section);
+            TabbedActivityCheck tabbedActivityCheck = (TabbedActivityCheck)getActivity();
+            tabbedActivityCheck.displayAddedField(field,view);
+
+            if(databaseHandler.getLatestOtherNote(pid,section)!=null) {
+                if ((databaseHandler.getLatestOtherNote(pid, section).length > 0) || (otherObj.size() > 0)) {
 
 
-            TextView genExam = (TextView)rootView.findViewById(R.id.Exam_general_view);
-            TextView locExam = (TextView)rootView.findViewById(R.id.Exam_local_view);
+                }
+            }
+            listView1.setAdapter(inputAgainstAFieldAdapter);
+            listView1.setItemsCanFocus(true);
+           listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                   Toast.makeText(getContext(), position + " " + id, Toast.LENGTH_SHORT);
 
-
-
-            genExam.setText(notesObj.get_gen_exam());
-            locExam.setText(notesObj.get_loc_exam());
-
-
-
-        }
-
-        public void getAndDisplayExamNotes(Fragment f,View rootView)
-        {
-            DatabaseHandler dbHandler = new DatabaseHandler(f.getActivity().getApplicationContext());
-
-
-            exam_obj examObj = dbHandler.getLatestExamNote(pid,version);
-
-            notes_obj notesObj  = new notes_obj();
-
-
-            notesObj.set_gen_exam(examObj.get_gen_exam());
-            notesObj.set_loc_exam(examObj.get_local_exam());
-            //getLatestVersionTitle();
-            int version = dbHandler.getCurrentVersion(pid);
-            if (version>=1)
-                this.displayExamNote(notesObj, this, rootView);
-
-
-
+               }
+           });
+            displayAddedMedia(media, view);
 
 
 
 
         }
+
+        public void addOtherHistNote(String fieldName, String fieldValue)
+        {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c.getTime());
+            Bundle args = getArguments();
+            int section = args.getInt(ARG_SECTION_NUMBER);
+            DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+
+            other_obj temp = new other_obj();
+            temp.set_version(section);
+            temp.set_field_name(fieldName);
+            temp.set_field_value(fieldValue);
+
+
+            temp.set_pid(pid);
+            temp.set_date(formattedDate);
+
+            OtherObjsStatic.get(section).add(temp);
+
+        }
+        public ArrayList<Item> displayOtherNotes(int section)
+        {
+            ArrayList<Item> field = new ArrayList<>();
+
+            DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+
+            Item item;
+
+
+            if (OtherObjs.get(section).size()>0)
+            {
+
+                for (int i = 0; i < OtherObjs.get(section).size(); i++) {
+                    item = new Item();
+                    item.setTitle(OtherObjs.get(section).get(i).get_field_name());
+                    item.setDiagnosis(OtherObjs.get(section).get(i).get_field_value());
+                    field.add(item);
+
+                    //field.add(otherObj[i].get_field_name());
+                }
+
+            }
+            if (OtherObjsStatic.size()>0) {
+                if (OtherObjsStatic.get(section).size()>0) {
+                    for (int i = 0; i < OtherObjsStatic.get(section).size(); i++) {
+                        item = new Item();
+                        item.setTitle(OtherObjsStatic.get(section ).get(i).get_field_name());
+                        item.setDiagnosis(OtherObjsStatic.get(section ).get(i).get_field_value());
+                        field.add(item);
+
+                        //field.add(otherObj[i].get_field_name());
+                    }
+                }
+            }
+
+            return  field;
+        }
+        public  void addHistField(View promptsView)
+        {
+            LayoutInflater li = LayoutInflater.from(getContext());
+            Bundle args = getArguments();
+            final int section = args.getInt(ARG_SECTION_NUMBER);
+            promptsView = li.inflate(R.layout.other_field_input_prompt, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    getContext());
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final EditText userInputName = (EditText) promptsView
+                    .findViewById(R.id.editTextDialogUserInputFieldName);
+
+            final EditText userInputValue = (EditText) promptsView
+                    .findViewById(R.id.editTextDialogUserInputFieldValue);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    String field_Name = userInputName.getText().toString();
+                                    String field_Value = userInputValue.getText().toString();
+                                    addOtherHistNote(field_Name, field_Value);
+                                    Intent intent = getActivity().getIntent();
+Tabselected = section;
+                                    getActivity().finish();
+                                    startActivity(intent);
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+
+
+        }
+
+
+        public void addVideo(View view) throws IOException {this.dispatchTakeVideoIntent();}
+        public void addPhoto(View view) throws IOException {
+           dispatchTakePictureIntent();
+
+            // this.dispatchTakePictureIntent();
+        }
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Bundle args = getArguments();
+            int section = args.getInt(ARG_SECTION_NUMBER);
+
+            if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+                Uri videoUri = data.getData();
+                String path = videoUri.getPath();
+
+                DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+                mediaObj.set_media_path(path);
+                mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+
+                mediaObj.set_pid(pid);
+                mediaObj.set_section(section);
+                mediaObj.set_version(1);
+                databaseHandler.addMedia(mediaObj);
+
+                Intent intent = getActivity().getIntent();
+                Tabselected = section;
+                getActivity().finish();
+                startActivity(intent);
+            }
+
+            if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
+                DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+
+                mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
+                Bitmap bitmap;
+                bitmap = BitmapFactory.decodeFile(mediaObj.get_media_path());
+                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+
+                // save image into gallery
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, ostream);
+
+                try {
+                    FileOutputStream fout = new FileOutputStream(new File(mediaObj.get_media_path()));
+                    fout.write(ostream.toByteArray());
+                    fout.close();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                mediaObj.set_pid(pid);
+                mediaObj.set_section(section);
+                mediaObj.set_version(1);
+                databaseHandler.addMedia(mediaObj);
+
+                Intent intent = getActivity().getIntent();
+                Tabselected = section;
+                getActivity().finish();
+                startActivity(intent);
+
+
+
+            }
+
+        }
+        private void dispatchTakePictureIntent() {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent intent = getActivity().getIntent();
+
+
+            final DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+
+
+
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = PhotoHelper.createImageFileForNotes(pid,getContext());
+
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+
+                }
+
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    takePictureIntent.putExtra("output",
+                            Uri.fromFile(photoFile));
+                    mediaObj.set_media_name(photoFile.getPath());
+                    mediaObj.set_media_path(photoFile.getPath());
+
+
+
+
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
+
+                }
+            }
+        }
+        private void dispatchTakeVideoIntent() throws IOException {
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+            //fileUri = PhotoHelper.createVideoFile(pid);
+            if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File file = null;
+                try {
+                    file = PhotoHelper.createVideoFile(pid, getContext());
+                    fileUri= Uri.fromFile(file);
+
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+
+                }
+            }
+            if (fileUri != null) {
+                // create a file to save the video
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+
+                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
+
+                // start the Video Capture Intent
+                startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+            }
+        }
+        public void displayAddedMedia(ArrayList<Item> fieldList,View rootView)
+        {
+            RecyclerView listView = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
+            LinearLayoutManager layoutManager
+                    = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerAdapter RecyclerAdapter = new recyclerAdapter(this.getActivity(),getContext(),fieldList,ONE_PHOTO,pid,version);
+            listView.setLayoutManager(layoutManager);
+            listView.setAdapter(RecyclerAdapter);
+
+
+        }
+
         @Override
         public void onClick(View v) {
             int a = v.getId();
@@ -455,217 +862,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
 
 
 
-    public static class PlaceholderFragment2 extends Fragment implements View.OnClickListener  {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment2 newInstance2(int sectionNumber) {
-            PlaceholderFragment2 fragment2 = new PlaceholderFragment2();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment2.setArguments(args);
-            return fragment2;
-        }
-
-        public PlaceholderFragment2() {
-        }
-
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.activity_treatment_view, container, false);
-            Button button = (Button)rootView.findViewById(R.id.view_media_treat);
-            button.setOnClickListener(this);
-            /* Button button = (Button)rootView.findViewById(R.id.button9);
-           final TextView textView = (TextView)rootView.findViewById(R.id.textView13);
-            button.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Toast.makeText(getActivity(), textView.getText(), Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });*/
-            getAndDisplayTreatmentNotes(this, rootView);
-            return rootView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            int a = v.getId();
-            View b = v.findViewById(R.id.view_media_treat);
-
-            Intent intent = new Intent(v.getContext(),View_Media_notes_grid.class);
-            intent.putExtra("id",pid);
-            intent.putExtra("section",3);
-            intent.putExtra("version",version);
-            startActivity(intent);
-
-            int c = b.getId();
-            c= R.id.view_media_hist;
-            Toast.makeText(this.getActivity().getApplicationContext(),"button pressed",Toast.LENGTH_SHORT).show();
-        }
-
-
-        public void displayTreatmentNote(notes_obj notesObj,Fragment f,View rootView)
-        {
-
-
-            TextView diagnosis = (TextView)rootView.findViewById(R.id.Treatment_diagnosis_view);
-            TextView treatment = (TextView)rootView.findViewById(R.id.Treatment_treatment_view);
-            TextView procedure = (TextView)rootView.findViewById(R.id.Treatment_procedure_view);
-            TextView implants = (TextView)rootView.findViewById(R.id.Treatment_implants_view);
-
-
-            diagnosis.setText(notesObj.get_diagnosis());
-            treatment.setText(notesObj.get_treatment());
-            procedure.setText(notesObj.get_procedure());
-            implants.setText(notesObj.get_implant());
-
-
-
-        }
-
-        public void getAndDisplayTreatmentNotes(Fragment f,View rootView)
-        {
-            DatabaseHandler dbHandler = new DatabaseHandler(f.getActivity().getApplicationContext());
-
-
-            treatment_obj treatmentObj = dbHandler.getLatestTreatmentNote(pid,version);
-
-            notes_obj notesObj  = new notes_obj();
-
-
-            notesObj.set_diagnosis(treatmentObj.get_diagnosis());
-            notesObj.set_treatment(treatmentObj.get_treatment());
-            notesObj.set_procedure(treatmentObj.get_procedure());
-            notesObj.set_implant(treatmentObj.get_implants());
-            //getLatestVersionTitle();
-            //int version = dbHandler.getCurrentVersion(pid);
-            if (version>=1)
-                this.displayTreatmentNote(notesObj, this, rootView);
-
-
-
-
-
-
-
-        }
-    }
-
-
-
-
-    public static class PlaceholderFragment3 extends Fragment implements View.OnClickListener {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment3 newInstance(int sectionNumber) {
-            PlaceholderFragment3 fragment3 = new PlaceholderFragment3();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment3.setArguments(args);
-            return fragment3;
-        }
-
-        public PlaceholderFragment3() {
-        }
-
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.activity_other_view, container, false);
-
-            ArrayList<Item> fields = new ArrayList<>();
-            Button button = (Button)rootView.findViewById(R.id.view_media_other);
-            button.setOnClickListener(this);
-
-            fields = displayOtherNotes(this);
-
-            displayAddedField(fields, rootView,this);
-           // getAndDisplayOtherNotes(this, rootView);
-            return rootView;
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            int a = v.getId();
-            View b = v.findViewById(R.id.view_media_other);
-
-            Intent intent = new Intent(v.getContext(),View_Media_notes_grid.class);
-            intent.putExtra("id",pid);
-            intent.putExtra("section",4);
-            intent.putExtra("version",version);
-            startActivity(intent);
-
-            int c = b.getId();
-            c= R.id.view_media_hist;
-
-        }
-
-        public ArrayList<Item> displayOtherNotes(Fragment f)
-        {
-            ArrayList<Item> field = new ArrayList<>();
-
-            Item item;
-            DatabaseHandler dbHandler = new DatabaseHandler(f.getActivity().getApplicationContext());
-            other_obj otherObj[]=dbHandler.getLatestOtherNote(pid,version);
-            if (otherObj != null)
-            {
-                for (int i = 0; i < otherObj.length; i++) {
-
-                  item = new Item();
-                  item.setTitle(otherObj[i].get_field_name());
-                  item.setDiagnosis(otherObj[i].get_field_value());
-                    field.add(item);
-                   // field.add(otherObj[i].get_field_name());
-                }
-            }
-            return  field;
-        }
-
-        public void displayAddedField(ArrayList<Item> fieldList,View rootview,Fragment f)
-        {
-            ListView listView = (ListView)rootview.findViewById(R.id.listViewOther);
-       /* MainActivityList adapter1 = new
-                MainActivityList(MainActivity.this, patientList, imageId);*/
-
-            //MyAdapter adapter = new MyAdapter(Exam_Activity.this,patientList);
-            TwoTextFieldsAdapter twoTextFieldsAdapter = new TwoTextFieldsAdapter(getActivity(),f.getActivity().getApplicationContext(),fieldList);
-
-           // ArrayAdapter adapter = new ArrayAdapter (getActivity(),R.layout.activity_other_view,R.id.textView30,fieldList); ;
-
-
-
-            listView.setAdapter(twoTextFieldsAdapter);
-
-        }
-
-
-
-
-    }
 
 
 }

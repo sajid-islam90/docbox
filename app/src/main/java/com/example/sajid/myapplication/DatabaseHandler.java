@@ -6,6 +6,7 @@ package com.example.sajid.myapplication;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -41,7 +43,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_PATIENT = "patient";
     private static final String TABLE_DOCUMENTS = "documents";
     private static final String TABLE_NOTES = "notes";
+    private static final String TABLE_FOLLOW_UP = "followUp";
     private static final String TABLE_MEDIA = "media";
+    private static final String TABLE_MEDIA_FOLLOW_UP = "mediaFollowUp";
     private static final String TABLE_HISTORY = "history";
     private static final String TABLE_HISTORY_HIST = "historyHist";
     private static final String TABLE_EXAM = "exam";
@@ -49,8 +53,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_TREATMENT = "treatment";
     private static final String TABLE_TREATMENT_HIST = "treatmentHist";
     private static final String TABLE_OTHER = "other";
+    private static final String TABLE_OTHER_FOLLOW_UP = "otherFollowUp";
     private static final String TABLE_OTHER_HIST = "otherHist";
     private static final String TABLE_PERSONAL_INFO = "personalInfo";
+    private static final String TABLE_APPOINTMENT_SETTINGS = "appointmentSettings";
 
     //  Table Columns names
     private static final String KEY_ID = "id";
@@ -59,15 +65,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_GENDER = "gender";
     private static final String KEY_CONTACT = "contactNumber";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_DESIGNATION = "designation";
+    private static final String KEY_AWARDS= "awards";
+    private static final String KEY_EXPERIENCE = "experience";
+    private static final String KEY_CONSULT_FEE = "consultFee";
+    private static final String KEY_OCCUPATION = "occupation";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_HEIGHT = "height";
     private static final String KEY_DIAGNOSIS = "diagnosis";
     private static final String KEY_BMP = "bitmapBLOB";
+    private static final String KEY_PHOTO_PATH = "photoPath";
     private static final String KEY_SYNC_STATUS = "syncStatus";
     private static final String KEY_DOC_NAME = "documentName";
     private static final String KEY_DOC_PATH = "documentPath";
 
-    private static final String KEY_DATE= "date";
+    private static final String KEY_DATE = "date";
+    private static final String KEY_ONLINE_DAYS = "onlineDays";
+    private static final String KEY_START_TIME = "startTime";
+    private static final String KEY_END_TIME = "endTime";
+    private static final String KEY_NUMBER_OF_PATIENTS = "numberOfPatients";
     private static final String KEY_DATE_LAST_VISIT= "dateLastVisit";
     private static final String KEY_CHIEF_COMPLAINT = "chiefComplaint";
     private static final String KEY_HIST_OF_ILLNESS = "histOfIllness";
@@ -83,7 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PROCEDURE = "procedure";
     private static final String KEY_IMPLANT = "implant";
     private static final String KEY_SCORE = "score";
-    private static final String KEY_REMARK = "remark";
+    private static final String KEY_SPECIALITY = "speciality";
     private static final String KEY_VERSION = "version";
 
     public DatabaseHandler(Context context) {
@@ -95,11 +112,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
        String CREATE_PATIENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PATIENT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_DIAGNOSIS + " TEXT,"
-                + KEY_AGE + " TEXT,"+KEY_DATE_LAST_VISIT + " TEXT,"+KEY_DATE + " TEXT," + KEY_GENDER + " TEXT," + KEY_HEIGHT + " TEXT, " + KEY_BMP +" BLOB,"+ KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_AGE + " TEXT,"+KEY_DATE_LAST_VISIT + " TEXT,"+KEY_DATE + " TEXT," +KEY_CONTACT + " TEXT,"+KEY_EMAIL +
+               " TEXT,"+KEY_ADDRESS + " TEXT,"+KEY_OCCUPATION + " TEXT,"  + KEY_GENDER + " TEXT," + KEY_HEIGHT + " TEXT, " +
+               KEY_BMP +" BLOB,"+KEY_PHOTO_PATH + " TEXT, " + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_PATIENTS_TABLE);
 
         String CREATE_DOCUMENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_DOCUMENTS + "("
-                + KEY_ID + " INTEGER ," +KEY_DATE + " TEXT,"  +KEY_DOC_NAME + " TEXT," + KEY_DOC_PATH + " TEXT, " + KEY_BMP +" BLOB, "+ KEY_SYNC_STATUS + " TEXT "  +")";
+                + KEY_ID + " INTEGER ," +KEY_DATE + " TEXT,"  +KEY_DOC_NAME + " TEXT," + KEY_DOC_PATH + " TEXT, " + KEY_BMP +" BLOB, "
+                + KEY_SYNC_STATUS + " TEXT "  +")";
         db.execSQL(CREATE_DOCUMENTS_TABLE);
 
 
@@ -116,44 +136,78 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
         String CREATE_EXAM_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EXAM + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_GENERAL_EXAM + " TEXT," + KEY_LOCAL_EXAM+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_GENERAL_EXAM + " TEXT," +
+                KEY_LOCAL_EXAM+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_EXAM_TABLE);
 
         String CREATE_EXAM_HIST_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EXAM_HIST + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_GENERAL_EXAM + " TEXT," + KEY_LOCAL_EXAM+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_GENERAL_EXAM + " TEXT," +
+                KEY_LOCAL_EXAM+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_EXAM_HIST_TABLE);
 
 
 
         String CREATE_TREATMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TREATMENT + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_DIAGNOSIS + " TEXT," + KEY_TREATMENT + " TEXT," + KEY_PROCEDURE + " TEXT," + KEY_IMPLANT+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_DIAGNOSIS + " TEXT," +
+                KEY_TREATMENT + " TEXT," + KEY_PROCEDURE + " TEXT," + KEY_IMPLANT+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_TREATMENT_TABLE);
 
         String CREATE_TREATMENT_HIST_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_TREATMENT_HIST + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_DIAGNOSIS + " TEXT," + KEY_TREATMENT + " TEXT," + KEY_PROCEDURE + " TEXT," + KEY_IMPLANT+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_DIAGNOSIS + " TEXT," +
+                KEY_TREATMENT + " TEXT," + KEY_PROCEDURE + " TEXT," + KEY_IMPLANT+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_TREATMENT_HIST_TABLE);
 
 
         String CREATE_OTHER_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_OTHER + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," + KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," +
+                KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_OTHER_TABLE);
 
+        String CREATE_OTHER_FOLLOWUP_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_OTHER_FOLLOW_UP + "("
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," +
+                KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+        db.execSQL(CREATE_OTHER_FOLLOWUP_TABLE);
+
         String CREATE_OTHER_HIST_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_OTHER_HIST + "("
-                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," + KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," +
+                KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
         db.execSQL(CREATE_OTHER_HIST_TABLE);
 
+        String CREATE_NOTES_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_SECTION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," +
+                KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+        db.execSQL(CREATE_NOTES_TABLE);
+
+        String CREATE_FOLLOW_UP_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_FOLLOW_UP + "("
+                + KEY_ID + " INTEGER ,"+KEY_DATE+" TEXT ,"+KEY_VERSION+" INTEGER ," + KEY_FIELD_NAME + " TEXT," +
+                KEY_FIELD_VALUE+ " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
+        db.execSQL(CREATE_FOLLOW_UP_TABLE);
 
 
        String CREATE_DOCUMENTS_MEDIA_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA + "("
-                + KEY_ID + " INTEGER ," + KEY_DOC_NAME + " TEXT,"+ KEY_VERSION + " TEXT,"+ KEY_SECTION + " TEXT," + KEY_DOC_PATH + " TEXT, " + KEY_BMP +" BLOB, " + KEY_SYNC_STATUS + " TEXT " +")";
+                + KEY_ID + " INTEGER ," + KEY_DOC_NAME + " TEXT,"+ KEY_VERSION + " TEXT,"+ KEY_SECTION + " TEXT," +
+               KEY_DOC_PATH + " TEXT, "  + KEY_SYNC_STATUS + " TEXT, "+ KEY_BMP +" BLOB " +")";
         db.execSQL(CREATE_DOCUMENTS_MEDIA_TABLE);
 
+        String CREATE_FOLLOW_UP_MEDIA_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_MEDIA_FOLLOW_UP + "("
+                + KEY_ID + " INTEGER ," + KEY_DOC_NAME + " TEXT,"+ KEY_VERSION + " TEXT,"+ KEY_SECTION + " TEXT," +
+                KEY_DOC_PATH + " TEXT, "  + KEY_SYNC_STATUS + " TEXT, "+ KEY_BMP +" BLOB " +")";
+        db.execSQL(CREATE_FOLLOW_UP_MEDIA_TABLE);
 
-        String CREATE_PERSONAL_INFO_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PERSONAL_INFO + "("
-                + KEY_ID + " INTEGER ," + KEY_NAME + " TEXT,"+ KEY_CONTACT + " TEXT,"+ KEY_EMAIL + " TEXT," + KEY_PASSWORD + " TEXT, " + KEY_DOC_PATH +" TEXT" +")";
+
+      String CREATE_PERSONAL_INFO_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PERSONAL_INFO + "("
+                + KEY_ID + " INTEGER ," + KEY_EMAIL + " TEXT,"+ KEY_PASSWORD + " TEXT,"+KEY_SPECIALITY + " TEXT,"+
+               KEY_NAME + " TEXT," + KEY_DESIGNATION + " TEXT, " + KEY_ADDRESS + " TEXT, " + KEY_AWARDS + " TEXT, "
+              + KEY_EXPERIENCE+ " TEXT, " + KEY_CONSULT_FEE + " TEXT, "  + KEY_DOC_PATH +" TEXT" +")";
         db.execSQL(CREATE_PERSONAL_INFO_TABLE);
 
-        /*String RENAME_TABLE = "DROP TABLE "+TABLE_DOCUMENTS;
+        String CREATE_APPOINTMENT_SETTINGS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_APPOINTMENT_SETTINGS + "("
+               + KEY_ONLINE_DAYS + " TEXT,"+ KEY_START_TIME + " TEXT,"+KEY_END_TIME + " TEXT,"
+                + KEY_NUMBER_OF_PATIENTS + " INTEGER " +
+                ")";
+        db.execSQL(CREATE_APPOINTMENT_SETTINGS_TABLE);
+
+      /* String RENAME_TABLE = "DROP TABLE "+TABLE_PERSONAL_INFO;
         db.execSQL(RENAME_TABLE);
        /* db.execSQL(CREATE_DOCUMENTS_TABLE);
         String RENAME_TABLE_COLUMN = "INSERT INTO documents(id, documentName, documentPath, bitmapBLOB )\n" +
@@ -189,6 +243,152 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
+public  void saveAppointmentSettings(String onlineDays,String startTime,String endTime,int numberOfPatients )
+{
+    SQLiteDatabase db = this.getWritableDatabase();
+    db.execSQL("delete from "+ TABLE_APPOINTMENT_SETTINGS);
+    ContentValues values = new ContentValues();
+    values.put(KEY_ONLINE_DAYS, onlineDays);
+    values.put(KEY_START_TIME, startTime);
+    values.put(KEY_END_TIME, endTime);
+    values.put(KEY_NUMBER_OF_PATIENTS, numberOfPatients);
+    db.insert(TABLE_APPOINTMENT_SETTINGS, null, values);
+    db.close();
+
+}
+    public ArrayList<String> getAppointmentSettings()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String strSql = "SELECT * from "+TABLE_APPOINTMENT_SETTINGS;
+        Cursor cursor = db.rawQuery(strSql,null);
+
+        ArrayList<String> settings = new ArrayList<>();
+        if(cursor.getCount()>0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < 3; i++)
+                settings.add(cursor.getString(i));
+
+            settings.add(String.valueOf(cursor.getInt(3)));
+        }
+return settings;
+
+    }
+
+
+    // generic notes functions
+
+    public void saveGenericNote(ArrayList<Item> listOfItems)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for(int i = 0;i<listOfItems.size();i++)
+        {
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_ID, listOfItems.get(i).getPatient_id());
+            values.put(KEY_DATE,listOfItems.get(i).getDate());
+            values.put(KEY_FIELD_NAME,listOfItems.get(i).getTitle());
+            values.put(KEY_FIELD_VALUE,listOfItems.get(i).getDiagnosis());
+            values.put(KEY_SECTION,listOfItems.get(i).getSection());
+            values.put(KEY_SYNC_STATUS, "0");
+         int j =  db.delete(TABLE_NOTES,
+                   KEY_ID + "=? AND " + KEY_SECTION + "=? AND " +
+                           KEY_FIELD_NAME + "=?  ",
+                   new String[]{String.valueOf(listOfItems.get(i).getPatient_id()), String.valueOf(listOfItems.get(i).getSection()), listOfItems.get(i).getTitle()});
+
+
+            String sql = "DELETE FROM " + TABLE_NOTES + " WHERE " + KEY_SECTION + " = '" + listOfItems.get(i).getSection() + "' AND "
+                    + KEY_ID + " = '" + listOfItems.get(i).getPatient_id() + "' AND "
+                    + KEY_FIELD_NAME + " = '" + listOfItems.get(i).getTitle() + "' ";
+                db.rawQuery(sql, null);
+
+            db.insert(TABLE_NOTES, null, values);
+        }
+        db.close();
+    }
+
+
+
+    public ArrayList<Item> getGenericNote(int pid,int section) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Item> listOfItems = new ArrayList<>();
+        Item item;
+        String StrSQL = "SELECT * FROM "+TABLE_NOTES+" WHERE "+
+                KEY_SECTION+" = '"+section+"' AND "
+                +KEY_ID +" = '"+pid+"'";
+        Cursor cursor = db.rawQuery(StrSQL,null);
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+
+            do {
+                item = new Item();
+                item.setTitle(cursor.getString(cursor.getColumnIndex(KEY_FIELD_NAME)));
+                item.setDiagnosis(cursor.getString(cursor.getColumnIndex(KEY_FIELD_VALUE)));
+                item.setDate(cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+                item.setPatient_id(pid);
+                item.setSection(section);
+                listOfItems.add(item);
+            }
+            while (cursor.moveToNext());
+
+        }
+        return  listOfItems;
+    }
+
+
+
+
+    //follow up functions
+    public void saveFollowUp(ArrayList<Item> listOfItems)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for(int i = 0;i<listOfItems.size();i++)
+        {
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_ID, listOfItems.get(i).getPatient_id());
+            values.put(KEY_DATE,listOfItems.get(i).getDate());
+            values.put(KEY_FIELD_NAME,listOfItems.get(i).getTitle());
+            values.put(KEY_FIELD_VALUE,listOfItems.get(i).getDiagnosis());
+            values.put(KEY_VERSION,listOfItems.get(i).getSection());
+            values.put(KEY_SYNC_STATUS, "0");
+
+
+
+            db.insert(TABLE_FOLLOW_UP, null, values);
+        }
+        db.close();
+    }
+
+
+
+    public ArrayList<Item> getFollowUp(int pid,int version) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Item> listOfItems = new ArrayList<>();
+        Item item;
+        String StrSQL = "SELECT * FROM "+TABLE_FOLLOW_UP+" WHERE "+
+                         KEY_VERSION+" = '"+version+"' AND "
+                         +KEY_ID +" = '"+pid+"'";
+        Cursor cursor = db.rawQuery(StrSQL,null);
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+
+            do {
+                item = new Item();
+                item.setTitle(cursor.getString(cursor.getColumnIndex(KEY_FIELD_NAME)));
+                item.setDiagnosis(cursor.getString(cursor.getColumnIndex(KEY_FIELD_VALUE)));
+                item.setDate(cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+                item.setPatient_id(pid);
+                item.setSection(version);
+                listOfItems.add(item);
+            }
+            while (cursor.moveToNext());
+
+        }
+        return  listOfItems;
+    }
+
 
 
     //Personal Deatil Functions
@@ -244,7 +444,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values = utility.personalInfoTOValues(personalObj, values);
-        db.insert(TABLE_PERSONAL_INFO,null,values);
+        db.insert(TABLE_PERSONAL_INFO, null, values);
         db.close();
 
 
@@ -262,6 +462,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put(field, value);
 
          db.update(TABLE_PERSONAL_INFO, args, KEY_EMAIL + "= '" + email + "'", null) ;
+
+    }
+    public void updateMedia(String field,String value,String docPath)
+
+
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(field, value);
+
+        db.update(TABLE_MEDIA, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
+
+    }
+    public void updateTableSyncStatus(String field,String value,String tableName,String pid)
+
+
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(field, value);
+
+        db.update(tableName, args, KEY_DOC_PATH + "= '" + docPath + "' AND "+ , null) ;
 
     }
 
@@ -301,9 +525,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public int getCurrentVersion(int pid)
     {
+        int histVersion = getCurrentVersion(pid,DataBaseEnums.TABLE_HISTORY);
+        int examVersion = getCurrentVersion(pid, DataBaseEnums.TABLE_EXAM);
+        int treatVersion = getCurrentVersion(pid,DataBaseEnums.TABLE_TREATMENT);
+        int otherVersion = getCurrentVersion(pid,DataBaseEnums.TABLE_OTHER);
+
+        int max=((histVersion>examVersion)&&(histVersion>treatVersion)&&(histVersion>otherVersion))?histVersion:(((examVersion>treatVersion)&&(examVersion>otherVersion))?examVersion:(treatVersion>otherVersion)?treatVersion:otherVersion);
+
+return max;
+
+
+
+
+
+
+/*
         SQLiteDatabase db = this.getReadableDatabase();
         int version = 0;
         String strSQL = "SELECT "+KEY_VERSION+"   FROM " + TABLE_HISTORY+" WHERE "+KEY_ID+" = "+pid;
+        Cursor cursor = db.rawQuery(strSQL,null);
+
+        if(cursor.getCount()!=0) {
+            cursor.moveToLast();
+            version = cursor.getInt(0);
+        }
+
+        return version;*/
+    }
+
+    public int getCurrentVersion(int pid,String tableName)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int version = 0;
+        String strSQL = "SELECT "+KEY_VERSION+"   FROM " + tableName+" WHERE "+KEY_ID+" = "+pid;
         Cursor cursor = db.rawQuery(strSQL,null);
 
         if(cursor.getCount()!=0) {
@@ -319,20 +573,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     {
         ArrayList<String> dates = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "SELECT "+KEY_DATE+" FROM "+TABLE_HISTORY_HIST+" WHERE "+KEY_ID+" = "+pid;
-
-        Cursor cursor = db.rawQuery(sql,null);
+        int version = getMaxFollowupVersion(pid);
         int c=1;
-        if(cursor.getCount()!=0) {
-
-            while (cursor.moveToNext())
-            {
-                dates.add("Version"+ c++ +" date : "+cursor.getString(0));
-            }
-
+        String table = null;
+        while (c<=version)
+        {
+            dates.add("Version"+ c +" date : "+getNotesDateFromVersion(c,pid));
+            c++;
         }
-
-
 
         return dates;
     }
@@ -352,6 +600,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
         return version;
+    }
+
+    public ArrayList<String> getPatientsForDate(String date)
+    {
+        ArrayList<String> patients = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+String sql="";
+
+
+        sql =  "SELECT DISTINCT "+DataBaseEnums.KEY_ID+
+                " FROM ( "+
+                " select  "+DataBaseEnums.KEY_ID+" from "+
+                DataBaseEnums.TABLE_NOTES+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
+                " UNION " +
+                "select  "+DataBaseEnums.KEY_ID+" from " +
+                TABLE_FOLLOW_UP+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
+
+                ")";
+
+try {
+    Cursor cursor = db.rawQuery(sql, null);
+    int c = cursor.getCount();
+    if(cursor.getCount()!=0) {
+        cursor.moveToFirst();
+        do {
+            patients.add(cursor.getString(0));
+
+        }
+        while (cursor.moveToNext());
+    }
+}
+catch (Exception e)
+{
+    e.printStackTrace();
+}
+
+db.close();
+        return patients;
+    }
+
+
+
+
+    public String getNotesDateFromVersion(int version,int pid)
+    {
+        String date = null;
+
+
+
+
+            date = getVersionedNote(pid,version,TABLE_FOLLOW_UP);
+
+
+
+
+
+
+        return date;
     }
 
 
@@ -383,16 +689,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_HIST,historyObj.get_present_illness());
         values.put(KEY_FAMILY_HISTORY,historyObj.get_family_hist());
         values.put(KEY_PERSONAL_HISTORY,historyObj.get_personal_hist());
-        values.put(KEY_VERSION,historyObj.get_version());
-        values.put(KEY_SYNC_STATUS,"0");
+        values.put(KEY_VERSION,1);
+        values.put(KEY_SYNC_STATUS, "0");
         // Inserting Row
-        db.insert(TABLE_HISTORY, null, values);
-        db.insert(TABLE_HISTORY_HIST, null, values);
-        int previousVersion = historyObj.get_version()-1;
+
+       // db.insert(TABLE_HISTORY_HIST, null, values);
+        int previousVersion = historyObj.get_version();
         if(previousVersion!=0) {
             String strSQL = " DELETE FROM " + TABLE_HISTORY + " WHERE " + KEY_ID + " = " + historyObj.get_pid() + " AND " + KEY_VERSION + " <= " + previousVersion;
             db.execSQL(strSQL);
-        }
+            db.insert(TABLE_HISTORY, null, values);
+       }
         db.close(); // Closing database connection
 
 
@@ -412,6 +719,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return histObj;
     }
+    //gives date of a version of any notes table
+    public String getVersionedNote(int pid,int version,String table)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        history_obj histObj = new history_obj();
+        String date = null;
+
+        String strSQL = " SELECT * FROM "+ table+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version;
+        Cursor cursor = db.rawQuery(strSQL,null);
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+            date = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_DATE));
+
+        }
+        return date;
+    }
+
+
 
 
 
@@ -419,7 +744,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public history_obj getVersionedHistNote(int pid)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        history_obj histObj = new history_obj();
+        history_obj histObj = null;
        int version = getCurrentVersion(pid);
         String strSQL = " SELECT * FROM "+ TABLE_HISTORY+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version;
         Cursor cursor = db.rawQuery(strSQL,null);
@@ -518,6 +843,53 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     //Other Notes Functions
+    // version --> segment
+
+    public void addOtherFollowUp(other_obj otherObj)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, otherObj.get_pid());
+        values.put(KEY_DATE, otherObj.get_date());
+        values.put(KEY_VERSION,otherObj.get_version());
+        values.put(KEY_FIELD_NAME,otherObj.get_field_name());
+        values.put(KEY_FIELD_VALUE, otherObj.get_field_value());
+        values.put(KEY_SYNC_STATUS, 0);
+
+
+        long i =  db.insert(TABLE_OTHER_FOLLOW_UP, null, values);
+        db.close(); // Closing database connection
+
+
+    }
+    public  ArrayList<other_obj> getOtherFollowUp(int pid,int version)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        other_obj otherObj[] = null;
+        ArrayList<other_obj>other_objs = new ArrayList<>();
+
+        String strSQL = " SELECT * FROM "+ TABLE_OTHER_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid+ " AND " + KEY_VERSION + " = " + version;
+
+        Cursor cursor = db.rawQuery(strSQL, null);
+
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+            otherObj = new other_obj[cursor.getCount()];
+            do{
+                otherObj = utility.cursorToOther(cursor);
+
+            }
+            while (cursor.moveToNext());
+            other_objs = new ArrayList<>(otherObj.length);
+            for (int i = 0;i<otherObj.length;i++)
+            {
+                other_objs.add(otherObj[i]);
+            }
+
+        }
+        return other_objs;
+    }
+
 
     public void addOther(other_obj otherObj)
     {
@@ -528,16 +900,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VERSION,otherObj.get_version());
         values.put(KEY_FIELD_NAME,otherObj.get_field_name());
         values.put(KEY_FIELD_VALUE, otherObj.get_field_value());
-        values.put(KEY_SYNC_STATUS,0);
+        values.put(KEY_SYNC_STATUS, 0);
 
+        int j =  db.delete(TABLE_OTHER,
+                KEY_ID + "=? AND " + KEY_VERSION + "=? AND " +
+                        KEY_FIELD_NAME + "=?  ",
+                new String[]{String.valueOf(otherObj.get_pid()), String.valueOf(otherObj.get_version()), otherObj.get_field_name()});
 
         long i =  db.insert(TABLE_OTHER, null, values);
-        long j =  db.insert(TABLE_OTHER_HIST, null, values);
-        int previousVersion = otherObj.get_version()-1;
-        if(previousVersion!=0) {
-            String strSQL = " DELETE FROM " + TABLE_OTHER+ " WHERE " + KEY_ID + " = " + otherObj.get_pid() + " AND " + KEY_VERSION + " <= " + previousVersion;
-            db.execSQL(strSQL);
-        }
         db.close(); // Closing database connection
 
 
@@ -547,21 +917,99 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         other_obj otherObj[] = null;
         //int version = getCurrentVersion(pid);
-        String strSQL = " SELECT * FROM "+ TABLE_OTHER_HIST+" WHERE "+KEY_ID+" = "+pid+ " AND " + KEY_VERSION + " = " + version;
+        String strSQL = " SELECT * FROM "+ TABLE_OTHER+" WHERE "+KEY_ID+" = "+pid+ " AND " + KEY_VERSION + " = " + version;
+        System.out.print(strSQL);
         Cursor cursor = db.rawQuery(strSQL, null);
 
         if(cursor.getCount()!=0) {
             cursor.moveToFirst();
-             otherObj = new other_obj[cursor.getCount()];
-            otherObj = utility.cursorToOther(cursor);
+            otherObj = new other_obj[cursor.getCount()];
+           do{
+                otherObj = utility.cursorToOther(cursor);
+
+            }
+           while (cursor.moveToNext());
 
         }
         return otherObj;
+    }
+    public ArrayList<other_obj> geOtherNote(int pid,int version)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        other_obj otherObj[] = null;
+        ArrayList<other_obj>other_objs = new ArrayList<>();
+        //int version = getCurrentVersion(pid);
+        String strSQL = " SELECT * FROM "+ TABLE_OTHER+" WHERE "+KEY_ID+" = "+pid+ " AND " + KEY_VERSION + " = " + version;
+        System.out.print(strSQL);
+        Cursor cursor = db.rawQuery(strSQL, null);
+
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+            otherObj = new other_obj[cursor.getCount()];
+            do{
+                otherObj = utility.cursorToOther(cursor);
+
+            }
+            while (cursor.moveToNext());
+            other_objs = new ArrayList<>(otherObj.length);
+            for (int i = 0;i<otherObj.length;i++)
+            {
+                other_objs.add(otherObj[i]);
+            }
+
+        }
+        return other_objs;
+    }
+    public  void deleteOtherNote(other_obj otherObj,int pid,int version)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String strSQL = " DELETE FROM "+ TABLE_OTHER+" WHERE "+KEY_ID+" = '"+pid+ "' AND " + KEY_VERSION + " = '" + version+ "' AND " + KEY_FIELD_NAME + " = '" + otherObj.get_field_name()+ "' AND " + KEY_FIELD_VALUE + " = '" + otherObj.get_field_value()+"'";
+        db.rawQuery(strSQL, null);
+        db.close();
     }
 
 
 
     //Media Functions
+    public void addMediaFollowUp(media_obj mediaObj)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, mediaObj.get_pid());
+        values.put(KEY_SECTION, mediaObj.get_section());
+        values.put(KEY_VERSION, mediaObj.get_version());
+        values.put(KEY_DOC_NAME,mediaObj.get_media_name());
+        values.put(KEY_DOC_PATH, mediaObj.get_media_path());
+        values.put(KEY_SYNC_STATUS, 0);
+        values.put(KEY_BMP, mediaObj.get_bmp());
+
+
+        long i = db.insert(TABLE_MEDIA_FOLLOW_UP, null, values);
+        //long j =  db.insert(TABLE_OTHER_HIST, null, values);
+
+
+        db.close(); // Closing database connection
+
+
+    }
+    public media_obj[] getMediaFollowUp(int pid,int version)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        media_obj mediaObjs[] = null;
+        //int version = getCurrentVersion(pid)-1;
+        String strSQL = " SELECT * FROM "+ TABLE_MEDIA_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid
+                  + " AND " + KEY_VERSION + " = " + version;
+                //+ " AND " + KEY_SECTION + " = " + section;
+        Cursor cursor = db.rawQuery(strSQL, null);
+
+        if(cursor.getCount()>0) {
+            cursor.moveToFirst();
+            mediaObjs = new media_obj[cursor.getCount()];
+            mediaObjs = utility.cursorToMedia(cursor);
+
+        }
+        return mediaObjs;
+    }
 
     public void addMedia(media_obj mediaObj)
     {
@@ -572,6 +1020,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_VERSION,mediaObj.get_version());
         values.put(KEY_DOC_NAME,mediaObj.get_media_name());
         values.put(KEY_DOC_PATH, mediaObj.get_media_path());
+        values.put(KEY_SYNC_STATUS,0);
         values.put(KEY_BMP, mediaObj.get_bmp());
 
 
@@ -590,7 +1039,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         media_obj mediaObjs[] = null;
         //int version = getCurrentVersion(pid)-1;
         String strSQL = " SELECT * FROM "+ TABLE_MEDIA+" WHERE "+KEY_ID+" = "+pid
-                        + " AND " + KEY_VERSION + " = " + version
+                      //  + " AND " + KEY_VERSION + " = " + version
                         + " AND " + KEY_SECTION + " = " + section;
         Cursor cursor = db.rawQuery(strSQL, null);
 
@@ -602,6 +1051,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return mediaObjs;
     }
+
    public void deleteMedia(String path)
     {
 
@@ -621,7 +1071,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String path;
         String strSQL = " SELECT * FROM "+ TABLE_MEDIA+" WHERE "+KEY_VERSION+" = "+version;
-        Cursor cursor = db.rawQuery(strSQL,null);
+        Cursor cursor = db.rawQuery(strSQL, null);
 
         while (cursor.moveToNext()) {
 
@@ -639,6 +1089,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public int getMaxFollowupVersion(int pid)
+
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String strSQL = " SELECT "+KEY_VERSION+" FROM "+ TABLE_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid;
+        Cursor cursor = db.rawQuery(strSQL, null);
+        if(cursor.getCount()>0)
+        {
+            cursor.moveToLast();
+            return cursor.getInt(cursor.getColumnIndex(KEY_VERSION));
+        }
+        else
+            return 0;
+    }
 
    /* media_obj getSearchMedia(int id,ArrayList<Item> itemsArrayList)
     {
@@ -797,7 +1261,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             for(int i = 1;i<=cur;i++) {
                 pos = Integer.parseInt(cursor.getString(0));
                 if(pos == id) {
-                    String name = cursor.getString(cursor.getColumnIndex("date"));
+                    String name = cursor.getString(cursor.getColumnIndex("documentName"));
                     String path = cursor.getString(cursor.getColumnIndex("documentPath"));
                     byte[] bmp = cursor.getBlob(cursor.getColumnIndex("bitmapBLOB"));
                     int id1 = Integer.parseInt(cursor.getString(0));
@@ -869,11 +1333,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_AGE, patient.get_age());
         values.put(KEY_GENDER, patient.get_gender());
         values.put(KEY_HEIGHT, patient.get_height());
+
         values.put(KEY_BMP,patient.get_bmp());
+       values.put(KEY_ADDRESS,patient.get_address());
+       values.put(KEY_OCCUPATION,patient.get_ocupation());
+       values.put(KEY_CONTACT,patient.get_contact_number());
+       values.put(KEY_EMAIL,patient.get_email());
         values.put(KEY_DIAGNOSIS,patient.get_diagnosis());
        values.put(KEY_DATE_LAST_VISIT,formattedDate );
        values.put(KEY_DATE,formattedDate );
        values.put(KEY_SYNC_STATUS,0);
+       values.put(KEY_PHOTO_PATH,patient.get_photoPath());
 
         // Inserting Row
         db.insert(TABLE_PATIENT, null, values);
@@ -897,15 +1367,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
            // cursor.moveToPosition(id);
             patient = utility.cursorToPatient(cursor);
              status = cursor.getString(cursor.getColumnIndex(KEY_SYNC_STATUS));
-            System.out.print(status);
+
 
 
         }
-        /*Patient patient = new Patient(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getBlob(5),cursor.getString(6));*/
 
-
-        // return contact
         db.close();
         return patient;
     }
@@ -975,7 +1441,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Patient patient = new Patient();
 
                 patient = utility.cursorToPatient(cursor);
-                String s = cursor.getString(cursor.getColumnIndex(KEY_SYNC_STATUS));
+                String s = cursor.getString(cursor.getColumnIndex(KEY_PHOTO_PATH));
 
                 // Adding contact to list
                 patientList.add(patient);
@@ -1007,23 +1473,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
                 pos =  Integer.parseInt(cursor.getString(0));
             }
-            /*patient = new Patient(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4),cursor.getBlob(5),cursor.getString(6));*/
+
             patient = utility.cursorToPatient(cursor);
-            /*patient = new Patient(Integer.parseInt(cursor.getString(cursor.getColumnIndex(KEY_ID))),
-                    cursor.getString(cursor.getColumnIndex(KEY_NAME)),
-                    cursor.getString(cursor.getColumnIndex(KEY_AGE)),cursor.getString(cursor.getColumnIndex(KEY_GENDER)),
-                    cursor.getString(cursor.getColumnIndex(KEY_HEIGHT)),cursor.getBlob(cursor.getColumnIndex(KEY_BMP)),
-                    cursor.getString(cursor.getColumnIndex(KEY_DIAGNOSIS)));*/
+
         }
-        // cursor.moveToFirst();
-        //cursor.moveToPosition(id);
 
-
-
-
-
-        // return contact
         db.close();
         return patient;
     }
@@ -1043,6 +1497,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DIAGNOSIS, patient.get_diagnosis());
         values.put(KEY_DATE_LAST_VISIT, patient.get_last_seen_date());
         values.put(KEY_SYNC_STATUS, "5");
+        values.put(KEY_ADDRESS,patient.get_address());
+        values.put(KEY_OCCUPATION,patient.get_ocupation());
+        values.put(KEY_CONTACT,patient.get_contact_number());
+        values.put(KEY_EMAIL,patient.get_email());
 
         // updating row
         return db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
@@ -1061,6 +1519,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DIAGNOSIS, patient.get_diagnosis());
         values.put(KEY_DATE_LAST_VISIT, patient.get_last_seen_date());
         values.put(KEY_SYNC_STATUS,syncingStatus);
+        values.put(KEY_ADDRESS,patient.get_address());
+        values.put(KEY_OCCUPATION,patient.get_ocupation());
+        values.put(KEY_CONTACT,patient.get_contact_number());
+        values.put(KEY_EMAIL,patient.get_email());
 
         // updating row
         return db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
@@ -1197,19 +1659,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String composeJSONfromEmailPassword()
     {
         SQLiteDatabase database = this.getWritableDatabase();
-        String Sql = "Select email,password FROM personalInfo" ;
+        String Sql = "Select * FROM personalInfo" ;
         Cursor cursor = database.rawQuery(Sql, null);
+        ArrayList<ArrayList<String>> personalInfo = new ArrayList<ArrayList<String>>();
+        ArrayList<String>list = new ArrayList<>();
+
         HashMap<String, String> map = new HashMap<String, String>();
         if (cursor.moveToFirst())
         {
+            list = utility.cursorToSimpleArraylist(cursor);
             map.put( cursor.getString(0), cursor.getString(1));
         }
+
         database.close();
+        personalInfo.add(list);
         String s1 = null;
 
         StringWriter out = new StringWriter();
         try {
-            JSONValue.writeJSONString(map, out);
+            JSONValue.writeJSONString(personalInfo, out);
             s1 = out.toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -1248,93 +1716,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
 
-        Gson gson = new GsonBuilder().create();
-        //Use GSON to serialize Array List to JSON
-        return s1;
-    }
-    public String composeJSONforUpdatePatient(){
-        ArrayList<ArrayList<String>> patientList;
-        patientList = new ArrayList<ArrayList<String>>();
-        String selectQuery = "SELECT  * FROM patient WHERE "+KEY_SYNC_STATUS+" = '5'" ;//KEY_SYNC_STATUS+" = '5' for update
-        personal_obj personalObj = this.getPersonalInfo();
-        String c = String.valueOf(personalObj.get_customerId());
-        SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
-            do {
-                ArrayList<String> list = new ArrayList<>();
-                Patient patient = new Patient();
-                patient = utility.cursorToPatient(cursor);
-                this.updatePatient(patient,1);
-                list = utility.cursorToPatientArray(cursor,c);
-                patientList.add(list);
 
-                //map.put("customerId", "27");
-
-            } while (cursor.moveToNext());
-        }
-        database.close();
-
-
-
-        String s1 = null;
-
-        StringWriter out = new StringWriter();
-        try {
-            JSONValue.writeJSONString(patientList, out);
-            s1 = out.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        Gson gson = new GsonBuilder().create();
         //Use GSON to serialize Array List to JSON
         return s1;
     }
 
-    public String composeJSONfromSQLitePatient(){
-        ArrayList<ArrayList<String>> patientList;
-        patientList = new ArrayList<ArrayList<String>>();
-        String selectQuery = "SELECT  * FROM patient WHERE "+KEY_SYNC_STATUS+" != '1'" ;
-        personal_obj personalObj = this.getPersonalInfo();
-        String c = String.valueOf(personalObj.get_customerId());
-        SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery(selectQuery, null);
-        if (cursor.moveToFirst()) {
-            do {
-                ArrayList<String> list = new ArrayList<>();
-                Patient patient = new Patient();
-                patient = utility.cursorToPatient(cursor);
-                String syncStatus = cursor.getString(cursor.getColumnIndex(KEY_SYNC_STATUS));
-                if(!syncStatus.equals("3"))
-                    this.updatePatient(patient,1);
-                   list = utility.cursorToPatientArray(cursor,c);
-                    patientList.add(list);
 
-                //map.put("customerId", "27");
-
-            } while (cursor.moveToNext());
-        }
-        database.close();
-
-
-
-        String s1 = null;
-
-        StringWriter out = new StringWriter();
-        try {
-            JSONValue.writeJSONString(patientList, out);
-            s1 = out.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        Gson gson = new GsonBuilder().create();
-        //Use GSON to serialize Array List to JSON
-        return s1;
-    }
     public String composeJSONfromSQLitePatient(String pid){
         ArrayList<ArrayList<String>> patientList;
         patientList = new ArrayList<ArrayList<String>>();
@@ -1451,7 +1838,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<ArrayList<String>> notesList;
         notesList = new ArrayList<ArrayList<String>>();
         String selectQuery = "SELECT  * FROM "+ tableName +" WHERE "+KEY_SYNC_STATUS+" != '1' AND "+KEY_ID+" = "+pid ;
-
+        ArrayList<String> docPaths = new ArrayList<>();
         personal_obj personalObj = this.getPersonalInfo();
         String c = String.valueOf(personalObj.get_customerId());
         SQLiteDatabase database = this.getWritableDatabase();
@@ -1459,17 +1846,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 ArrayList<String> list = new ArrayList<>();
-                list = utility.cursorToArrayList(cursor, c);
+                if(tableName.contains("media"))
+                {
+                    if (docPaths != null) {
+                        docPaths.add(cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)));
+                        updateMedia(KEY_SYNC_STATUS,"1",cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)));
 
+                    }
+                   /// FTPHelper.uploadFile(new File(cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH))), String.valueOf(personalObj.get_customerId()));
+                    list = utility.cursorToArrayListMedia(cursor, c);
+                }
+                else {
+                    list = utility.cursorToArrayList(cursor, c);
+                }
                 notesList.add(list);
 
 
             } while (cursor.moveToNext());
         }
         database.close();
-
-
-
+        if (docPaths.size()>0) {
+        FTPHelper.Dowork(docPaths, getPatient(Integer.parseInt(pid)).get_name(), c);
+        }
         String s1 = null;
 
         StringWriter out = new StringWriter();

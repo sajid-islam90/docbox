@@ -1,12 +1,39 @@
 package objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by sajid on 6/27/2015.
  */
-public class exam_obj {
+public class exam_obj implements Parcelable {
 
 
     int _pid;
+
+    public exam_obj(Parcel in) {
+        _pid = in.readInt();
+        _date = in.readString();
+        _version = in.readInt();
+        _gen_exam = in.readString();
+        _local_exam = in.readString();
+    }
+
+    public static final Creator<exam_obj> CREATOR = new Creator<exam_obj>() {
+        @Override
+        public exam_obj createFromParcel(Parcel in) {
+            return new exam_obj(in);
+        }
+
+        @Override
+        public exam_obj[] newArray(int size) {
+            return new exam_obj[size];
+        }
+    };
+
+    public exam_obj() {
+
+    }
 
     public int get_pid() {
         return _pid;
@@ -48,8 +75,22 @@ public class exam_obj {
         this._local_exam = _local_exam;
     }
 
-    String _date;
+    public String _date;
     int _version;
     String _gen_exam;
     String _local_exam;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_pid);
+        dest.writeString(_date);
+        dest.writeInt(_version);
+        dest.writeString(_gen_exam);
+        dest.writeString(_local_exam);
+    }
 }

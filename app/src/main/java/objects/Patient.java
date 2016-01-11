@@ -17,11 +17,56 @@ public class Patient {
         this._last_seen_date = _last_seen_date;
     }
 
+    public String get_email() {
+        return _email;
+    }
+
+    public void set_email(String _email) {
+        this._email = _email;
+    }
+
+    public String get_contact_number() {
+        return _contact_number;
+    }
+
+    public void set_contact_number(String _contact_number) {
+        this._contact_number = _contact_number;
+    }
+
+    public String get_address() {
+        return _address;
+    }
+
+    public void set_address(String _address) {
+        this._address = _address;
+    }
+
+    public String get_ocupation() {
+        return _ocupation;
+    }
+
+    public void set_ocupation(String _ocupation) {
+        this._ocupation = _ocupation;
+    }
+
+    String _email;
+    String _contact_number;
+    String _address;
+    String _ocupation;
     String _last_seen_date;
     String _age;
     String _gender;
     String _height;
 
+    public String get_photoPath() {
+        return _photoPath;
+    }
+
+    public void set_photoPath(String _photoPath) {
+        this._photoPath = _photoPath;
+    }
+
+    String _photoPath;
     public String get_diagnosis() {
         return this._diagnosis;
     }

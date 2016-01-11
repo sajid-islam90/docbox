@@ -1,89 +1,189 @@
-
-
-
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
+<RelativeLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/clinicalVLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:id="@+id/scrollView3"
-        android:layout_weight=".4">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/Hist_presentIll"
-                android:hint="Chief Complaint"
-                android:layout_weight=".25" />
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/Hist_past"
-                android:hint="Past History"
-                android:layout_weight=".25" />
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/Hist_personal"
-                android:hint="Personal History"
-                android:layout_weight=".25" />
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/Hist_family"
-                android:hint="Family History"
-                android:layout_weight=".25" />
-        </LinearLayout>
-    </ScrollView>
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffff">
 
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/contact_bar"
+        android:layout_margin="5dp">
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
+        <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/scrollView3"
+            android:layout_weight=".4"
+                android:layout_margin="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Photo"
-                android:id="@+id/Hist_add_photo"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight=".5"
-                android:onClick="addPhoto" />
+                android:orientation="vertical">
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Video"
-                android:id="@+id/Hist_add_video"
-                android:layout_weight=".5"
-                android:onClick="addVideo" />
-        </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="9dp"
+                    android:id="@+id/layout1"
+                    android:layout_weight="1">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Chief Complaint"
+                        android:id="@+id/textView2"
+                        android:textColor="@color/green" />
 
-            <GridView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:id="@+id/Hist_grid"
-                android:focusable="false"
-                android:numColumns="3"
-                android:layout_weight=".5" />
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Hist_presentIll"
+                        android:singleLine="false"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/contact_bar"
+                        android:textAlignment="viewStart" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Past History"
+                        android:id="@+id/textView3"
+                        android:textColor="@color/green" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Hist_past"
+                        android:background="@drawable/contact_bar"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Personal History"
+                        android:id="@+id/textView4"
+                        android:textColor="@color/green" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Hist_personal"
+                        android:background="@drawable/contact_bar"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/textView5"
+                        android:text="Family History"
+                        android:textColor="@color/green" />
+
+                    <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Hist_family"
+                        android:background="@drawable/contact_bar"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:id="@+id/layout2"
+                    android:layout_below="@+id/layout1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Other Added Fields"
+                        android:id="@+id/textView6"
+                        android:layout_above="@+id/listViewOtherHist"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:textColor="@color/green"
+                        android:layout_marginBottom="5dp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="fill_parent"
+                        android:layout_height="100dp"
+                        android:id="@+id/listViewOtherHist"
+
+                        android:layout_above="@+id/Hist_grid"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginRight="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Added Media"
+                        android:id="@+id/textView7"
+                        android:textColor="@color/green"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp" />
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="fill_parent"
+                        android:layout_height="100dp"
+                        android:id="@+id/listViewMedia"
+
+                        android:layout_above="@+id/Hist_grid"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginRight="5dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/view"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+        <com.getbase.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_action_video"
+        android:id="@+id/view2" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_action_new_picture"
+            android:id="@+id/view3" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@android:drawable/ic_menu_add"
+            android:id="@+id/view4" />
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+</RelativeLayout>
+
+
+
 
 

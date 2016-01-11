@@ -37,7 +37,10 @@ public class PhotoHelper {
         String imageFileName = "JPEG_" + timeStamp + "_P"+id;
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Patient Manager/");
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+"profile_pictures");
+        if(!storageDir.exists()) {
+
+            storageDir.mkdir();}
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -178,13 +181,23 @@ public class PhotoHelper {
 
     public static document_obj addMissingBmp(document_obj doc_obj)
     {
+
+
         Bitmap bmp = BitmapFactory.decodeFile(doc_obj.get_doc_path());
         bmp = getResizedBitmap(bmp,150,150);
         doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
         return doc_obj;
 
     }
-    public static media_obj addMissingBmp(media_obj mediaObj,int mode)
+    public static Patient addMissingBmp(Patient patient)
+    {
+        Bitmap bmp = BitmapFactory.decodeFile(patient.get_photoPath());
+        bmp = getResizedBitmap(bmp,150,150);
+        patient.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
+        return patient;
+
+    }
+    public static media_obj  addMissingBmp(media_obj mediaObj,int mode)
     {
        // Bitmap bmp = BitmapFactory.decodeFile(mediaObj.get_media_path())
         Bitmap bmp = null;

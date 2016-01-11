@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +45,7 @@ public class History_Activity extends ActionBarActivity {
     private static final int REQUEST_TAKE_PHOTO = 100;
     private Uri fileUri;
     media_obj mediaObj = new media_obj();
+    history_obj historyObj = new history_obj();
     ArrayList<Item> media = new ArrayList<>();
 
     @Override
@@ -50,11 +53,16 @@ public class History_Activity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_);
         Intent intent = getIntent();
-         pid = intent.getIntExtra("id",0);
+         pid = intent.getIntExtra("id", 0);
+        historyObj = intent.getExtras().getParcelable("history_obj");
         media = utility.getMediaList(pid, this, 1);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        if(historyObj!= null)
+        {
+            this.displayAddedFields();
+        }
         this.displayAddedMedia(media);
     }
 
@@ -78,11 +86,16 @@ public class History_Activity extends ActionBarActivity {
             Toast.makeText(this, "Save selected", Toast.LENGTH_SHORT)
                     .show();
             this.addHistoryNote();
-            Intent intent = new Intent(this, Exam_Activity.class);
+          /*  Intent intent = new Intent(this, Exam_Activity.class);
 
             intent.putExtra("id",pid);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();*/
+            Intent intent = new Intent();
+            intent.putExtra("history_obj",  historyObj);
+            intent.putExtra("activity","history");
+            setResult(200, intent);
             finish();
             return true;
         }
@@ -120,7 +133,7 @@ public class History_Activity extends ActionBarActivity {
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
         int version = dbHandler.getCurrentVersion(pid);
-        history_obj historyObj = new history_obj();
+
         historyObj.set_version(version + 1);
         historyObj.set_past_illness(pastIllness.getText().toString());
         historyObj.set_present_illness(presentIllness.getText().toString());
@@ -128,11 +141,17 @@ public class History_Activity extends ActionBarActivity {
         historyObj.set_family_hist(familyHist.getText().toString());
         historyObj.set_pid(pid);
         historyObj.set_date(formattedDate);
-        Patient patient = dbHandler.getPatient(pid);
-        patient.set_last_seen_date(formattedDate);
-        dbHandler.updatePatient(patient);
+       // Patient patient = dbHandler.getPatient(pid);
+       // patient.set_last_seen_date(formattedDate);
+       // dbHandler.updatePatient(patient);
 
-        dbHandler.addHistory(historyObj);
+
+
+
+
+
+
+       // dbHandler.addHistory(historyObj);
     }
     public void addVideo(View view) throws IOException {this.dispatchTakeVideoIntent();}
     public void addPhoto(View view) throws IOException {this.dispatchTakePictureIntent();}
@@ -209,7 +228,7 @@ public class History_Activity extends ActionBarActivity {
             }
             mediaObj.set_pid(pid);
             mediaObj.set_section(1);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid) + 1);
             databaseHandler.addMedia(mediaObj);
 
             utility.recreateActivityCompat(History_Activity.this);
@@ -218,6 +237,32 @@ public class History_Activity extends ActionBarActivity {
 
         }
 
+    }
+
+    public void displayAddedFields()
+    {
+        EditText editText = (EditText)findViewById(R.id.Hist_presentIll);
+        EditText editText1 = (EditText)findViewById(R.id.Hist_past);
+        EditText editText2 = (EditText)findViewById(R.id.Hist_personal);
+        EditText editText3 = (EditText)findViewById(R.id.Hist_family);
+
+        editText.setText(historyObj.get_present_illness());
+        editText1.setText(historyObj.get_past_illness());
+        editText2.setText(historyObj.get_personal_hist());
+        editText3.setText(historyObj.get_family_hist());
+
+    }
+
+    @Override
+    public void onBackPressed() {
+// do something on back.
+        addHistoryNote();
+        Intent intent = new Intent();
+        intent.putExtra("history_obj",  historyObj);
+        intent.putExtra("activity","history");
+        setResult(200, intent);
+        finish();
+        return;
     }
 
 

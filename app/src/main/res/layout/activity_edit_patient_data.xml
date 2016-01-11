@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_name"
                 android:layout_weight="1"
-                android:layout_gravity="bottom|center" />
+                android:layout_gravity="bottom|center"
+                android:inputType="textCapWords|textPersonName" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -80,9 +81,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:layout_centerVertical="true"
-                android:inputType="text"
                 android:layout_toStartOf="@+id/edit_patient_edit_height"
-                android:layout_alignWithParentIfMissing="true" />
+                android:layout_alignWithParentIfMissing="true"
+                android:inputType="number" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -94,7 +95,8 @@
                 android:layout_alignTop="@+id/edit_patient_edit_age"
                 android:layout_alignRight="@+id/edit_patient_edit_name"
                 android:layout_alignEnd="@+id/edit_patient_edit_name"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:inputType="number" />
         </LinearLayout>
 
         <RadioGroup
@@ -150,7 +152,8 @@
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/edit_patient_edit_add" />
+            android:layout_below="@+id/edit_patient_edit_add"
+            android:inputType="text" />
 
         <EditText
             android:layout_width="fill_parent"
@@ -159,7 +162,8 @@
             android:layout_marginTop="10dp"
             android:layout_below="@+id/edit_patient_linear_layout2"
             android:hint="@string/enter_add"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:inputType="textPostalAddress|textMultiLine" />
 
         <EditText
             android:layout_width="match_parent"

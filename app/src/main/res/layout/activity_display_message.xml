@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/enter_name"
             android:layout_weight="1"
-            android:layout_gravity="bottom|center" />
+            android:layout_gravity="bottom|center"
+            android:inputType="textCapWords|textPersonName" />
 
         <Button
             android:layout_width="wrap_content"
@@ -47,7 +48,7 @@
             android:contentDescription="@string/display_photo"
             android:layout_weight="0"
             android:layout_marginTop="10dp"
-            android:background="@drawable/add_new_photo" />
+            android:background="@drawable/default_photo" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,9 +63,9 @@
             android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:layout_centerVertical="true"
-            android:inputType="text"
             android:layout_toStartOf="@+id/edit_height"
-            android:layout_alignWithParentIfMissing="true" />
+            android:layout_alignWithParentIfMissing="true"
+            android:inputType="number" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -141,7 +142,8 @@
         android:layout_marginTop="10dp"
         android:layout_below="@+id/linear_layout"
         android:hint="@string/enter_add"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:inputType="textPostalAddress|textMultiLine" />
 
     <EditText
         android:layout_width="match_parent"

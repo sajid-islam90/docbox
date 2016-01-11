@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.sajid.myapplication.DatabaseHandler;
 import adapters.DocumentsAdapter;
+import objects.DataBaseEnums;
 import objects.Item;
 import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
@@ -38,10 +39,25 @@ public class Exam_Activity extends ActionBarActivity {
     int pid ;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int REQUEST_TAKE_PHOTO = 100;
+
     private Uri fileUri;
     media_obj mediaObj = new media_obj();
+    exam_obj examObj = new exam_obj();
+
     ArrayList<Item> media = new ArrayList<>();
 
+
+    @Override
+    public void onBackPressed() {
+// do something on back.
+        addExamNote();
+        Intent intent = new Intent();
+        intent.putExtra("exam_obj",  examObj);
+        intent.putExtra("activity","exam");
+        setResult(200, intent);
+        finish();
+        return;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +65,13 @@ public class Exam_Activity extends ActionBarActivity {
         setContentView(R.layout.activity_exam_);
         Intent intent = getIntent();
         pid = intent.getIntExtra("id",0);
+        examObj = intent.getExtras().getParcelable("exam_obj");
         media = utility.getMediaList(pid, this, 2);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        if(examObj!= null)
+        {
+            displayAddedFields();
+        }
         this.displayAddedMedia(media);
 
     }
@@ -76,11 +97,18 @@ public class Exam_Activity extends ActionBarActivity {
             Toast.makeText(this, "Save selected", Toast.LENGTH_SHORT)
                     .show();
             this.addExamNote();
-            Intent intent = new Intent(this,Treatment_Activity.class);
+           /* Intent intent = new Intent(this,Treatment_Activity.class);
             intent.putExtra("id",pid);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();*/
+            Intent intent = new Intent();
+            intent.putExtra("exam_obj",  examObj);
+            intent.putExtra("activity","exam");
+            setResult(200, intent);
             finish();
+
+
             return true;
         }
         else if (id == R.id.hist_action_take_photo)
@@ -146,7 +174,7 @@ public class Exam_Activity extends ActionBarActivity {
 
             mediaObj.set_pid(pid);
             mediaObj.set_section(2);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
             Toast.makeText(this, path, Toast.LENGTH_SHORT)
                     .show();
@@ -180,7 +208,7 @@ public class Exam_Activity extends ActionBarActivity {
             mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
             mediaObj.set_pid(pid);
             mediaObj.set_section(2);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
 
             utility.recreateActivityCompat(Exam_Activity.this);
@@ -197,6 +225,18 @@ public class Exam_Activity extends ActionBarActivity {
         GridView listView = (GridView)findViewById(R.id.Exam_grid);
         DocumentsAdapter docAdapter = new DocumentsAdapter(this,Exam_Activity.this,fieldList);
         listView.setAdapter(docAdapter);
+
+    }
+
+    public void displayAddedFields()
+    {
+        EditText editText = (EditText)findViewById(R.id.Exam_general);
+        EditText editText1 = (EditText)findViewById(R.id.Exam_local);
+
+
+        editText.setText(examObj.get_gen_exam());
+        editText1.setText(examObj.get_local_exam());
+
 
     }
 
@@ -251,17 +291,16 @@ public class Exam_Activity extends ActionBarActivity {
         EditText genExam  = (EditText)findViewById(R.id.Exam_general);
         EditText locExam = (EditText)findViewById(R.id.Exam_local);
 
-
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
         int version = dbHandler.getCurrentVersion(pid);
-        exam_obj examObj = new exam_obj();
-        examObj.set_version(version);
+
+        examObj.set_version(version+1);
         examObj.set_gen_exam(genExam.getText().toString());
         examObj.set_local_exam(locExam.getText().toString());
 
         examObj.set_pid(pid);
         examObj.set_date(formattedDate);
 
-        dbHandler.addExam(examObj);
+       // dbHandler.addExam(examObj);
     }
 }

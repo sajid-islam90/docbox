@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
         <item name="android:background">#FFFFFF</item>
+        <item name="android:colorPrimary" tools:targetApi="lollipop">@color/green</item>
         <item name="android:uiOptions">splitActionBarWhenNarrow</item>
         <!-- Customize your theme here. -->
     </style>
@@ -11,7 +12,13 @@
     <style name="MainActivity" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarStyle">@style/MyActionBar</item>
 
+
     </style>
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 
     <style name="TabbedActivity" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarStyle">@style/MyActionBarTab</item>

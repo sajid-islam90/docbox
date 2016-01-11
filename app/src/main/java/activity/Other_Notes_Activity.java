@@ -46,6 +46,8 @@ public class Other_Notes_Activity extends ActionBarActivity {
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int REQUEST_TAKE_PHOTO = 100;
     media_obj mediaObj = new media_obj();
+
+    public static ArrayList<other_obj> otherObj = new ArrayList<>();
     ArrayList<Item> media = new ArrayList<>();
     private Uri fileUri;
 
@@ -55,9 +57,18 @@ public class Other_Notes_Activity extends ActionBarActivity {
         setContentView(R.layout.activity_other_notes_);
         Intent intent = getIntent();
         pid = intent.getIntExtra("id",0);
-        fields = displayOtherNotes();
-        displayAddedField(fields);
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+//        otherObj = intent.getExtras().getParcelable("other_obj");
+        if(otherObj!=null)
+        {
+            fields = displayOtherNotes();
+            displayAddedField(fields);
+        }
+        else
+        {
+            otherObj = new ArrayList<>();
+        }
         media = utility.getMediaList(pid, this, 4);
 
         this.displayAddedMedia(media);
@@ -179,7 +190,7 @@ public class Other_Notes_Activity extends ActionBarActivity {
             mediaObj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmThumbnail));*/
             mediaObj.set_pid(pid);
             mediaObj.set_section(4);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
             Toast.makeText(this, path, Toast.LENGTH_SHORT)
                     .show();
@@ -213,7 +224,7 @@ public class Other_Notes_Activity extends ActionBarActivity {
             mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
             mediaObj.set_pid(pid);
             mediaObj.set_section(4);
-            mediaObj.set_version(databaseHandler.getCurrentVersion(pid));
+            mediaObj.set_version(databaseHandler.getCurrentVersion(pid)+1);
             databaseHandler.addMedia(mediaObj);
 
             utility.recreateActivityCompat(Other_Notes_Activity.this);
@@ -293,9 +304,10 @@ public class Other_Notes_Activity extends ActionBarActivity {
         if (id == R.id.hist_action_add) {
             Toast.makeText(this, "Save selected", Toast.LENGTH_SHORT)
                     .show();
-            //Intent intent = new Intent(this,Other_Notes_Activity.class);
-           // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            //startActivity(intent);
+            Intent intent = new Intent();
+            intent.putExtra("other_obj",  otherObj);
+            intent.putExtra("activity","other");
+            setResult(200, intent);
             finish();
 
             return true;
@@ -329,13 +341,13 @@ public class Other_Notes_Activity extends ActionBarActivity {
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
         Item item;
-        other_obj otherObj[]=dbHandler.getLatestOtherNote(pid,dbHandler.getCurrentVersion(pid));
+        //other_obj otherObj[]=dbHandler.getLatestOtherNote(pid,dbHandler.getCurrentVersion(pid));
         if (otherObj != null)
         {
-            for (int i = 0; i < otherObj.length; i++) {
+            for (int i = 0; i < otherObj.size(); i++) {
                 item = new Item();
-                item.setTitle(otherObj[i].get_field_name());
-                item.setDiagnosis(otherObj[i].get_field_value());
+                item.setTitle(otherObj.get(i).get_field_name());
+                item.setDiagnosis(otherObj.get(i).get_field_value());
                 field.add(item);
                 //field.add(otherObj[i].get_field_name());
             }
@@ -355,15 +367,17 @@ public class Other_Notes_Activity extends ActionBarActivity {
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
         int version = dbHandler.getCurrentVersion(pid);
-        other_obj otherObj = new other_obj();
-        otherObj.set_version(version);
-        otherObj.set_field_name(fieldName);
-        otherObj.set_field_value(fieldValue);
+        other_obj temp = new other_obj();
+        temp.set_version(version + 1);
+        temp.set_field_name(fieldName);
+        temp.set_field_value(fieldValue);
 
 
-        otherObj.set_pid(pid);
-        otherObj.set_date(formattedDate);
-        dbHandler.addOther(otherObj);
+        temp.set_pid(pid);
+        temp.set_date(formattedDate);
+
+        otherObj.add(temp);
+        //dbHandler.addOther(otherObj);
        // dbHandler.addTreatment(otherObj);
     }
 }

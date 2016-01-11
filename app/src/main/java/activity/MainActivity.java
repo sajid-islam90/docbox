@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -35,6 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sajid.myapplication.DatabaseHandler;
+
+import adapters.DrawerListAdapter;
+import cz.msebera.android.httpclient.client.cache.Resource;
 import objects.*;
 import adapters.MyAdapter;
 import objects.Patient;
@@ -53,6 +58,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.example.sajid.myapplication.R.drawable.ic_action_person;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -80,6 +86,22 @@ public class MainActivity extends ActionBarActivity {
         SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
         dbHandle.onCreate(myDataBase);
+        Resources res = getResources();
+        ArrayList<Item> items = new ArrayList<>();
+
+        Item item =new Item();
+        item.setTitle("View Profile");
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person));
+        items.add(item);
+        item =new Item();
+        item.setTitle("Payment Info");
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
+        items.add(item);
+        item =new Item();
+        item.setTitle("Exit");
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_exit));
+        items.add(item);
+
         navigationDrawerOptions = new String[3];
         navigationDrawerOptions[0] = "View Profile";
         navigationDrawerOptions[1] = "Payment Info";
@@ -87,9 +109,10 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerRelativeLayout = (RelativeLayout) findViewById(R.id.left_drawer_1);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, navigationDrawerOptions) ;
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.drawer_list_item, navigationDrawerOptions) ;
+        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(MainActivity.this,items);
+        mDrawerList.setAdapter(drawerListAdapter);
+        /*mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -100,7 +123,7 @@ public class MainActivity extends ActionBarActivity {
                         startActivity(new Intent(MainActivity.this, UserProfile.class));
                 }
             }
-        });
+        });*/
 
 
 
@@ -126,7 +149,7 @@ public class MainActivity extends ActionBarActivity {
         imageView.setImageDrawable(roundedImage);
         mEmail = (TextView)findViewById(R.id.drawer_email);
         mEmail.setText(personalObj.get_email());
-        mDrawerList.setAdapter(adapter);
+
 
 
 
@@ -257,7 +280,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void displayPatientList(ArrayList<Item> patientList)
+    public void displayPatientList(final ArrayList<Item> patientList)
     {
         ListView listView = (ListView)findViewById(R.id.listViewMain);
        /* MainActivityList adapter1 = new
@@ -266,8 +289,19 @@ public class MainActivity extends ActionBarActivity {
         MyAdapter adapter = new MyAdapter(MainActivity.this,patientList);
 
        // ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, patientList.toArray()) ;
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                DatabaseHandler dbHandle = new DatabaseHandler(MainActivity.this);
+                Patient patient = new Patient();
+                patient = dbHandle.getSearchPatient(position, patientList);
+                Intent intent = new Intent(MainActivity.this, PatientProfileActivity.class);
+                intent.putExtra("id", patient.get_id());
+                context.startActivity(intent);
+            }
+        });
         listView.setAdapter(adapter);
+
 
     }
 
@@ -310,17 +344,31 @@ public class MainActivity extends ActionBarActivity {
                 diagnosis = patientList.get(i).get_diagnosis();
                 patient_id = patientList.get(i).get_id();
                 lastVisit = patientList.get(i).get_last_seen_date();
-                if(bmpImage != null)
-                image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
+
+
+                if(bmpImage != null) {
+/*if(patientList.get(i).get_photoPath()!=null) {
+    File file = new File(patientList.get(i).get_photoPath());
+    if (file.exists()) {
+        image = BitmapFactory.decodeFile(patientList.get(i).get_photoPath());
+       // image = PhotoHelper.getResizedBitmap(image,150,150);
+    }
+    else
+        image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
+}
+                    else*/
+    image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
+                }
 
                 nameImage.setTitle(name);
+
                 nameImage.setBmp(image);
                 nameImage.setDiagnosis(diagnosis);
                 nameImage.setDate(lastVisit);
                 nameWithImage.add(i , nameImage);
                 nameImage.setPatient_id(patient_id);
                 nameImage = new Item();
-                patientNames.add(i,name);
+                patientNames.add(i, name);
             }
 
             displayPatientList(nameWithImage);

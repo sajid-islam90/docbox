@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.sajid.myapplication.DatabaseHandler;
 import objects.Item;
 import objects.Patient;
 import activity.PatientProfileActivity;
+
+import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
+import com.example.sajid.myapplication.RoundImage;
 
 public class MyAdapter extends ArrayAdapter<Item> {
 
@@ -45,11 +49,16 @@ public class MyAdapter extends ArrayAdapter<Item> {
 
         // 2. Get rowView from inflater
         View rowView = inflater.inflate(R.layout.row, parent, false);
+        TextView labelView = (TextView) rowView.findViewById(R.id.label);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView2);
+        TextView diagnosisView = (TextView) rowView.findViewById(R.id.row_diagnosis);
+        TextView lastVisit = (TextView)rowView.findViewById(R.id.row_last_visit);
+        TextView genderAge = (TextView)rowView.findViewById(R.id.genderAge);
+        LinearLayout linearLayout = (LinearLayout)rowView.findViewById(R.id.cardview_linearLayout);
 
-        TextView textView = (TextView) rowView.findViewById(R.id.label);
-        rowView.setTag(position);
+        linearLayout.setTag(position);
 
-        rowView.setOnClickListener(new View.OnClickListener() {
+       /* linearLayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -70,9 +79,9 @@ public class MyAdapter extends ArrayAdapter<Item> {
 
 
 
-            }
-        });
-        ImageView imageView1 = (ImageView) rowView.findViewById(R.id.imageView2);
+        //    }
+       // });
+       /* ImageView imageView1 = (ImageView) rowView.findViewById(R.id.imageView2);
         imageView1.setTag(position);
         imageView1.setOnClickListener(new View.OnClickListener() {
 
@@ -95,8 +104,8 @@ public class MyAdapter extends ArrayAdapter<Item> {
 
 
 
-            }
-        });
+        //   }
+      //  });
 
 
         /*
@@ -125,19 +134,33 @@ public class MyAdapter extends ArrayAdapter<Item> {
         });
         */
         // 3. Get the two text view from the rowView
-        TextView labelView = (TextView) rowView.findViewById(R.id.label);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView2);
-        TextView diagnosisView = (TextView) rowView.findViewById(R.id.row_diagnosis);
-        TextView lastVisit = (TextView)rowView.findViewById(R.id.row_last_visit);
+
 
         // 4. Set the text for textView
+        DatabaseHandler dbHandle = new DatabaseHandler(getContext());
+        Patient patient = new Patient();
+
+
+        RoundImage roundedImage = new RoundImage( PhotoHelper.getResizedBitmap(itemsArrayList.get(position).getBmp(), 100, 100));
+        patient = dbHandle.getPatient(itemsArrayList.get(position).getPatient_id());
         String a = (itemsArrayList.get(position).getDiagnosis());
         labelView.setText(itemsArrayList.get(position).getTitle());
-        lastVisit.setText("last visit : "+itemsArrayList.get(position).getDate());
-        imageView.setImageBitmap (itemsArrayList.get(position).getBmp());
+        lastVisit.setText(itemsArrayList.get(position).getDate());
+        imageView.setImageDrawable(roundedImage);
         diagnosisView.setText((itemsArrayList.get(position).getDiagnosis()));
+        genderAge.setText(patient.get_gender()+"/"+patient.get_age());
 
         // 5. retrn rowView
         return rowView;
+    }
+
+    public static int getPosition()
+    {
+        return 1;
+    }
+
+    @Override
+    public int getPosition(Item item) {
+        return super.getPosition(item);
     }
 }

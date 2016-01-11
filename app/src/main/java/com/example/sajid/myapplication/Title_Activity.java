@@ -50,7 +50,9 @@ public class Title_Activity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
 
-
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    1);
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     1);

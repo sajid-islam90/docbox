@@ -1,37 +1,45 @@
 package activity;
 //DISPLAYS THE PATIENT PERSONAL DATA
+
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sajid.myapplication.*;
 import com.example.sajid.myapplication.R;
 
 import java.io.File;
+import java.util.ArrayList;
 
-import activity.Add_view_notes;
-import activity.Edit_patient_data;
-import activity.MainActivity;
-import activity.TabbedActivityCheck;
-import activity.documents;
+import adapters.TwoTextFieldsAdapter;
+import objects.Item;
 import objects.Patient;
 
 
-public class PatientProfileActivity extends ActionBarActivity {
+public class PatientProfileActivity extends AppCompatActivity {
     int id;
+    RoundImage roundedImage;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,10 @@ public class PatientProfileActivity extends ActionBarActivity {
         id = intent.getIntExtra("id",0);
         
         getPatientData(id);
-
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.status_bar));
     }
    @Override
     protected void onResume()
@@ -49,12 +60,11 @@ public class PatientProfileActivity extends ActionBarActivity {
     }
 
     private void getPatientData(int id) {
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        dbHandler.onCreate(myDataBase);
 
-        Patient patient = new Patient();
-       patient = dbHandler.getPatientForProfile(id);
+        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+
+
+        Patient patient = dbHandler.getPatient(id);
         displayPatientData(patient);
 
     }
@@ -65,7 +75,7 @@ public class PatientProfileActivity extends ActionBarActivity {
         Intent intent =  new Intent(this, documents.class);
         int pid = curIntent.getIntExtra("id",0);
         intent.putExtra("parent",PatientProfileActivity.class.toString());
-        intent.putExtra("id",pid);
+        intent.putExtra("id",id);
         startActivity(intent);
 
     }
@@ -77,17 +87,19 @@ public class PatientProfileActivity extends ActionBarActivity {
         DatabaseHandler dbHandler = new DatabaseHandler(this);
         int pid = curIntent.getIntExtra("id",0);
         Intent intent;
-        if(dbHandler.getCurrentVersion(pid) != 0) {
-             intent =  new Intent(this, TabbedActivityCheck.class);
-        }
-        else {
-             intent =  new Intent(this, Add_view_notes.class);
-        }
+       // if(dbHandler.getCurrentVersion(pid) != 0) {
+             //intent =  new Intent(this, TabbedActivityCheck.class);
+        intent =  new Intent(this, TabbedActivityCheck.class);
+        //}
+        //else {
+          //   intent =  new Intent(this, Add_view_notes.class);
+       // }
 
 
-        intent.putExtra("id",pid);
-        intent.putExtra("version",dbHandler.getCurrentVersion(pid));
-        intent.putExtra("parent",PatientProfileActivity.class.toString());
+        intent.putExtra("id", pid);
+
+        //intent.putExtra("version", dbHandler.getCurrentVersion(pid));
+        intent.putExtra("parent", PatientProfileActivity.class.toString());
         startActivity(intent);
     }
     public  void deletePatientProfile()
@@ -140,23 +152,65 @@ public class PatientProfileActivity extends ActionBarActivity {
     private void displayPatientData(Patient patient) {
 
 
-        EditText name = (EditText)findViewById(R.id.textView);
-        TextView age = (TextView)findViewById(R.id.textView2);
-        TextView height = (TextView)findViewById(R.id.textView3);
-        TextView gender = (TextView)findViewById(R.id.textView4);
-        ImageView bmp = (ImageView)findViewById(R.id.imageView3);
-        TextView diagnosis = (TextView) findViewById(R.id.textView10);
-        String _name = patient.get_name();
+        ArrayList<Item> itemsArrayList = new ArrayList<Item>();
+        Item Iadd = new Item();
+        Iadd.setTitle("Address");
+        Iadd.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_address));
+        Iadd.setDiagnosis(patient.get_address());
 
-        name.setText(patient.get_name());
-        age.setText(patient.get_age());
-        height.setText(patient.get_height());
-        gender.setText(patient.get_gender());
+
+        Item Ioccupation = new Item();
+        Ioccupation.setTitle("Occupation");
+        Ioccupation.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_occupation));
+        Ioccupation.setDiagnosis(patient.get_ocupation());
+
+        Item Idiagnosis = new Item();
+        Idiagnosis.setTitle("Diagnosis");
+        Idiagnosis.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_diagnosis));
+        Idiagnosis.setDiagnosis(patient.get_diagnosis());
+
+        Item Iphone = new Item();
+        Iphone.setTitle("Contact");
+        Iphone.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_phone));
+        Iphone.setDiagnosis(patient.get_contact_number());
+
+        Item Iemail = new Item();
+        Iemail.setTitle("Email");
+        Iemail.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_email));
+        Iemail.setDiagnosis(patient.get_email());
+
+        itemsArrayList.add(Iadd);
+        itemsArrayList.add(Ioccupation);
+        itemsArrayList.add(Idiagnosis);
+        itemsArrayList.add(Iphone);
+        itemsArrayList.add(Iemail);
+        TwoTextFieldsAdapter twoTextFieldsAdapter = new TwoTextFieldsAdapter(this,PatientProfileActivity.this,itemsArrayList);
+        ListView listView = (ListView)findViewById(R.id.patientDatalist);
+        listView.setAdapter(twoTextFieldsAdapter);
+
+        TextView name = (TextView)findViewById(R.id.patientProfile_name);
+
+
+
+        ImageView bmp = (ImageView)findViewById(R.id.patientPic);
+
+
+
+        name.setText(patient.get_name()+"("+patient.get_gender()+"/"+patient.get_age()+")");
+
+
         byte[] image = patient.get_bmp();
-        diagnosis.setText(patient.get_diagnosis());
+
+
         Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
-        bmp.setImageBitmap(bmpImage);
-        setTitle(patient.get_name()+"'s Profile");
+        RoundImage roundedImage = new RoundImage( PhotoHelper.getResizedBitmap(bmpImage, 100, 100));
+       // roundedImage = new RoundImage(bmpImage);
+        bmp.setImageDrawable(roundedImage);
+        setTitle(patient.get_name());
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setSubtitle("last checkup : "+patient.get_last_seen_date());
+
+
 
     }
 
@@ -209,10 +263,19 @@ public class PatientProfileActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void removeExtraMedia()
+    public void callPatient(View view)
     {
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        int docVersion = dbHandler.getCurrentVersion(id);
-        int mediaVersion = dbHandler.getCurrentMediaVersion(id);
+        Patient patient = dbHandler.getPatient(id);
+        if((patient.get_contact_number()==null)||(patient.get_contact_number().equals("")))
+        { Toast.makeText(PatientProfileActivity.this,"Please Add Contact Number To Make A Call",Toast.LENGTH_SHORT).show();}
+        else
+        {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + patient.get_contact_number()));
+            startActivity(intent);
+
+        }
+
     }
 }

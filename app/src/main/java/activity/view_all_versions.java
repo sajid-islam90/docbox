@@ -69,7 +69,7 @@ public class view_all_versions extends AppCompatActivity {
 
                 Intent  intent;
 
-                intent = new Intent(getApplicationContext(), TabbedActivityCheck.class);
+                intent = new Intent(getApplicationContext(), ViewFollowUp_Activity.class);
                 intent.putExtra("id",pid);
                 intent.putExtra("version",position+1);
                 intent.putExtra("parent",view_all_versions.class.toString());

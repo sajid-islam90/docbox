@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pre_op">
+        <item>Chief Complaint</item>
+        <item>Past History</item>
+        <item>Personal History</item>
+        <item>Family History</item>
+        <item>Own History</item>
+    </string-array>
+    <string-array name="post_op">
+        <item>Stability</item>
+        <item>Percentage Improvement</item>
+        <item>Blood Pressure</item>
+        <item>Implant Info (if any)</item>
+        <item>Remarks</item>
+    </string-array>
+    <string-array name="during_op">
+        <item>Current Situation</item>
+        <item>Bleeding</item>
+        <item>Heart Rate</item>
+        <item>Blood Pressure</item>
+        <item>Respiration</item>
+    </string-array>
+    <string-array name="tabs">
+        <item>pre_op</item>
+        <item>during_op</item>
+        <item>post_op</item>
+
+    </string-array>
+</resources>

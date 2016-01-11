@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:id="@+id/calendar_cell_linear_layout"
+    android:layout_height="fill_parent"
+    >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:id="@+id/calendar_relative_layout"
+        android:layout_margin="1sp"
+        android:background="@drawable/rounder_corners"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:text="1"
+            android:padding="1dp"
+            android:textStyle="bold"
+            android:textSize="8sp"
+            android:layout_marginLeft="1dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textColor="#fff"
+            android:id="@+id/textview_dates"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/circle_bg"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="10sp"
+            android:layout_marginRight="1dp"
+            android:visibility="gone"
+            android:id="@+id/textView_visits"
+            android:textColor="#24b36b"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -14,6 +14,15 @@ public class Item {
         this.patient_id = patient_id;
     }
 
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
+    }
+
+    private int section;
     private int patient_id;
 
     public String getDate() {

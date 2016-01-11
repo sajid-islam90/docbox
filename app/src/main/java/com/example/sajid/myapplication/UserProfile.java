@@ -1,5 +1,6 @@
 package com.example.sajid.myapplication;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -8,14 +9,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import objects.DataBaseEnums;
 import objects.personal_obj;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfile extends AppCompatActivity implements OnItemSelectedListener {
     RoundImage roundedImage;
+    personal_obj personalObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +63,7 @@ public class UserProfile extends AppCompatActivity {
     public void setUserProfileData()
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-        personal_obj personalObj = databaseHandler.getPersonalInfo();
+         personalObj = databaseHandler.getPersonalInfo();
 
         ImageView imageView = (ImageView)findViewById(R.id.userProfilePicture);
         TextView textView = (TextView)findViewById(R.id.userProfile_email);
@@ -61,6 +72,63 @@ public class UserProfile extends AppCompatActivity {
         TextView textView1 = (TextView)findViewById(R.id.userProfileName);
         TextView textView2 = (TextView)findViewById(R.id.userProfilePhoneNumber);
         TextView textView3 = (TextView)findViewById(R.id.userProfileNameSolid);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner2);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.specialities, R.layout.spinner_item);
+        Resources res = getResources();
+        String[] Lines = res.getStringArray(R.array.specialities);
+
+
+        int position = getSpecialityId();
+        personalObj.set_speciality( Lines[position]);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+        spinner.setSelection(position);
+        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position)
+                {
+                    case 0:
+                        personalObj.set_speciality("Orthopedic Surgery");
+                        break;
+                    case 1:
+                        personalObj.set_speciality("Ophthalmics");
+                        break;
+                    case 2:
+                        personalObj.set_speciality("Dentist");
+                        break;
+                    case 3:
+                        personalObj.set_speciality("Cardiologist");
+                        break;
+                    case 4:
+                        personalObj.set_speciality("General Practice");
+                        break;
+                    case 5:
+                        personalObj.set_speciality("Gynecology");
+                        break;
+                    case 6:
+                        personalObj.set_speciality("Neurology");
+                        break;
+                    case 7:
+                        personalObj.set_speciality("Pediatrics");
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+
+            }
+
+        });
+
+
 
         textView1.setText(personalObj.get_name());
         textView2.setText(personalObj.get_password());
@@ -85,15 +153,82 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
+    public int getSpecialityId()
+    {
+        String speciality="";
+        try {
+            if (!personalObj.get_speciality().equals(null))
+                speciality = personalObj.get_speciality();
+        }
+        catch (Exception e) {
+
+            return 0;
+        }
+
+        Resources res = getResources();
+        String[] Lines = res.getStringArray(R.array.specialities);
+        int index = 0;
+        for (int i=0;i<Lines.length;i++) {
+            String name = Lines[i];
+            if (name.equals(speciality)) {
+                index = i;
+                break;
+
+            }
+        }
+       // if(speciality.equals())
+        return index;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (position)
+        {
+            case 0:
+                personalObj.set_speciality("Orthopedic Surgery");
+                break;
+            case 1:
+                personalObj.set_speciality("Ophthalmics");
+                break;
+            case 2:
+                personalObj.set_speciality("Dentist");
+                break;
+            case 3:
+                personalObj.set_speciality("Cardiologist");
+                break;
+            case 4:
+                personalObj.set_speciality("General Practice");
+                break;
+            case 5:
+                personalObj.set_speciality("Gynecology");
+                break;
+            case 6:
+                personalObj.set_speciality("Neurology");
+                break;
+            case 7:
+                personalObj.set_speciality("Pediatrics");
+                break;
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+
+    }
+
+
     public void savePersonalInfo()
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(UserProfile.this);
 
         EditText editText = (EditText)findViewById(R.id.userProfileName);
 
-        personal_obj personalObj = new personal_obj();
+       // personal_obj personalObj = new personal_obj();
 
         databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_NAME,editText.getText().toString());
+        databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY,personalObj.get_speciality());
 
 
 

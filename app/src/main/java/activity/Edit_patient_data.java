@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,6 +42,7 @@ public class Edit_patient_data extends ActionBarActivity {
         setContentView(R.layout.activity_edit_patient_data);
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 0);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
 
@@ -75,20 +77,12 @@ public class Edit_patient_data extends ActionBarActivity {
 
         }
     }
-    public Patient getPatientDataEdit(int id)
-    {
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        dbHandler.onCreate(myDataBase);
 
-        Patient patient = new Patient();
-        patient = dbHandler.getPatientForProfile(id);
-        return patient;
-    }
 
     private void doWork(int id)
     {
-       Patient patient = this.getPatientDataEdit(id);
+        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+        Patient patient = dbHandler.getPatient(id);
         fillPatientData(patient);
     }
 
@@ -96,8 +90,13 @@ public class Edit_patient_data extends ActionBarActivity {
     {
         EditText name = (EditText) findViewById(R.id.edit_patient_edit_name);
         TextView id = (TextView)findViewById(R.id.edit_patient_id);
+
         EditText age = (EditText)findViewById(R.id.edit_patient_edit_age);
         EditText height = (EditText)findViewById(R.id.edit_patient_edit_height);
+        EditText address = (EditText)findViewById(R.id.edit_patient_edit_add);
+        EditText occupation = (EditText)findViewById(R.id.edit_patient_edit_occupation);
+        EditText email = (EditText)findViewById(R.id.edit_patient_edit_email);
+        EditText contact = (EditText)findViewById(R.id.edit_patient_edit_phone);
         EditText diagnosis = (EditText)findViewById(R.id.edit_patient_edit_diagnosis);
         RadioGroup gender = (RadioGroup)findViewById(R.id.edit_patient_edit_gender);
         RadioButton male = (RadioButton)findViewById(R.id.edit_patient_male_radio1);
@@ -116,6 +115,10 @@ public class Edit_patient_data extends ActionBarActivity {
             female.setChecked(true);
         }
         name.setText(patient.get_name());
+        address.setText(patient.get_address());
+        occupation.setText(patient.get_ocupation());
+        email.setText(patient.get_email());
+        contact.setText(patient.get_contact_number());
         age.setText(patient.get_age());
         height.setText(patient.get_height());
         diagnosis.setText(patient.get_diagnosis());
@@ -135,19 +138,26 @@ public class Edit_patient_data extends ActionBarActivity {
 
     public void savePatientData1()
     {
-        Intent intent =  new Intent(this, documents.class);
+        Intent intent =  new Intent(this, PatientProfileActivity.class);
         String patientName = new String();
         int patientId = 0;
         String patientAge = new String();
         String patientHeight = new String();
         String patientGender = new String();
         String patientDiagnosis = new String();
+        String patientOccupation= new String();
+        String patientAddress = new String();
+        String patientContact = new String();
+        String patientEmail = new String();
         int selectedGender = 0;
         byte[] image;
         image = new byte[0];
 
         EditText edit_name = (EditText) findViewById(R.id.edit_patient_edit_name);
         EditText edit_address = (EditText)findViewById(R.id.edit_patient_edit_add);
+        EditText edit_occupation = (EditText)findViewById(R.id.edit_patient_edit_occupation);
+        EditText edit_email = (EditText)findViewById(R.id.edit_patient_edit_email);
+        EditText edit_contact = (EditText)findViewById(R.id.edit_patient_edit_phone);
         EditText edit_diagnosis = (EditText)findViewById(R.id.edit_patient_edit_diagnosis);
         TextView id = (TextView)findViewById(R.id.edit_patient_id);
         EditText edit_age = (EditText) findViewById(R.id.edit_patient_edit_age);
@@ -198,6 +208,11 @@ public class Edit_patient_data extends ActionBarActivity {
         patientGender = edit_gender_rb.getText().toString();
         patientId =Integer.parseInt(id.getText().toString());
         patientDiagnosis = edit_diagnosis.getText().toString();
+        patientAddress = edit_address.getText().toString();
+        patientContact = edit_contact.getText().toString();
+        patientEmail = edit_email.getText().toString();
+        patientOccupation = edit_occupation.getText().toString();
+
 
         newPatient.set_height(patientHeight);
         newPatient.set_diagnosis(patientDiagnosis);
@@ -206,6 +221,11 @@ public class Edit_patient_data extends ActionBarActivity {
         newPatient.set_name(patientName);
         newPatient.set_id(patientId);
         newPatient.set_last_seen_date(formattedDate);
+        newPatient.set_address(patientAddress);
+        newPatient.set_contact_number(patientContact);
+        newPatient.set_email(patientEmail);
+        newPatient.set_ocupation(patientOccupation);
+
 
         if(storageDir.exists()) {
             File newDirectory =
@@ -216,16 +236,8 @@ public class Edit_patient_data extends ActionBarActivity {
             storageDir.renameTo(newDirectory);
         }
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-
-        dbHandler.onCreate(myDataBase);
-
         dbHandler.updatePatient(newPatient);
 
-
-
-        Toast.makeText(this, "Patient Added", Toast.LENGTH_SHORT)
-                .show();
         Intent curIntent = getIntent();
          int pid = curIntent.getIntExtra("id",0);
         intent.putExtra("id",pid);

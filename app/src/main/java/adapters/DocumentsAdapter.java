@@ -24,6 +24,8 @@ import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.example.sajid.myapplication.DatabaseHandler;
+
+import activity.TabbedActivityCheck;
 import objects.Item;
 
 import com.example.sajid.myapplication.FTPHelper;
@@ -106,12 +108,36 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
 
                             Uri intentUri;
                             if (item.getTitle().equals("open")) {
-                                File storageDir =
-                                        new File(Environment.getExternalStoragePublicDirectory(
-                                                Environment.DIRECTORY_PICTURES), "Patient Manager/"+name+"/Documents");
-                                intentUri = Uri.fromFile(new File( filePath));
-                                new SingleMediaScanner(context, file);
 
+                               if(filePath.contains(".jpg")) {
+                                   File storageDir =
+                                           new File(Environment.getExternalStoragePublicDirectory(
+                                                   Environment.DIRECTORY_PICTURES), "Patient Manager/" + name + "/Documents");
+                                   intentUri = Uri.fromFile(new File(filePath));
+                                   new SingleMediaScanner(context, file);
+                               }
+                                else if (filePath.contains(".txt")){
+                                   Intent intent = new Intent(Intent.ACTION_EDIT);
+                                   Uri uri = Uri.fromFile(new File(filePath));
+                                   intent.setDataAndType(uri, "text/plain");
+                                  context.startActivity(intent);
+
+                               }
+                               else if (filePath.contains(".pdf")){
+                                   Intent intent = new Intent(Intent.ACTION_VIEW);
+                                   Uri uri = Uri.fromFile(new File(filePath));
+                                   intent.setDataAndType(uri, "application/pdf");
+                                   Intent intent1 = Intent.createChooser(intent, "Open File");
+                                   context.startActivity(intent);
+
+                               }
+                               else if (filePath.contains(".doc")){
+                                   Intent intent = new Intent(Intent.ACTION_EDIT);
+                                   Uri uri = Uri.fromFile(new File(filePath));
+                                   intent.setDataAndType(uri, "application/msword");
+                                   context.startActivity(intent);
+
+                               }
 
                             }
 
@@ -175,7 +201,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                 /*dbHandle.deletePatient(patient);
 
                 MyAdapter.this.notifyDataSetChanged();*/
-                else if (( activity_parent.getClass() == View_Media_notes_grid.class)||( activity_parent.getClass() == History_Activity.class)
+                else if (( activity_parent.getClass() == View_Media_notes_grid.class)||( activity_parent.getClass() == TabbedActivityCheck.class)
                         ||( activity_parent.getClass() == Exam_Activity.class)||( activity_parent.getClass() == Treatment_Activity.class)
                         ||( activity_parent.getClass() == Other_Notes_Activity.class))
                 {
@@ -193,12 +219,6 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                     int pid =  itemsArrayList.get(pos).getPatient_id();
                     if(filePath.contains(".jpg"))
                     {
-                       /* Intent intent = new Intent(context, FullImage.class);
-                        intent.putExtra("id", pid);
-                        intent.putExtra("path", filePath);
-                        intent.putExtra("className","View_Media_notes_grid");
-                        intent.putExtra("section",section);
-                        context.startActivity(intent);*/
 
 
                         PopupMenu popup = new PopupMenu(activity_parent, arg0);
@@ -213,16 +233,13 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                             public boolean onMenuItemClick(MenuItem item) {
                                 Toast.makeText(activity_parent, "You selected the action : " + item.getTitle(), Toast.LENGTH_SHORT).show();
 
-                                Uri intentUri;
+
                                 if(item.getTitle().equals("open"))
                                 {
-                                    intentUri = Uri.fromFile(new File(filePath));
+
                                     new SingleMediaScanner(context, allFiles[0]);
 
-                                    /*Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_VIEW);
-                                    intent.setDataAndType(intentUri, "image/*");
-                                    context.startActivity(intent);*/
+
                                 }
                                 else if(item.getTitle().equals("delete"))
                                 {
@@ -243,13 +260,6 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                                             utility.recreateActivityCompat(activity_parent);
                                         }
                                     });
-
-
-
-
-
-
-
                                     alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
                                         @Override
@@ -267,28 +277,12 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                             }
                         });
 
-                        /** Showing the popup menu */
+
                         popup.show();
 
-
-                      /* Uri intentUri;
-                        intentUri = Uri.fromFile(new File(filePath));
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setDataAndType(intentUri, "image/*");
-                        context.startActivity(intent);*/
                     }
                     else
                     {
-
-
-
-
-                       /* Intent intent = new Intent(context, VideoFull.class);
-                        intent.putExtra("id", pid);
-                        intent.putExtra("path", filePath);*/
-
-
                         PopupMenu popup = new PopupMenu(activity_parent, arg0);
                         popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
 
@@ -358,24 +352,6 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
 
 
 
-
-
-
-
-
-/*
-
-                        Uri intentUri = Uri.fromFile(new File(filePath));
-
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setDataAndType(intentUri, "video/mp4");
-                        context.startActivity(intent);
-
-
-*/
-
-
                 } else if ( activity_parent.getClass() == History_Activity.class)
                 {
 
@@ -399,7 +375,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
         String a = (itemsArrayList.get(position).getDiagnosis());
         labelView.setText(itemsArrayList.get(position).getTitle());
         imageView.setImageBitmap (itemsArrayList.get(position).getBmp());
-        if(itemsArrayList.get(position).getDiagnosis().contains(".jpg"))
+        if((itemsArrayList.get(position).getDiagnosis().contains(".jpg"))||(itemsArrayList.get(position).getDiagnosis().contains(".txt"))||(itemsArrayList.get(position).getDiagnosis().contains(".pdf"))||(itemsArrayList.get(position).getDiagnosis().contains(".doc")))
         {
             videoPlayIcon.setVisibility(View.GONE);
         }

@@ -1,15 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     tools:context="com.example.sajid.myapplication.UserProfile">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/photoEmailLayout">
+        android:id="@+id/photoEmailLayout"
+        android:background="@drawable/gradient_background"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:layout_width="100dp"
@@ -32,7 +32,11 @@
         android:layout_height="wrap_content"
         android:divider="#69010101"
         android:id="@+id/nameAndDetails"
-        android:layout_below="@+id/photoEmailLayout">
+        android:layout_below="@+id/photoEmailLayout"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <LinearLayout
             android:orientation="vertical"
@@ -73,7 +77,9 @@
 
                         android:layout_weight="2"
                         android:visibility="gone"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:textColor="@color/black"
+                        android:capitalize="words" />
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -111,9 +117,30 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/userProfilePhoneNumber"
-                android:editable="true" />
+                android:editable="true"
+                android:textColor="@color/black" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Speciality"
+                android:id="@+id/textView21" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner2" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

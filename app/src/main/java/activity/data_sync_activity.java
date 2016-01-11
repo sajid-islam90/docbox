@@ -106,7 +106,7 @@ public class data_sync_activity extends AppCompatActivity {
         for (int i = 0;i<userList.size();i++)
         {
             if(controller.dbSyncCount() != 0){
-                prgDialog.show();
+               // prgDialog.show();
                // String Json = controller.composeJSONfromSQLite();
                 String jSon = controller.composeJSONfromSQLitePatient(userList.get(i).get("userId"));
                // String kson = controller.composeJSONfromSQLiteDocuments(userList.get(i).get("userId"));

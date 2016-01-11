@@ -10,4 +10,8 @@
         android:id="@+id/action_add_notes"
         android:icon="@drawable/ic_action_new_label"
         app:showAsAction="ifRoom"/>
+    <item android:title="Save"
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_action_save"
+        app:showAsAction="always"/>
 </menu>

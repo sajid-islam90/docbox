@@ -53,10 +53,20 @@ public class personal_obj {
         this._photoPath = _photoPath;
     }
 
-    String _name,
-           _email,
-            _password,
-            _phone;
+    String _name;
+    String _email;
+    String _password;
+    String _phone;
+
+    public String get_speciality() {
+        return _speciality;
+    }
+
+    public void set_speciality(String _speciality) {
+        this._speciality = _speciality;
+    }
+
+    String _speciality;
 
     int _customerId;
 

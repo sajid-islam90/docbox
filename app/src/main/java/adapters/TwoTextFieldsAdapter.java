@@ -9,8 +9,10 @@ package adapters;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.ArrayAdapter;
+        import android.widget.ImageView;
         import android.widget.TextView;
 
+        import activity.PatientProfileActivity;
         import objects.Item;
         import com.example.sajid.myapplication.R;
 
@@ -39,99 +41,30 @@ public class TwoTextFieldsAdapter extends ArrayAdapter<Item> {
         // 2. Get rowView from inflater
         View rowView = inflater.inflate(R.layout.two_text_row, parent, false);
 
-       // TextView fieldName = (TextView) rowView.findViewById(R.id.textField1);
-        //textView.setTag(position);
-      //  textView.setOnClickListener(new View.OnClickListener() {
 
-         /*   @Override
-            public void onClick(View arg0) {
-
-                int pos = (int)arg0.getTag();
-                DatabaseHandler dbHandle = new DatabaseHandler(getContext());
-
-                document_obj doc_obj;
-                doc_obj = dbHandle.getSearchDocument(pos,itemsArrayList);
-                Intent intent = new Intent(context,FullImage.class);
-                intent.putExtra("id",doc_obj.get_id());
-                intent.putExtra("path",doc_obj.get_doc_path());
-                activity_parent.finish();
-                context.startActivity(intent);
-                /*dbHandle.deletePatient(patient);
-
-                MyAdapter.this.notifyDataSetChanged();*/
-
-
-
-
-
-
-           // }
-      //  });
-      /*  ImageView imageView1 = (ImageView) rowView.findViewById(R.id.imageView2);
-        imageView1.setTag(position);
-        imageView1.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                int pos = (int)arg0.getTag();
-                DatabaseHandler dbHandle = new DatabaseHandler(getContext());
-                document_obj doc_obj;
-                doc_obj = dbHandle.getSearchDocument(pos,itemsArrayList);
-                Intent intent = new Intent(context,FullImage.class);
-                intent.putExtra("id",doc_obj.get_id());
-                intent.putExtra("path",doc_obj.get_doc_path());
-
-                context.startActivity(intent);
-
-                /*dbHandle.deletePatient(patient);
-
-                MyAdapter.this.notifyDataSetChanged();
-
-
-
-
-
-
-            }
-        });*/
-
-
-        /*
-        Button b2 = (Button) rowView.findViewById(R.id.button2);
-        b2.setTag(position);
-        b2.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                int pos = (int)arg0.getTag();
-                DatabaseHandler dbHandle = new DatabaseHandler(getContext());
-                Patient patient = new Patient();
-                patient = dbHandle.getPatient(pos);
-                dbHandle.deletePatient(patient);
-
-                MyAdapter.this.notifyDataSetChanged();
-
-
-                Toast.makeText(context,"Deleted "+patient.get_name(),Toast.LENGTH_SHORT)
-                        .show();
-
-
-
-            }
-        });
-        */
         // 3. Get the two text view from the rowView
         TextView fieldName = (TextView) rowView.findViewById(R.id.textField1);
         TextView filedValue = (TextView) rowView.findViewById(R.id.textField2);
-        // TextView diagnosisView = (TextView) rowView.findViewById(R.id.row_diagnosis);
+        ImageView imageView = (ImageView)rowView.findViewById(R.id.fieldIcon);
+        if(PatientProfileActivity.class == activity_parent.getClass())
+        {
+fieldName.setVisibility(View.GONE);
+            imageView.setImageBitmap(itemsArrayList.get(position).getBmp());
+        }
+        else
+        {
+            imageView.setVisibility(View.GONE);
+        }
 
         // 4. Set the text for textView
 
         fieldName.setText(itemsArrayList.get(position).getTitle());
+
+        if(!itemsArrayList.get(position).getDiagnosis().equals(""))
         filedValue.setText (itemsArrayList.get(position).getDiagnosis());
-        //diagnosisView.setText((itemsArrayList.get(position).getDiagnosis()));
+        else
+        filedValue.setHint(itemsArrayList.get(position).getTitle());
+
 
         // 5. retrn rowView
         return rowView;
