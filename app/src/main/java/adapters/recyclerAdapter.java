@@ -3,6 +3,8 @@ package adapters;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -58,6 +60,16 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHo
         this.version = version;
     }
 
+    public void updateReceiptsList(ArrayList<Item> itemsArrayListNew) {
+
+        //itemsArrayList.add(itemsArrayListNew);
+        this.notifyDataSetChanged();
+    }
+    public void updateReceiptsListOtherNotes(ArrayList<Item> itemsArrayListNew) {
+        itemsArrayList.clear();
+       itemsArrayList.addAll(itemsArrayListNew);
+        this.notifyDataSetChanged();
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);

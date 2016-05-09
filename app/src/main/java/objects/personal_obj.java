@@ -54,9 +54,47 @@ public class personal_obj {
     }
 
     String _name;
+
+    public String get_dob() {
+        return _dob;
+    }
+
+    public void set_dob(String _dob) {
+        this._dob = _dob;
+    }
+
+    String _dob;
     String _email;
     String _password;
     String _phone;
+    String _fees;
+
+    public String get_experience() {
+        return _experience;
+    }
+
+    public void set_experience(String _experience) {
+        this._experience = _experience;
+    }
+
+    public String get_fees() {
+        return _fees;
+    }
+
+    public void set_fees(String _fees) {
+        this._fees = _fees;
+    }
+
+    String _experience;
+    public String get_address() {
+        return _address;
+    }
+
+    public void set_address(String _address) {
+        this._address = _address;
+    }
+
+    String _address;
 
     public String get_speciality() {
         return _speciality;
@@ -71,5 +109,6 @@ public class personal_obj {
     int _customerId;
 
     String _photoPath;
+
 
 }

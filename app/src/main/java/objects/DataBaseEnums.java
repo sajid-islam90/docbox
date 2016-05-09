@@ -11,13 +11,18 @@ public class DataBaseEnums {
 
     //  table names
     public static final String TABLE_PATIENT = "patient";
+
     public static final String TABLE_DOCUMENTS = "documents";
+    public static final String KEY_FIRST_AID_ID = "firstAidPID";
+    public static final String KEY_DATE_NEXT_FOLLOW_UP= "dateNextFollowUp";
     public static final String TABLE_NOTES = "notes";
     public static final String TABLE_FOLLOW_UP = "followUp";
     public static final String TABLE_MEDIA = "media";
     public static final String TABLE_MEDIA_FOLLOW_UP = "mediaFollowUp";
     public static final String TABLE_HISTORY = "history";
     public static final String TABLE_HISTORY_HIST = "historyHist";
+
+    public static final String TABLE_DIAGNOSIS = "diagnosis";
     public static final String TABLE_EXAM = "exam";
     public static final String TABLE_EXAM_HIST = "examHist";
     public static final String TABLE_TREATMENT = "treatment";
@@ -39,10 +44,17 @@ public class DataBaseEnums {
     public static final String KEY_OCCUPATION = "occupation";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_HEIGHT = "height";
+    public static final String KEY_WEIGHT = "weight";
+    public static final String KEY_OPD_IPD = "OPDIPD";
     public static final String KEY_DIAGNOSIS = "diagnosis";
     public static final String KEY_BMP = "bitmapBLOB";
     public static final String KEY_PHOTO_PATH = "photoPath";
+    public static final String KEY_CONSULT_FEE = "consultFee";
+    public static final String KEY_EXPERIENCE = "experience";
     public static final String KEY_SYNC_STATUS = "syncStatus";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_MAP_SNAPSHOT_PATH = "mapSnapShotPath";
     public static final String KEY_DOC_NAME = "documentName";
     public static final String KEY_DOC_PATH = "documentPath";
 

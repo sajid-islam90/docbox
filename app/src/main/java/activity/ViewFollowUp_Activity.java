@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.sajid.myapplication.DatabaseHandler;
+import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
 
 import java.util.ArrayList;
@@ -36,14 +39,54 @@ public class ViewFollowUp_Activity extends AppCompatActivity {
         pid = intent.getIntExtra("id",0);
         version = intent.getIntExtra("version",0);
         setTitle("Follow Up #"+version);
+        TextView textView10 =(TextView)findViewById(R.id.textViewFollowUpNotesView);
+        TextView textView6 =(TextView)findViewById(R.id.textViewFollowupOtherView);
+        TextView textView7 =(TextView)findViewById(R.id.textViewFollowupMediaView);
+        final ListView listView = (ListView)findViewById(R.id.fieldsListFollowUpView);
+        final RecyclerView listView2 = (RecyclerView)findViewById(R.id.listViewOtherHistView);
+        final RecyclerView listView3 = (RecyclerView)findViewById(R.id.listViewMediaView);
+        //final CardView cardView = (CardView)findViewById(R.id.view13);
+        // listView2.setVisibility(View.GONE);
+        //  listView3.setVisibility(View.GONE);
+        textView10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                listView.setVisibility(View.VISIBLE);
+                listView2.setVisibility(View.GONE);
+                listView3.setVisibility(View.GONE);
+                // expandView(cardView);
+            }
+        });
+        textView6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                listView2.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                listView3.setVisibility(View.GONE);
+                //CollapseView(cardView);
+            }
+        });
+        textView7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                listView3.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                listView2.setVisibility(View.GONE);
+                //CollapseView(cardView);
+            }
+        });
 doWork();
     }
+
 
     public void doWork()
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(ViewFollowUp_Activity.this);
         ArrayList<Item> FollowUpFields = databaseHandler.getFollowUp(pid, version);
-        ListView listView1 = (ListView)findViewById(R.id.fieldsList);
+        ListView listView1 = (ListView)findViewById(R.id.fieldsListFollowUpView);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
         listView1.setAdapter(inputAgainstAFieldAdapter);
         listView1.setItemsCanFocus(false);
@@ -70,7 +113,19 @@ doWork();
             for (int i = 0; i < mediaObjs.length; i++) {
                 item = new Item();
                 // mediaObjs[i]=PhotoHelper.addMissingBmp(mediaObjs[i],CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+
+            if(mediaObjs[i].get_bmp()==null)
+                    if(mediaObjs[i].get_media_path().contains(".mp4"))
+                    {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 200);
+                    }
+                else
+                    {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 300);
+                    }
+
                 item.setBmp(BitmapFactory.decodeByteArray(mediaObjs[i].get_bmp(), 0, mediaObjs[i].get_bmp().length));
+
                 item.setDiagnosis(mediaObjs[i].get_media_path());
                 item.setPatient_id(mediaObjs[i].get_pid());
                 //item.setDiagnosis(mediaObjs[i].get_field_value());
@@ -86,8 +141,9 @@ doWork();
 
     public void displayAddedField(ArrayList<Item> fieldList)
     {
-
-        RecyclerView listView = (RecyclerView)findViewById(R.id.listViewOtherHist);
+        TextView textView = (TextView)findViewById(R.id.ViewFollowupNumberOfOtherNotes);
+        textView.setText(String.valueOf(fieldList.size()));
+        RecyclerView listView = (RecyclerView)findViewById(R.id.listViewOtherHistView);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -99,7 +155,9 @@ doWork();
     }
     public void displayAddedMedia(ArrayList<Item> fieldList)
     {
-        RecyclerView listView = (RecyclerView)findViewById(R.id.listViewMediaFollowUp);
+        TextView textView = (TextView)findViewById(R.id.ViewFollowupNumberOfMedia);
+        textView.setText(String.valueOf(fieldList.size()));
+        RecyclerView listView = (RecyclerView)findViewById(R.id.listViewMediaView);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(ViewFollowUp_Activity.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerAdapter RecyclerAdapter = new recyclerAdapter(this,ViewFollowUp_Activity.this,fieldList,ONE_PHOTO,pid,version);

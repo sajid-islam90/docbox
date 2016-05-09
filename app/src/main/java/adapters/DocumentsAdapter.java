@@ -2,13 +2,14 @@ package adapters;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -26,17 +28,14 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import com.example.sajid.myapplication.DatabaseHandler;
 
 import activity.TabbedActivityCheck;
+import objects.DataBaseEnums;
 import objects.Item;
 
-import com.example.sajid.myapplication.FTPHelper;
 import com.example.sajid.myapplication.R;
 import objects.document_obj;
 
-import com.example.sajid.myapplication.UploadToServer;
 import com.example.sajid.myapplication.utility;
 
-import activity.Exam_Activity;
-import activity.FullImage;
 import activity.History_Activity;
 import activity.Other_Notes_Activity;
 import activity.Treatment_Activity;
@@ -58,6 +57,11 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
         this.context = context;
         this.activity_parent = activity_parent;
         this.itemsArrayList = itemsArrayList;
+    }
+    public void updateReceiptsList(ArrayList<Item> itemsArrayListNew) {
+        itemsArrayList.clear();
+        itemsArrayList.addAll(itemsArrayListNew);
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -87,7 +91,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                 if(activity_parent.getClass()== documents.class) {
 
                 doc_obj[0] = dbHandle.getSearchDocument(pos,itemsArrayList);
-                    int pid = itemsArrayList.get(0).getPatient_id();
+                    final int pid = itemsArrayList.get(0).getPatient_id();
                     final String name = dbHandle.getPatient(pid).get_name();
                    /* String path = new File(doc_obj.get_doc_path()).getParent();
                     File folder = new File(path);
@@ -141,11 +145,42 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
 
                             }
 
-                            else if (item.getTitle().equals("upload"))
+                            else if (item.getTitle().equals("rename"))
                             {
+                                LayoutInflater li = LayoutInflater.from(context);
 
 
-                               // FTPHelper.Dowork(filePath,name);
+                                View promptsView = li.inflate(R.layout.sms_text, null);
+                                final EditText editText = (EditText)promptsView.findViewById(R.id.sms_Edit_Text);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                        context);
+                                alertDialogBuilder.setView(promptsView);
+                                alertDialogBuilder
+                                        .setCancelable(false)
+                                        .setTitle("Rename Report")
+                                        .setPositiveButton("OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+
+                                                        dbHandle.updateDocument(DataBaseEnums.KEY_DOC_NAME,editText.getText().toString(),filePath);
+                                                        dbHandle.updatePatient(DataBaseEnums.KEY_SYNC_STATUS,"0", String.valueOf(pid));
+                                                        utility.recreateActivityCompat(activity_parent);
+                                                    }
+                                                })
+                                        .setNegativeButton("Cancel",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                });
+
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                                // show it
+                                alertDialog.show();
+
+                                // FTPHelper.Dowork(filePath,name);
 
                                 // Upload sdcard file
                                // uploadFile(f);
@@ -202,7 +237,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
 
                 MyAdapter.this.notifyDataSetChanged();*/
                 else if (( activity_parent.getClass() == View_Media_notes_grid.class)||( activity_parent.getClass() == TabbedActivityCheck.class)
-                        ||( activity_parent.getClass() == Exam_Activity.class)||( activity_parent.getClass() == Treatment_Activity.class)
+                        ||( activity_parent.getClass() == Treatment_Activity.class)
                         ||( activity_parent.getClass() == Other_Notes_Activity.class))
                 {
 

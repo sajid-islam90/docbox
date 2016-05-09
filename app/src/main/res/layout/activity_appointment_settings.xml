@@ -208,17 +208,31 @@
                     android:foregroundGravity="center"
                     android:layout_below="@+id/textView35"
 
-                    />
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/startAmPm"
-                    android:layout_below="@+id/startClock"
+                    android:layout_below="@+id/startTime"
                     android:layout_centerHorizontal="true"
                     android:text="AM/PM"
                     android:gravity="center" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/startTime"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:textSize="50dp"
+                    android:layout_below="@+id/textView35"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" />
 
             </RelativeLayout>
 
@@ -241,6 +255,20 @@
                     android:layout_alignParentStart="false"
                     android:layout_centerHorizontal="true" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/endTime"
+                    android:layout_below="@+id/textView36"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center" />
+
                 <AnalogClock
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -255,14 +283,15 @@
                     android:id="@+id/endClock"
                     android:layout_below="@+id/textView36"
 
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/endAmPm"
-                    android:layout_below="@+id/endClock"
+                    android:layout_below="@+id/endTime"
                     android:layout_centerHorizontal="true"
                     android:text="AM/PM"
                     android:gravity="center" />

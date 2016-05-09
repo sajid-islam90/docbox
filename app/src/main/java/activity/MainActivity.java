@@ -1,12 +1,15 @@
 package activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,19 +19,29 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -36,10 +49,13 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sajid.myapplication.AccountVerificationActivity;
+import com.example.sajid.myapplication.Activity_Video_Capture;
+import com.example.sajid.myapplication.ConnectionDetector;
 import com.example.sajid.myapplication.DatabaseHandler;
 
 import adapters.DrawerListAdapter;
-import cz.msebera.android.httpclient.client.cache.Resource;
+
 import objects.*;
 import adapters.MyAdapter;
 import objects.Patient;
@@ -48,20 +64,33 @@ import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
 import com.example.sajid.myapplication.RoundImage;
 import com.example.sajid.myapplication.UserProfile;
+import com.example.sajid.myapplication.patients_today;
 import com.example.sajid.myapplication.utility;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.sajid.myapplication.R.drawable.ic_action_person;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Fragment {
     public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
     private String profilePicPath;
     private SearchView mSearchView;
@@ -73,231 +102,77 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private TextView mEmail;
+    private ListView listView;
+    private ProgressDialog pdia;
     RoundImage roundedImage;
-    final Context context = this;
+    private static final String ARG_SECTION_NUMBER = "section_number";
+    final Context context = getActivity();
     private String[] navigationDrawerOptions;
     private TextView mStatusView;
     List<String> patientNames = new ArrayList<String>();
+    String accountType;
+    MyAdapter adapter;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.activity_main, container, false);
+        listView = (ListView)rootView.findViewById(R.id.listViewMain);
 
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-        DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
-        dbHandle.onCreate(myDataBase);
-        Resources res = getResources();
-        ArrayList<Item> items = new ArrayList<>();
+       // SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
+        DatabaseHandler dbHandle = new DatabaseHandler(getActivity());
+        setHasOptionsMenu(true);
+        getActivity().setTitle("My Patients");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        accountType = prefs.getString(getActivity().getString(R.string.account_type), "");
 
-        Item item =new Item();
-        item.setTitle("View Profile");
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_person));
-        items.add(item);
-        item =new Item();
-        item.setTitle("Payment Info");
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
-        items.add(item);
-        item =new Item();
-        item.setTitle("Exit");
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_exit));
-        items.add(item);
-
-        navigationDrawerOptions = new String[3];
-        navigationDrawerOptions[0] = "View Profile";
-        navigationDrawerOptions[1] = "Payment Info";
-        navigationDrawerOptions[2] = "Exit";
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerRelativeLayout = (RelativeLayout) findViewById(R.id.left_drawer_1);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        ArrayAdapter adapter = new ArrayAdapter(this,R.layout.drawer_list_item, navigationDrawerOptions) ;
-        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(MainActivity.this,items);
-        mDrawerList.setAdapter(drawerListAdapter);
-        /*mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                switch (position)
-                {
-                    case 0:
-                        startActivity(new Intent(MainActivity.this, UserProfile.class));
-                }
-            }
-        });*/
-
-
-
-
-        personal_obj personalObj =  dbHandle.getPersonalInfo();
-        ImageView imageView = (ImageView)findViewById(R.id.profilePic);
-        Bitmap bmp = null;
-        bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());
-
-
-        if(bmp!=null)
-        {bmp = PhotoHelper.getResizedBitmap(bmp, 200, 200);
-            roundedImage = new RoundImage(bmp);
-       // Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
-
-       }
-        else {
-
-           bmp = BitmapFactory.decodeResource(getResources(),R.drawable.add_new_photo);
-            roundedImage = new RoundImage(bmp);
-            imageView.setBackgroundResource(R.drawable.add_new_photo);
+        ActionBar actionBar = ((AppCompatActivity) this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("My Patients");
         }
-        imageView.setImageDrawable(roundedImage);
-        mEmail = (TextView)findViewById(R.id.drawer_email);
-        mEmail.setText(personalObj.get_email());
-
-
-
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-
-
-                getSupportActionBar().setTitle(R.string.app_name);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Drawer");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-
-        getPatientList();
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    //adding profile photo
-
-    public void addProfilePhoto(View view) throws IOException
-    {
-        this.dispatchTakePictureIntent();}
-    private void dispatchTakePictureIntent()
-    {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Intent intent = getIntent();
-        //media_obj mediaObj = new media_obj();
-
-        final DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-
-
-
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = PhotoHelper.createImageFile(0);
-
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra("output",
-                        Uri.fromFile(photoFile));
-                profilePicPath = photoFile.getPath();
-                /*mediaObj.set_media_name(photoFile.getPath());
-                mediaObj.set_media_path(photoFile.getPath());
-*/
-
-
-
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
-
-
-            }
+//        fetchPatientsTask fetchPatientsTask = new fetchPatientsTask();
+//        fetchPatientsTask.execute((Void)null);
+        displayPatientList(new ArrayList<Item>());
+       int numberOfPatients = getPatientList();
+        if(numberOfPatients == 0)
+        {
+            RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
+            relativeLayout.setBackgroundResource(R.drawable.backgroud);
         }
+        return rootView;
+    }
+    public static MainActivity newInstance(int sectionNumber) {
+        MainActivity fragment = new MainActivity();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
     }
 
+ @Override
+ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+     inflater.inflate(R.menu.main_activity_actions, menu);
+     super.onCreateOptionsMenu(menu, inflater);
+ }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
-            DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-            databaseHandler.updatePersonalInfo("documentPath",profilePicPath);
-
-
-            utility.recreateActivityCompat(MainActivity.this);
-
-
-
-        }
-
-    }
-
-
-
-
-
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
-
-
-        return super.onCreateOptionsMenu(menu);
-
-    }
 
     public void displayPatientList(final ArrayList<Item> patientList)
     {
-        ListView listView = (ListView)findViewById(R.id.listViewMain);
+
        /* MainActivityList adapter1 = new
                 MainActivityList(MainActivity.this, patientList, imageId);*/
-
-        MyAdapter adapter = new MyAdapter(MainActivity.this,patientList);
+        Collections.reverse(patientList);
+         adapter = new MyAdapter(getActivity(),patientList);
 
        // ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, patientList.toArray()) ;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DatabaseHandler dbHandle = new DatabaseHandler(MainActivity.this);
+                DatabaseHandler dbHandle = new DatabaseHandler(getActivity());
                 Patient patient = new Patient();
                 patient = dbHandle.getSearchPatient(position, patientList);
-                Intent intent = new Intent(MainActivity.this, PatientProfileActivity.class);
+                Intent intent = new Intent(getActivity(), PatientProfileActivity.class);
                 intent.putExtra("id", patient.get_id());
-                context.startActivity(intent);
+                getActivity().startActivity(intent);
             }
         });
         listView.setAdapter(adapter);
@@ -305,21 +180,13 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void refresh()
 
+
+    public int getPatientList()
     {
-        finish();
-        startActivity(getIntent());
 
+        DatabaseHandler dbHandler = new DatabaseHandler(getActivity());
 
-
-    }
-
-    public void getPatientList()
-    {
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        dbHandler.onCreate(myDataBase);
         Bitmap image = null;
         String name = null;
         String diagnosis = null;
@@ -330,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
         ArrayList<Item> nameWithImage = new ArrayList<Item>();
         List<Patient>patientList = dbHandler.getAllPatient();
        // List<String> patientNames = new ArrayList<String>();
-
+        image = BitmapFactory.decodeResource(getResources(),R.drawable.default_photo);
         Collections.sort(patientNames, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
@@ -347,17 +214,8 @@ public class MainActivity extends ActionBarActivity {
 
 
                 if(bmpImage != null) {
-/*if(patientList.get(i).get_photoPath()!=null) {
-    File file = new File(patientList.get(i).get_photoPath());
-    if (file.exists()) {
-        image = BitmapFactory.decodeFile(patientList.get(i).get_photoPath());
-       // image = PhotoHelper.getResizedBitmap(image,150,150);
-    }
-    else
-        image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
-}
-                    else*/
-    image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
+
+                image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
                 }
 
                 nameImage.setTitle(name);
@@ -365,20 +223,23 @@ public class MainActivity extends ActionBarActivity {
                 nameImage.setBmp(image);
                 nameImage.setDiagnosis(diagnosis);
                 nameImage.setDate(lastVisit);
-                nameWithImage.add(i , nameImage);
+                nameWithImage.add(i, nameImage);
                 nameImage.setPatient_id(patient_id);
                 nameImage = new Item();
                 patientNames.add(i, name);
             }
 
             displayPatientList(nameWithImage);
+
+
         }
+        return nameWithImage.size();
     }
 
-    void searchPatient(String searchString)
+    void searchPatient(String searchNameString,String searchDiagnosisString,String searchLocationString)
     {
 
-        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+        DatabaseHandler dbHandler = new DatabaseHandler(getActivity());
 
         Bitmap image = null;
         String name = null;
@@ -387,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
         byte[] bmpImage ;
         Item nameImage = new Item();
         ArrayList<Item> nameWithImage = new ArrayList<Item>();
-        List<Patient>patientList = dbHandler.search(searchString);
+        List<Patient>patientList = dbHandler.search(searchNameString,searchDiagnosisString,searchLocationString);
         List<String> patientNames = new ArrayList<String>();
         if(patientList.size() !=0) {
             for (int i = 0; i < patientList.size(); i++) {
@@ -411,41 +272,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    private void setupSearchView(MenuItem searchItem) {
-
-        if (isAlwaysExpanded()) {
-            mSearchView.setIconifiedByDefault(false);
-        } else {
-            searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                    | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        }
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager != null) {
-            List<SearchableInfo> searchables = searchManager.getSearchablesInGlobalSearch();
-
-            SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
-            for (SearchableInfo inf : searchables) {
-                if (inf.getSuggestAuthority() != null
-                        && inf.getSuggestAuthority().startsWith("applications")) {
-                    info = inf;
-                }
-            }
-            mSearchView.setSearchableInfo(info);
-        }
-
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-    }
 
     public boolean onQueryTextChange(String newText) {
         mStatusView.setText("Query = " + newText);
@@ -488,30 +314,37 @@ public class MainActivity extends ActionBarActivity {
         switch (id)
         {
             case R.id.action_add:
-                Toast.makeText(this, "Add selected", Toast.LENGTH_SHORT)
+
+                if(!accountType.equals(getActivity().getString(R.string.account_type_helper)))
+                { Toast.makeText(getActivity(), "Add selected", Toast.LENGTH_SHORT)
                         .show();
 
-                Intent intent = new Intent(this,DisplayMessageActivity.class);
+                Intent intent = new Intent(getActivity(),DisplayMessageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("parent", "main");
                 startActivity(intent);
-                finish();
+                getActivity().finish();}
+                else {
+                    Toast.makeText(getActivity(), "You are not authorised to use this feature", Toast.LENGTH_SHORT)
+                            .show();
+                }
 
                 return true;
             case R.id.action_search:
 
 
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.search_prompt, null);
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                final View promptsView = li.inflate(R.layout.search_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
+                        getActivity());
 
                 // set prompts.xml to alertdialog builder
                 alertDialogBuilder.setView(promptsView);
-                DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
+                DatabaseHandler dbHandler = new DatabaseHandler(getActivity());
                 List<String> Names = null;
                // Names = dbHandler.getAllPatientNames();
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                         android.R.layout.simple_list_item_1, patientNames);
                 final AutoCompleteTextView userInput = (AutoCompleteTextView) promptsView
                         .findViewById(R.id.editTextDialogUserInput);
@@ -527,7 +360,18 @@ public class MainActivity extends ActionBarActivity {
                                     public void onClick(DialogInterface dialog,int id) {
                                         // get user input and set it to result
                                         // edit text
-                                        searchPatient(userInput.getText().toString());
+                                        CheckBox checkBoxName = (CheckBox)promptsView.findViewById(R.id.nameCheckBox);
+                                        CheckBox checkBoxDiagnosis = (CheckBox)promptsView.findViewById(R.id.diagnosisCheckBox);
+                                        CheckBox checkBoxLocation = (CheckBox)promptsView.findViewById(R.id.locationCheckBox);
+                                        String searchName="",searchDiagnosis="",searchLocation = "";
+                                        if(checkBoxName.isChecked())
+                                            searchName = userInput.getText().toString();
+                                        if(checkBoxDiagnosis.isChecked())
+                                            searchDiagnosis = userInput.getText().toString();
+                                        if(checkBoxLocation.isChecked())
+                                            searchLocation = userInput.getText().toString();
+
+                                        searchPatient(searchName,searchDiagnosis,searchLocation);
 
 
 
@@ -552,13 +396,51 @@ public class MainActivity extends ActionBarActivity {
 
 
                 return true;
-            case R.id.action_settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT)
-                        .show();
+//            case R.id.action_settings:
+//                Toast.makeText(getActivity(), "Settings selected", Toast.LENGTH_SHORT)
+//                        .show();
+//                pdia = new ProgressDialog(getActivity());
+//                pdia.setMessage("Restoring Data Please Wait");
+//                pdia.show();
+//                // while (! LoginActivity.testRestoreData.getStatus().equals(AsyncTask.Status.FINISHED));
+////                TestRestoreData testRestoreData = new TestRestoreData();
+////                testRestoreData.execute((Void) null);
+////             Intent intent1 = new Intent( getActivity(),Activity_Video_Capture.class);
+////                startActivity(intent1);
+//                return true;
 
             case R.id.action_sync:
-               Intent intent2 = new Intent(this, data_sync_activity.class);
-                startActivity(intent2);
+                if(!accountType.equals(getActivity().getString(R.string.account_type_helper))) {
+                    ConnectionDetector cd = new ConnectionDetector(getActivity());
+                    if (!cd.isConnectingToInternet()) {
+                        // Internet Connection is not present
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Internet ERROR !!!")
+                                .setMessage("No Internet Connection Found Please Connect To Internet To Sync Data To Cloud")
+                                .setPositiveButton("Take me to Mobile settings", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
+
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                        // stop executing code by return
+
+                    } else {
+                        Intent intent2 = new Intent(getActivity(), data_sync_activity.class);
+                        startActivity(intent2);
+                    }
+                }
+                else {
+                    Toast.makeText(getActivity(), "You are not authorised to use this feature", Toast.LENGTH_SHORT)
+                            .show();
+                }
 
                /*  Intent i = new Intent(this,NavigationDrawer.class);
                 startActivity(i);*/
@@ -577,11 +459,98 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
+        getPatientList();
         super.onResume();
     }
 
-    private static final String[] COUNTRIES = new String[] {
-            "foo@example.com", "bar@example.com","sajid.islam90@gmail.com"
-    };
+
+
+    public class fetchPatientsTask extends AsyncTask<Void, Void, Boolean> {
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+        public int getPatientList()
+        {
+
+            DatabaseHandler dbHandler = new DatabaseHandler(getActivity());
+
+            Bitmap image = null;
+            String name = null;
+            String diagnosis = null;
+            int patient_id = 0;
+            byte[] bmpImage ;
+            String lastVisit;
+            Item nameImage = new Item();
+            ArrayList<Item> nameWithImage = new ArrayList<Item>();
+            List<Patient>patientList = dbHandler.getAllPatient();
+            // List<String> patientNames = new ArrayList<String>();
+            image = BitmapFactory.decodeResource(getResources(),R.drawable.default_photo);
+            Collections.sort(patientNames, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+            if(patientList.size() !=0) {
+                for (int i = 0; i < patientList.size(); i++) {
+                    name = patientList.get(i).get_name();
+                    bmpImage = patientList.get(i).get_bmp();
+                    diagnosis = patientList.get(i).get_diagnosis();
+                    patient_id = patientList.get(i).get_id();
+                    lastVisit = patientList.get(i).get_last_seen_date();
+
+
+                    if(bmpImage != null) {
+
+                        image = BitmapFactory.decodeByteArray(bmpImage, 0, bmpImage.length);
+                    }
+
+                    nameImage.setTitle(name);
+
+                    nameImage.setBmp(image);
+                    nameImage.setDiagnosis(diagnosis);
+                    nameImage.setDate(lastVisit);
+                    nameWithImage.add(i, nameImage);
+                    nameImage.setPatient_id(patient_id);
+                    nameImage = new Item();
+                    patientNames.add(i, name);
+                }
+
+                adapter.updateReceiptsList(nameWithImage);
+
+
+            }
+            return nameWithImage.size();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            getPatientList();
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+
+        }
+
+
+
+
+        public void doSomething() {
+
+        }
+
+
+    }
+
 }

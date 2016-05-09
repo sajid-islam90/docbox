@@ -1,81 +1,16 @@
-<android.support.v4.widget.DrawerLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- The main content view -->
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray">
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listViewMain"
         android:divider="@android:color/transparent"
-        android:layout_weight="1"
-         />
+        android:layout_weight="1" />
 
 
-    </FrameLayout>
-
-    <!-- The navigation drawer -->
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/left_drawer_1"
-        android:layout_gravity="start"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/profile_pic_layout"
-            android:onClick="addProfilePhoto"
-            android:background="@drawable/gradient_background">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center"
-                android:id="@+id/profilePic"
-
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="50dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:divider="@android:color/transparent"
-                android:layout_below="@+id/profilePic"
-                android:text="Small Text"
-                android:id="@+id/drawer_email"
-                android:layout_weight="1"
-                android:longClickable="false"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
-                android:textColor="#ffffff" />
-
-        </RelativeLayout>
-
-        <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="fill_parent"
-            android:textColor="#ffffff"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:background="#ffffff"
-        android:layout_below="@+id/profile_pic_layout"
-            android:layout_weight="1"
-            android:textFilterEnabled="false"
-            android:backgroundTint="@color/green" />
-
-    </RelativeLayout>
-
-
-</android.support.v4.widget.DrawerLayout>
+</RelativeLayout>

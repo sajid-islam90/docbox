@@ -7,10 +7,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +21,8 @@ import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +31,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -35,9 +40,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,15 +61,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
+import activity.Activity_main_2;
 import objects.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import activity.MainActivity;
+import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
@@ -77,52 +90,112 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> ,
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    android.app.AlertDialog alertDialog;
+    android.app.AlertDialog.Builder alertDialogBuilder;
     private personal_obj personalObj;
     private int newUserFlag = 1;
-
+    private ProgressDialog pdia;
     // UI references.
     private CheckedTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mName;
+    private EditText mAttachedDoctorEmailView;
     private Spinner spinner;
     private View mProgressView;
     private View mLoginFormView;
     String address ;
+    LinearLayout linearLayoutAttachedDoctorEmail;
+    LinearLayout linearLayoutSpeciality;
+    CheckBox checkBox;
     String customerId;
     JSONArray response;
     ProgressDialog prgDialog;
+   public static TestRestoreData testRestoreData;
+   static ArrayList<Map<String,String>> arrayListIdPhotoPath;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)!= PackageManager.PERMISSION_GRANTED))
+//        {
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.GET_ACCOUNTS},
+//                    1);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.READ_PHONE_STATE},
+//                    1);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CAMERA},
+//                    1);
+//
+//        }
         SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
         dbHandle.onCreate(myDataBase);
 address =  getResources().getString(R.string.action_server_ip_address);
         setContentView(R.layout.activity_login);
+//        new Thread(new Runnable() {
+//            public void run() {
+//                downloadFile(i, arrayListIdPhotoPath.get(i).get(i));
+//            }
+//        }).start();
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+        String test = databaseHandler.getPersonalInfo().get_speciality();
         personalObj = databaseHandler.getPersonalInfo();
         mPasswordView = (EditText) findViewById(R.id.password);
+        mAttachedDoctorEmailView = (EditText) findViewById(R.id.editTextAttachedDoctorEmail);
+        mName = (EditText) findViewById(R.id.name);
+        checkBox = (CheckBox)findViewById(R.id.checkBoxHelper);
+        linearLayoutAttachedDoctorEmail = (LinearLayout)findViewById(R.id.linearLayoutAttachedDoctorEmail);
+        linearLayoutSpeciality = (LinearLayout)findViewById(R.id.linearLayoutSpeciality);
+        final TextView textView = (TextView)findViewById((R.id.textView17));
+
         ImageView imageView =(ImageView)findViewById(R.id.pulse);
         imageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse));
         String a = mPasswordView.getText().toString();
         final CheckedTextView checkedTextView = (CheckedTextView)findViewById(R.id.checkedTextView);
          spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.specialities, R.layout.spinner_item);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                @Override
+                                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+if(isChecked)
+{
+//    spinner.setVisibility(View.GONE);
+//    textView.setVisibility(View.GONE);
+    linearLayoutSpeciality.setVisibility(View.GONE);
+    linearLayoutAttachedDoctorEmail.setVisibility(View.VISIBLE);
+}
+                                                    else
+{
+//    spinner.setVisibility(View.VISIBLE);
+//    textView.setVisibility(View.VISIBLE);
+    linearLayoutSpeciality.setVisibility(View.VISIBLE);
+    linearLayoutAttachedDoctorEmail.setVisibility(View.GONE);
+}
+
+                                                }
+                                            });
+                ArrayAdapter < CharSequence > adapter = ArrayAdapter.createFromResource(this,
+                        R.array.specialities, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
+        if(databaseHandler.getPersonalInfo().get_speciality()!=null)
+//        if(!personalObj.get_speciality().equals(""))
+        spinner.setSelection(Integer.parseInt(databaseHandler.getPersonalInfo().get_speciality())-1);
+        else
+        spinner.setSelection(1);
         if((mPasswordView.getText().equals(null))||(mPasswordView.getText().equals("")))
             checkedTextView.setVisibility(View.GONE);
         else
             checkedTextView.setVisibility(View.VISIBLE);
 
-mPasswordView.addTextChangedListener(new TextWatcher() {
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        mPasswordView.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         if((mPasswordView.getText().toString().equals(null))||(mPasswordView.getText().toString().equals(""))
                 ||(mPasswordView.getText().toString().length()<4))
         checkedTextView.setVisibility(View.GONE);
@@ -172,7 +245,7 @@ mPasswordView.addTextChangedListener(new TextWatcher() {
          //       android.R.layout.simple_dropdown_item_1line, CREDENTIALS);
        // mEmailView = (AutoCompleteTextView) findViewById(R.id.emailSignIn);
         mEmailView.setText(personalObj.get_email());
-
+mName.setText(personalObj.get_name());
 
        // mEmailView.setThreshold(2);
       //  mEmailView.setAdapter(adapter);}
@@ -232,16 +305,6 @@ System.out.print(response);
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();*/
-
-
-
-
-
-
-
-
-
-
 
                // attemptLogin(false);
             }
@@ -336,10 +399,13 @@ System.out.print(response);
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mName.setError(null);
 
         // Store values at the time of the login attempt.
         final String email = mEmailView.getText().toString();
         final String password = mPasswordView.getText().toString();
+        final String name = mName.getText().toString();
+        final String attachedDoctorEmail = mAttachedDoctorEmailView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -348,6 +414,11 @@ System.out.print(response);
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(name)) {
+            mName.setError(getString(R.string.error_field_required));
+            focusView = mName;
             cancel = true;
         }
 
@@ -359,6 +430,16 @@ System.out.print(response);
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
+            cancel = true;
+        }
+        if(checkBox.isChecked())
+        if (TextUtils.isEmpty(attachedDoctorEmail)) {
+            mAttachedDoctorEmailView.setError(getString(R.string.error_field_required));
+            focusView = mAttachedDoctorEmailView;
+            cancel = true;
+        } else if (!isEmailValid(attachedDoctorEmail)) {
+            mAttachedDoctorEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mAttachedDoctorEmailView;
             cancel = true;
         }
 
@@ -376,7 +457,9 @@ return;}
     Thread t = new Thread(new Runnable() {
         @Override
         public void run() {
+            if(!checkBox.isChecked())
             checkExistingAccount(email);
+          generateOTP(password);
 
         }
     });
@@ -389,52 +472,316 @@ return;}
         e.printStackTrace();
     }
 
-            int customerid = 0;
-            if((customerId!= null)&&(!customerId.equals("0"))) {
-                customerid = Integer.parseInt(customerId);
-                CREDENTIALS[0] = mEmailView.getText().toString()+":"+mPasswordView.getText().toString();
-                personalObj.set_email(mEmailView.getText().toString());
-                personalObj.set_password(mPasswordView.getText().toString());
-                personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition()));
-                personalObj.set_name(" ");
-                personalObj.set_customerId(customerid);
-            }
 
-            if(customerid == 0) {
-                mAuthTask = new UserLoginTask(email, password);
-                mAuthTask.execute((Void) null);
-            }
-            else
-            {
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle(email+"Already Exists")
-                        .setMessage("Sure want to create new account??")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mAuthTask = new UserLoginTask(email, password);
-                                CREDENTIALS = new String[]{""};
-                                mAuthTask.execute((Void) null);
-                                // continue with delete
+
+            LayoutInflater li = LayoutInflater.from(LoginActivity.this);
+            final View promptsView = li.inflate(R.layout.otp_enter_dialogue_box, null);
+
+             alertDialogBuilder = new android.app.AlertDialog.Builder(
+                    LoginActivity.this);
+
+            Button submit = (Button)promptsView.findViewById(R.id.button5);
+            Button reEnterOTP = (Button)promptsView.findViewById(R.id.button3);
+            submit.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPasswordView.setError(null);
+                    // get user input and set it to result
+//                                    pdia = new ProgressDialog(LoginActivity.this);
+//                                    pdia.setMessage("Restoring Data Please Wait");
+//                                    pdia.show();
+                    EditText textView = (EditText) promptsView.findViewById(R.id.verifyOTPEditText);
+                    final String otpEnter = textView.getText().toString();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    final SharedPreferences.Editor editor = prefs.edit();
+
+                    ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+                    ArrayList<String>otp = new ArrayList<String>();
+                    otp.add(otpEnter);
+                    ArrayList<String>phone = new ArrayList<String>();
+                    phone.add(password);
+                    data.add(otp);
+                    data.add(phone);
+                    AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+                    RequestParams params = new RequestParams();
+                    String s1 = null;
+
+                    StringWriter out = new StringWriter();
+                    try {
+                        JSONValue.writeJSONString(data, out);
+                        s1 = out.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String Json = s1;
+                    params.put("otp", Json);
+                    client.post("http://" + address + "/authOTP.php", params, new AsyncHttpResponseHandler() {
+                        // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                            try {
+                                String str = new String(bytes, "UTF-8");
+                                JSONParser parser = new JSONParser();
+                                JSONObject object = (JSONObject) parser.parse(str);
+                                final String status = (String) object.get("Message");
+                                if (status.equals("success")) {
+                               // if (true) {
+                                    editor.putBoolean("otpVerified", true);
+                                    editor.commit();
+
+
+                                    int customerid = 0;
+                                    if ((customerId != null) && (!customerId.equals("0"))) {
+                                        customerid = Integer.parseInt(customerId);
+                                        CREDENTIALS[0] = mEmailView.getText().toString() + ":" + mPasswordView.getText().toString();
+                                        personalObj.set_email(mEmailView.getText().toString());
+                                        personalObj.set_password(mPasswordView.getText().toString());
+                                        personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition()));
+                                        personalObj.set_name(mName.getText().toString());
+                                        personalObj.set_customerId(customerid);
+                                    }
+
+                                    if (customerid == 0) {
+                                        mAuthTask = new UserLoginTask(email, password);
+                                        mAuthTask.execute((Void) null);
+                                    } else {
+                                        new AlertDialog.Builder(LoginActivity.this)
+                                                .setTitle(email + "Already Exists")
+                                                .setMessage("Sure want to create new account??")
+                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        mAuthTask = new UserLoginTask(email, password);
+                                                        CREDENTIALS = new String[]{""};
+                                                        mAuthTask.execute((Void) null);
+                                                        // continue with delete
+                                                    }
+                                                })
+                                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // do nothing
+                                                        allDataRestore(customerId);
+                                                        DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
+                                                        databaseHandler.addPersonalInfo(personalObj);
+
+                                                        // CREDENTIALS[0] = personalObj.get_email()+":"+personalObj.get_password();
+                                                        mAuthTask = new UserLoginTask(email, password);
+                                                        mAuthTask.execute((Void) null);
+
+                                                    }
+                                                })
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .show();
+                                    }
+                                }
+                                else
+                                {
+                                    mPasswordView.setError("Invalid OTP");
+                                    mPasswordView.requestFocus();
+                                    editor.putBoolean("otpVerified", false);
+                                    editor.commit();
+                                }
+
+//
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                                 allDataRestore(customerId);
-                                DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
-                                databaseHandler.addPersonalInfo(personalObj);
 
-                               // CREDENTIALS[0] = personalObj.get_email()+":"+personalObj.get_password();
-                                mAuthTask = new UserLoginTask(email, password);
-                                mAuthTask.execute((Void) null);
+                            //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
 
+                        }
+
+                        @Override
+                        public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                            try {
+                                String str = new String(bytes, "UTF-8");
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mPasswordView.setError("Something went wrong please check internet connection");
+                                mPasswordView.requestFocus();
                             }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
+                            // Toast.makeText(getApplicationContext(),    "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+
+                        }
+
+
+                    });
+
+                }
+            });
+            reEnterOTP.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                generateOTP(password);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    thread.start();
+
+                }
+            });
+
+            alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder
+                    .setCancelable(false)
+
+//                    .setPositiveButton("Submit",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//
+//                                    //registerNewAccount(otpEnter);
+//
+//                                }
+//                            })
+//            .setNegativeButton("Re-Send OTP", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//
+//
+//                            Thread thread = new Thread() {
+//                                @Override
+//                                public void run() {
+//                                    try {
+//                                        generateOTP(password);
+//
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            };
+//
+//                            thread.start();
+//
+//
+//
+//
+//                        }
+//                    })
+            ;
+
+             alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+
+
+//            int customerid = 0;
+//            if((customerId!= null)&&(!customerId.equals("0"))) {
+//                customerid = Integer.parseInt(customerId);
+//                CREDENTIALS[0] = mEmailView.getText().toString()+":"+mPasswordView.getText().toString();
+//                personalObj.set_email(mEmailView.getText().toString());
+//                personalObj.set_password(mPasswordView.getText().toString());
+//                personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition()));
+//                personalObj.set_name(" ");
+//                personalObj.set_customerId(customerid);
+//            }
+//
+//            if(customerid == 0) {
+//                mAuthTask = new UserLoginTask(email, password);
+//                mAuthTask.execute((Void) null);
+//            }
+//            else
+//            {
+//                new AlertDialog.Builder(LoginActivity.this)
+//                        .setTitle(email+"Already Exists")
+//                        .setMessage("Sure want to create new account??")
+//                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                mAuthTask = new UserLoginTask(email, password);
+//                                CREDENTIALS = new String[]{""};
+//                                mAuthTask.execute((Void) null);
+//                                // continue with delete
+//                            }
+//                        })
+//                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                // do nothing
+//                                 allDataRestore(customerId);
+//                                DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
+//                                databaseHandler.addPersonalInfo(personalObj);
+//
+//                               // CREDENTIALS[0] = personalObj.get_email()+":"+personalObj.get_password();
+//                                mAuthTask = new UserLoginTask(email, password);
+//                                mAuthTask.execute((Void) null);
+//
+//                            }
+//                        })
+//                        .setIcon(android.R.drawable.ic_dialog_alert)
+//                        .show();
+//            }
         }
     }
+    //i: patient id
+    //s: file path
+   public void downloadFile(int i, String s){
+        int totalSize = 0;
+        int downloadedSize = 0;DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
+        int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
+        File file1 = new File(s);
+
+        String dwnload_file_path = "http://docbox.co.in/sajid/"+customerId+"//"+String.valueOf(i)+"//"+file1.getName();
+        try {
+            URL url = new URL(dwnload_file_path);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+
+            //connect
+            urlConnection.connect();
+
+            //set the path where we want to save the file
+            File SDCardRoot = Environment.getExternalStorageDirectory();
+            //create a new file, to save the downloaded file
+            File file = new File(file1,file1.getName());
+
+            FileOutputStream fileOutput = new FileOutputStream(file);
+
+            //Stream used for reading the data from the internet
+            InputStream inputStream = urlConnection.getInputStream();
+
+            //this is the total size of the file which we are downloading
+            totalSize = urlConnection.getContentLength();
+
+
+            //create a buffer...
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                fileOutput.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+                // update the progressbar //
+
+            }
+            //close the output stream when complete //
+            fileOutput.close();
+
+
+        }
+        catch (final Exception e) {
+           e.printStackTrace();
+        }
+    }
+
+
 
 
     public void allDataRestore(String customerId)
@@ -454,13 +801,97 @@ return;}
 
         final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
 
-        TestRestoreData testRestoreData = new TestRestoreData(params,client,"getAllPatients.php");
+          testRestoreData = new TestRestoreData(params,client,"getAllPatients.php");
         testRestoreData.execute((Void) null);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("restore", true);
+        editor.putString("customerId", customerId);
+        editor.commit();
+
+//                new Thread(new Runnable() {
+//                    public void run() {
+//                        while(true)
+//                        if (testRestoreData.getStatus() == AsyncTask.Status.FINISHED) {
+//                            if(arrayListIdPhotoPath!=null)
+//                            for(int i = 0;i<arrayListIdPhotoPath.size();i++)
+//                            downloadFile(i,arrayListIdPhotoPath.get(i).get(i));break;
+//                        }
+//                    }
+//                }).start();
+
+
+
+
 
 
 
 
     }
+    public void generateOTP(String mPassword)
+    {
+        if (utility.hasActiveInternetConnection(getApplicationContext()))
+        {
+            AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+            RequestParams params = new RequestParams();
+            String s1 = null;
+
+            StringWriter out = new StringWriter();
+            try {
+                JSONValue.writeJSONString(mPassword, out);
+                s1 = out.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String Json = s1;
+            params.put("data", Json);
+            client.post("http://" + address + "/OTPDocBox.php", params, new AsyncHttpResponseHandler() {
+                // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+
+                        JSONParser parser = new JSONParser();
+                        JSONObject object = (JSONObject) parser.parse(str);
+                        final Boolean status = (Boolean) object.get("status");
+//
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+                }
+
+                @Override
+                public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+                        String str = new String(bytes, "UTF-8");
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    // Toast.makeText(getApplicationContext(),    "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                }
+
+                @Override
+                public void onFinish() {
+
+
+
+                }
+
+
+            });
+
+        }
+
+    }
+
 
 
 
@@ -495,15 +926,26 @@ return;}
 
             client.post(apiAddress, params, new AsyncHttpResponseHandler() {
                 @Override
-                public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
 
                     try {
                         String str = new String(bytes, "UTF-8");
                         // JSONObject mainObject = new JSONObject(str);
-                        customerId =str;
+                       // customerId =str;
+//                       JSONObject mainObject = new JSONObject();
 
-                        //System.out.print("a");
 
+                        // int k = Integer.parseInt(str);
+                        // str = Integer.toString(k);
+                        JSONParser parser = new JSONParser();
+                        JSONObject object =(JSONObject) parser.parse(str);
+                        String hex = (String) object.get("HashCode");
+                        customerId =  (String) object.get("CustomerId");
+
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString(getString(R.string.hash_code), hex);
+                        editor.commit();
 
                         // ((Activity) context).recreate();
 
@@ -517,7 +959,7 @@ return;}
                 }
 
                 @Override
-                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
                     try {
                        // String str = new String(bytes, "UTF-8");
                         //Toast.makeText(LoginActivity.this, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
@@ -669,6 +1111,16 @@ return;}
             return null;
         }
 
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            Intent intent = new Intent();
+            intent.setClass(getApplicationContext(), Activity_main_2.class);
+            startActivity(intent);
+            finish();
+
+        }
+
 
         public void doSomething()
         {
@@ -687,7 +1139,7 @@ return;}
 
                 client.post(apiAddress, params, new AsyncHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                    public void onSuccess(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes) {
 
                         try {
                             String str = new String(bytes, "UTF-8");
@@ -714,7 +1166,7 @@ return;}
                     }
 
                     @Override
-                    public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                    public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
                         try {
                             // String str = new String(bytes, "UTF-8");
                             //Toast.makeText(LoginActivity.this, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
@@ -778,7 +1230,7 @@ return;}
         protected Boolean doInBackground(Void... params) {
             DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
             // TODO: attempt authentication against a network service.
-
+boolean a = false;
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
@@ -791,8 +1243,14 @@ return;}
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     //this.saveToMysql();
-                    return pieces[1].equals(mPassword);
-
+                     a = pieces[1].equals(mPassword);
+//                    try {
+//                        return true;
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        e.printStackTrace();
+//                    }
 
                 }
             }
@@ -813,10 +1271,112 @@ return;}
             }
 
 
-            return false;
+            return a;
         }
 
+public void checkOTP()
+{
+    if (utility.hasActiveInternetConnection(getApplicationContext()))
+    {
+        AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+        RequestParams params = new RequestParams();
+        String s1 = null;
 
+        StringWriter out = new StringWriter();
+        try {
+            JSONValue.writeJSONString(mPassword, out);
+            s1 = out.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String Json = s1;
+        params.put("data", Json);
+        client.post("http://" + address + "/OTPDocBox.php", params, new AsyncHttpResponseHandler() {
+            // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                try {
+                    String str = new String(bytes, "UTF-8");
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject object = (JSONObject) parser.parse(str);
+                    final Boolean status = (Boolean) object.get("status");
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(status) {
+
+                                LayoutInflater li = LayoutInflater.from(LoginActivity.this);
+                                final View promptsView = li.inflate(R.layout.otp_enter_dialogue_box, null);
+
+                                android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(
+                                        LoginActivity.this);
+
+                                alertDialogBuilder.setView(promptsView);
+                                alertDialogBuilder
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        // get user input and set it to result
+                                                        EditText textView = (EditText)promptsView.findViewById(R.id.verifyOTPEditText);
+                                                        String otpEnter = textView.getText().toString();
+
+
+                                                    }
+                                                });
+                                android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+                                // show it
+                                alertDialog.show();
+
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Please enter a valid phone number", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+
+
+
+                    //Toast.makeText(getApplicationContext(), "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+                    //prgDialog.hide();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+            }
+
+            @Override
+            public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                try {
+                    String str = new String(bytes, "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                // Toast.makeText(getApplicationContext(),    "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onFinish() {
+
+
+
+            }
+
+
+        });
+
+    }
+
+}
 
 
 
@@ -824,9 +1384,12 @@ return;}
 
         public void registerNewAccount()
         {
-            if (utility.hasActiveInternetConnection(getApplicationContext()))
-            {
+
             try {
+                String otp = "";
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor editor = prefs.edit();
+                otp = prefs.getString("otp", "0");
 
                 final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
 
@@ -839,38 +1402,49 @@ return;}
                 }
 
 
-
                 AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
                 personalObj = new personal_obj();
                 personalObj.set_email(mEmail);
                 personalObj.set_password(mPassword);
                 personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition() + 1));
-                personalObj.set_name(" ");
+                personalObj.set_name(mName.getText().toString());
                 RequestParams params = new RequestParams();
-               databaseHandler.addPersonalInfo(personalObj);
+                databaseHandler.addPersonalInfo(personalObj);
 
-
-                String Json = databaseHandler.composeJSONfromEmailPassword();
+                if (!checkBox.isChecked())
+                {  String Json = databaseHandler.composeJSONfromEmailPassword(LoginActivity.this);
                 params.put("emailPasswordJSON", Json);
 
-               // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
+                // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
 
-               client.post("http://"+address+"/register.php", params, new AsyncHttpResponseHandler() {
-               // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+                client.post("http://" + address + "/register.php", params, new AsyncHttpResponseHandler() {
+                    // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                    public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
 
                         try {
                             String str = new String(bytes, "UTF-8");
-                           // databaseHandler.addPersonalInfo(personalObj);
-                            int k = Integer.parseInt(str);
-                            str = Integer.toString(k);
+                            // databaseHandler.addPersonalInfo(personalObj);
+                            JSONObject mainObject = new JSONObject();
+
+
+                            // int k = Integer.parseInt(str);
+                            // str = Integer.toString(k);
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                            SharedPreferences.Editor editor = prefs.edit();
                             JSONParser parser = new JSONParser();
-                            databaseHandler.updatePersonalInfo("id", str);
+                            JSONObject object = (JSONObject) parser.parse(str);
+                            String hex = (String) object.get("HashCode");
+                            String id = (String) object.get("CustomerId");
 
 
+                            databaseHandler.updatePersonalInfo("id", id);
 
-                            System.out.print("true");
+
+                            editor.putString(getString(R.string.hash_code), hex);
+                            editor.commit();
+
+
                             //Toast.makeText(getApplicationContext(), "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
                             //prgDialog.hide();
                         } catch (Exception e) {
@@ -882,7 +1456,7 @@ return;}
                     }
 
                     @Override
-                    public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                    public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
                         try {
                             String str = new String(bytes, "UTF-8");
 
@@ -895,35 +1469,147 @@ return;}
 
                     @Override
                     public void onFinish() {
-                        Toast.makeText(getApplicationContext(), "END", Toast.LENGTH_LONG).show();
+
+
                     }
 
 
                 });
+            }
+                else
+                {
+                    String s1 = null;
+                    ArrayList<String> personalInfo = new ArrayList<>();
+                    personalInfo.add(mAttachedDoctorEmailView.getText().toString());
+                    personalInfo.add(mEmail);
+                    personalInfo.add(mPassword);
+                    personalInfo.add(mName.getText().toString());
+                    StringWriter out = new StringWriter();
+                    try {
+                        JSONValue.writeJSONString(personalInfo, out);
+                        s1 = out.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String Json = s1;
+                    params.put("emailPasswordJSON", Json);
 
-            }
+                    // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
 
-            catch (Exception e)
-            {
-                System.out.print(e);
-            }
-            }
+                    client.post("http://" + address + "/registerHelper.php", params, new AsyncHttpResponseHandler() {
+                        // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                            try {
+                                String str = new String(bytes, "UTF-8");
+                                JSONParser parser = new JSONParser();
+                                JSONObject object = (JSONObject) parser.parse(str);
+                                String message = (String) object.get("message");
+                                if(message.equals("registered"))
+                                {
+
+                                }
+                                else
+                                {
+                                    mAttachedDoctorEmailView.setError("Wrong Email id provided");
+                                    mAttachedDoctorEmailView.requestFocus();
+
+
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                            try {
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+
+                        }
+
+
+                    });
+                }
+
+
+    }
+
+    catch (Exception e)
+    {
+        System.out.print(e);
+    }
+
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
+if(mAttachedDoctorEmailView.getError()==null)
             if (success) {
                 Intent intent = new Intent();
-                intent.setClass(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-                finish();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                boolean restoreFlag = prefs.getBoolean("restore", false);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                if(checkBox.isChecked()) {
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_helper));
+                    editor.putString("attachedDoctorEmail", mAttachedDoctorEmailView.getText().toString());
+
+                }
+                else
+
+               editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+                editor.commit();
+               // boolean otpSuccessAuthFlag = prefs.getBoolean("otpSuccessAuth", true);
+                if((!restoreFlag)) {
+
+
+                    intent.setClass(getApplicationContext(), Activity_main_2.class);
+                    startActivity(intent);
+                    finish();
+                }
+//                else
+//                {
+//                    Toast.makeText(LoginActivity.this,"Wrong OTP",Toast.LENGTH_LONG);
+//                    mPasswordView.setError("Wrong OTP entered Try Again");
+//                    mPasswordView.requestFocus();
+//                }
             } else {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                if(checkBox.isChecked())
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_helper));
+                else
+
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+                editor.commit();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
+            else
+{
+    DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
+    databaseHandler.deletePersonalInfo();
+    newUserFlag = 1;
+utility.recreateActivityCompat(LoginActivity.this);
+    alertDialog.dismiss();
+}
         }
 
         @Override

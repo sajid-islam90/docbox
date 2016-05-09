@@ -2,6 +2,8 @@ package activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,6 +38,8 @@ public class appointment_settings extends AppCompatActivity {
     static String endAmPm;
     static MyAnalogClock endAnalogClock;
     static TextView startAmPmTextView;
+    static TextView textView;
+    static TextView textView2;
     static TextView endAmPmTextView;
    static NumberPicker numberPicker;
 
@@ -47,6 +51,31 @@ public class appointment_settings extends AppCompatActivity {
         setContentView(R.layout.activity_appointment_settings);
         DatabaseHandler databaseHandler = new DatabaseHandler(appointment_settings.this);
         ArrayList<String> settings = databaseHandler.getAppointmentSettings();
+
+        //appointment settings per day patch start
+        CheckBox sunday = (CheckBox)findViewById(R.id.checkBox);
+        CheckBox monday = (CheckBox)findViewById(R.id.checkBox1);
+        CheckBox tuesday = (CheckBox)findViewById(R.id.checkBox2);
+        CheckBox wednesday = (CheckBox)findViewById(R.id.checkBox3);
+        CheckBox thursday = (CheckBox)findViewById(R.id.checkBox4);
+        CheckBox friday = (CheckBox)findViewById(R.id.checkBox5);
+        CheckBox saturday = (CheckBox)findViewById(R.id.checkBox6);
+        sunday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+
+        //appointment settings per day patch end
+         textView = (TextView)findViewById(R.id.startTime);
+        Typeface font = Typeface.createFromAsset(appointment_settings.this.getAssets(), "digital.ttf");
+        textView.setTypeface(font);
+        textView2 = (TextView)findViewById(R.id.endTime);
+
+        textView2.setTypeface(font);
         numberPicker = (NumberPicker)findViewById(R.id.numberPicker);
         numberPicker.setMaxValue(100);
         numberPicker.setMinValue(1);
@@ -72,25 +101,43 @@ public class appointment_settings extends AppCompatActivity {
         if(startTime.getHour()>=12)
         {
             startAmPm = "PM";
+            if(startTime.getMinute()>10)
+            textView.setText((startTime.getHour()-12)+":"+startTime.getMinute());
+            else
+                textView.setText((startTime.getHour()-12)+":0"+startTime.getMinute());
         }
         else
         {
             startAmPm = "AM";
+
+            if(startTime.getMinute()>10)
+                textView.setText((startTime.getHour())+":"+startTime.getMinute());
+            else
+                textView.setText((startTime.getHour())+":0"+startTime.getMinute());
         }
         if(endTime.getHour()>=12)
         {
             endAmPm = "PM";
+            if(endTime.getMinute()>10)
+                textView2.setText((endTime.getHour()-12)+":"+endTime.getMinute());
+            else
+                textView2.setText((endTime.getHour()-12)+":0"+endTime.getMinute());
         }
         else
         {
             endAmPm = "AM";
+            if(endTime.getMinute()>10)
+                textView2.setText((endTime.getHour())+":"+endTime.getMinute());
+            else
+                textView2.setText((endTime.getHour())+":0"+endTime.getMinute());
         }
         startAmPmTextView = (TextView)findViewById(R.id.startAmPm);
-        startAnalogClock = (MyAnalogClock)findViewById(R.id.startClock);
+        startAnalogClock = (MyAnalogClock) findViewById(R.id.startClock);
         startAnalogClock.setTime(startTime.getHour(), startTime.getMinute(), 0);
+
         startAmPmTextView.setText(startAmPm);
 
-        startAnalogClock.setOnClickListener(new View.OnClickListener() {
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doWork(startTime);
@@ -103,7 +150,7 @@ public class appointment_settings extends AppCompatActivity {
         endAnalogClock.setTime(endTime.getHour(), endTime.getMinute(), 0);
         endAmPmTextView.setText(endAmPm);
 
-        endAnalogClock.setOnClickListener(new View.OnClickListener() {
+        textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doWork(endTime);
@@ -177,6 +224,8 @@ public class appointment_settings extends AppCompatActivity {
             saveAppointmentPreferences();
             startTime = new Time();
             endTime = new Time();
+            Intent intent = new Intent(this,Activity_main_2.class);
+           // startActivity(intent);
             finish();
             return true;
         }

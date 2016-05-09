@@ -9,6 +9,35 @@ public class Patient {
     int _id;
     String _name;
 
+    public String get_weight() {
+        return _weight;
+    }
+
+    public void set_weight(String _weight) {
+        this._weight = _weight;
+    }
+
+    String _weight;
+
+    public String get_opd_ipd() {
+        return _opd_ipd;
+    }
+
+    public void set_opd_ipd(String _opd_ipd) {
+        this._opd_ipd = _opd_ipd;
+    }
+
+    String _opd_ipd;
+
+    public int get_first_aid_id() {
+        return _first_aid_id;
+    }
+
+    public void set_first_aid_id(int _first_aid_id) {
+        this._first_aid_id = _first_aid_id;
+    }
+
+    int _first_aid_id;
     public String get_last_seen_date() {
         return _last_seen_date;
     }
@@ -54,6 +83,16 @@ public class Patient {
     String _address;
     String _ocupation;
     String _last_seen_date;
+
+    public String get_next_follow_up_date() {
+        return _next_follow_up_date;
+    }
+
+    public void set_next_follow_up_date(String _next_follow_up_date) {
+        this._next_follow_up_date = _next_follow_up_date;
+    }
+
+    String _next_follow_up_date;
     String _age;
     String _gender;
     String _height;
@@ -78,6 +117,7 @@ public class Patient {
     String _diagnosis;
     byte[] _bmp;
 
+
     public byte[] get_bmp() {
         return _bmp;
     }
@@ -91,18 +131,36 @@ public class Patient {
 
     public Patient()
     {
-
+        this._id = 0;
+        this._age = "0";
+        this._gender = "m";
+        this._height = "0";
+        this._name = "";
+        this._diagnosis = "";
+        this._bmp = new byte[0];
+        this._email = "";
+        this._contact_number= "";
+        this. _address = "";
+        this._ocupation = "";
+        this._last_seen_date = "";
+        this._first_aid_id = 0;
+        this._weight ="0";
+        this._opd_ipd ="";
     }
 
     public  Patient(int _id,String _name,String _age,String _gender ,String _height,byte[] _bmp,String _diagnosis )
     {
         this._age = _age;
         this._gender = _gender;
+        this._first_aid_id = 0;
         this._height = _height;
         this._name = _name;
         this._id = _id;
         this._diagnosis = _diagnosis;
+        if(_bmp!=null)
         this._bmp = _bmp;
+        else
+            this._bmp = new byte[0];
 
     }
 
@@ -112,8 +170,12 @@ public class Patient {
         this._gender = _gender;
         this._height = _height;
         this._name = _name;
+        this._first_aid_id = 0;
         this._diagnosis = _diagnosis;
-        this._bmp = _bmp;
+        if(_bmp!=null)
+            this._bmp = _bmp;
+        else
+            this._bmp = new byte[0];
 
 
     }

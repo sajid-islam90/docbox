@@ -74,10 +74,10 @@ public class AddClinicalNotesActivity extends ActionBarActivity {
                     case 1:
 
 
-                        Intent child1 = new Intent(AddClinicalNotesActivity.this,Exam_Activity.class);
+                        /*Intent child1 = new Intent(AddClinicalNotesActivity.this,);
                         child1.putExtra("id",pid);
                         child1.putExtra("exam_obj",examObj);
-                        startActivityForResult(child1, REQUEST_CODE);break;
+                        startActivityForResult(child1, REQUEST_CODE);break;*/
 
 
 

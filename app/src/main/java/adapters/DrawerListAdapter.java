@@ -46,9 +46,12 @@ public class DrawerListAdapter extends ArrayAdapter<Item> {
         // 1. Create inflater
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        View rowView;
         // 2. Get rowView from inflater
-        View rowView = inflater.inflate(R.layout.drawer_list_item, parent, false);
+
+         rowView = inflater.inflate(R.layout.nav_drawer_list_item, parent, false);
+
+
 
 
        // rowView.setTag(position);
@@ -135,11 +138,11 @@ public class DrawerListAdapter extends ArrayAdapter<Item> {
         });
         */
         // 3. Get the two text view from the rowView
-        TextView textView = (TextView) rowView.findViewById(R.id.drawerItem);
-        ImageView imageView = (ImageView)rowView.findViewById(R.id.drawer_image);
+        TextView textView = (TextView) rowView.findViewById(R.id.menuItemTextView);
+       ImageView imageView = (ImageView)rowView.findViewById(R.id.menuItemImageView);
         String a = (itemsArrayList.get(position).getTitle());
 
-        textView.setOnClickListener(new View.OnClickListener() {
+       /* textView.setOnClickListener(new View.OnClickListener() {
 
                                         @Override
                                         public void onClick(View v) {
@@ -150,13 +153,13 @@ public class DrawerListAdapter extends ArrayAdapter<Item> {
                                             Toast.makeText(context,"position "+position,Toast.LENGTH_SHORT).show();
 
                                         }
-                                    });
+                                    });*/
 
         // 4. Set the text for textView
         //String a = (itemsArrayList.get(position).getTitle());
-
-imageView.setImageBitmap(itemsArrayList.get(position).getBmp());
-       textView.setText(a);
+//
+     imageView.setImageBitmap(itemsArrayList.get(position).getBmp());
+        textView.setText(a);
         // 5. retrn rowView
         return rowView;
     }

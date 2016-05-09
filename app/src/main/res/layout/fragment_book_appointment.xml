@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:contentPadding="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardElevation="5dp"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardUseCompatPadding="true"
+    android:layout_width="match_parent">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:weightSum="7"
+        android:layout_marginBottom="10dp"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active"
+            android:id="@+id/checkBoxDay"
+            android:layout_gravity="right"
+            android:checked="false" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeLinearLayout"
+            android:layout_below="@+id/settings">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/selectTimeLayout"
+                android:layout_below="@+id/settings"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Select Time"
+                    android:id="@+id/textView34"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/settings"
+                    android:layout_centerHorizontal="true"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/black_overlay" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:id="@+id/imageView5"
+                    android:background="@color/green"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectTimeLayout"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/time_layout"
+                android:divider="@color/green"
+                android:dividerPadding="2dp"
+                android:showDividers="middle">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Start Time"
+                        android:id="@+id/textView35"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignParentEnd="false"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/black_overlay" />
+
+
+
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/startAmPm"
+                        android:layout_below="@+id/startTime"
+                        android:layout_centerHorizontal="true"
+                        android:text="AM/PM"
+                        android:gravity="center"
+                        android:textColor="@color/black_overlay" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/startTime"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:layout_below="@+id/textView35"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:textColor="@color/black_overlay"
+                        android:textSize="50dp"
+                        android:text="sdsds" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="End Time"
+                        android:id="@+id/textView36"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/black_overlay" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/endTime"
+                        android:layout_below="@+id/textView36"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="50dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/black_overlay" />
+
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/endAmPm"
+                        android:layout_below="@+id/endTime"
+                        android:layout_centerHorizontal="true"
+                        android:text="AM/PM"
+                        android:gravity="center"
+                        android:textColor="@color/black_overlay" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Average Number Of Patients To Attend"
+            android:id="@+id/textView37"
+            android:layout_below="@+id/timeLinearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/black_overlay" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:id="@+id/imageView6"
+            android:background="@color/green"
+            android:layout_below="@+id/textView37"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView37"
+            android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numberPickerAppointments"
+                android:orientation="horizontal"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -1,6 +1,18 @@
 package com.example.sajid.myapplication;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
+import org.json.simple.JSONValue;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import it.sauronsoftware.ftp4j.FTPClient;
@@ -20,10 +32,12 @@ public class FTPHelper {
     static final String FTP_PASS  ="aimsaims";
     static String filePath;
     static String patientName;
+    static Context context;
 
-    public static void Dowork(ArrayList<String> path,String Name, final String CustomerId) {
+    public static void Dowork(ArrayList<String> path,String Name, final String CustomerId,Context context1) {
         final ArrayList<String>filePath = path;
         patientName = Name;
+        context = context1;
 
 
         new Thread(new Runnable() {
@@ -49,6 +63,92 @@ public class FTPHelper {
 
 
     }
+    public static void uploadUsingPhp(File fileName,String CustomerId,String patientId)
+    {
+        String destinationPath;
+        RequestParams params = new RequestParams();
+        ArrayList<String> parameters = new ArrayList<>();
+        parameters.add(fileName.getPath());
+        parameters.add(CustomerId);
+        parameters.add(patientId);
+        String s1 = null;
+
+        StringWriter out = new StringWriter();
+        try {
+            JSONValue.writeJSONString(parameters, out);
+            s1 = out.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        params.put("fileUpload",s1);
+        String address = context.getResources().getString(R.string.action_server_ip_address);
+        sync("http://"+ address +"/uploadFile.php",params);
+
+    }
+    public static void sync(String apiAddress, RequestParams params) {
+        final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+
+        final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+        try
+        {
+
+            client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+
+
+                        //System.out.print("a");
+
+
+                        if (context == null) {
+                            return;
+                        }
+                        // ((Activity) context).recreate();
+
+                        //Toast.makeText(context, "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+                }
+
+                @Override
+                public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFinish() {
+                    // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                    //((Activity) context).recreate();
+
+                }
+
+
+
+
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 
     public static void uploadFile(File fileName,String CustomerId){
 
@@ -72,18 +172,20 @@ public class FTPHelper {
             }
 
             client.changeDirectory("/" + CustomerId + "/");
+            if(!patientName.equals("")) {
 
-            try {
-                client.createDirectory( patientName);
+                try {
+
+                    client.createDirectory(patientName);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                client.changeDirectory("/" + CustomerId + "/" + patientName + "//");
 
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            client.changeDirectory("/"+CustomerId+"/"+patientName +"//");
-
-
             client.upload(fileName, new MyTransferListener());
 
 

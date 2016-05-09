@@ -1,0 +1,164 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.sajid.myapplication.AccountVerificationActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/laterRelativeLayout"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Your Account Is Still Being Verified Please Check Back Later"
+            android:id="@+id/stillVerifyingTextView"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="37dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="click to enter registration details again"
+            android:id="@+id/enterAgainTextView"
+            android:layout_below="@+id/stillVerifyingTextView"
+            android:gravity="center" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/view6"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/regnRelativeLayout"
+        android:gravity="center">
+
+        <TextView android:text="Please Verify Your Account First" android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:id="@+id/verifyTitleTextView"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/verifyTitleTextView"
+            android:id="@+id/graduationRegnRelativelayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Graduation registeration number"
+                android:id="@+id/graduationRegnTitleTextView"
+                android:gravity="center"
+                android:layout_alignLeft="@+id/graduationRegistrationNumberEditText"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/grauationRegistrationYearEditText"
+                android:hint="Year of Regn."
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="false"
+                android:gravity="center"
+                android:layout_toEndOf="@+id/graduationRegistrationNumberEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:layout_below="@+id/graduationRegnTitleTextView" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/graduationRegistrationNumberEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:hint="Enter your MCI/State Regn. Number"
+                android:gravity="center"
+                android:layout_below="@+id/graduationRegnTitleTextView" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/graduationRegnRelativelayout"
+            android:id="@+id/postGraduationRegnRelativelayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Post Graduation registeration number"
+                android:id="@+id/postGraduationRegnTitleTextView"
+                android:gravity="center"
+                android:layout_alignLeft="@+id/postGraduationRegistrationNumberEditText"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/postGraduationRegistrationYearEditText"
+                android:hint="Year of Regn."
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="false"
+                android:gravity="center"
+                android:layout_toEndOf="@+id/postGraduationRegistrationNumberEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:layout_below="@+id/postGraduationRegnTitleTextView" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/postGraduationRegistrationNumberEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:hint="Enter your MCI/State Regn. Number"
+                android:gravity="center"
+                android:layout_below="@+id/postGraduationRegnTitleTextView" />
+
+        </RelativeLayout>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:id="@+id/submitButton"
+            android:layout_alignParentTop="false"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/postGraduationRegnRelativelayout" />
+
+    </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

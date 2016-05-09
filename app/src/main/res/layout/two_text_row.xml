@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="  "
-                android:id="@+id/textView"
+                android:id="@+id/textViewFollowupNumberMedia"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_toRightOf="@+id/fieldType" />
@@ -50,7 +50,7 @@
             android:layout_alignParentStart="false"
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="false"
-                android:layout_toRightOf="@+id/textView"
+                android:layout_toRightOf="@+id/textViewFollowupNumberMedia"
                 android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true" />
         </RelativeLayout>

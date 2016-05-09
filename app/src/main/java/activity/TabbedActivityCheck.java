@@ -12,9 +12,11 @@ import java.util.Locale;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -24,23 +26,34 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.sajid.myapplication.Activity_Video_Capture;
+import com.example.sajid.myapplication.FileUtils;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.example.sajid.myapplication.DatabaseHandler;
 
 import objects.DataBaseEnums;
 import objects.Item;
 import objects.Patient;
+import objects.personal_obj;
 
 import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
@@ -60,6 +73,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
     private static media_obj mediaObj = new media_obj() ;
     private static Uri fileUri;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    static final int PICKFILE_RESULT_CODE = 2;
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int TWO_TEXT_FIELDS = 1;
     private static final int ONE_PHOTO = 2;
@@ -211,15 +225,22 @@ if(OtherObjsStatic.size()<3)
     public void displayAddedField(ArrayList<Item> fieldList,View view)
     {
 
-        RecyclerView listView = (RecyclerView)view.findViewById(R.id.listViewOtherHist);
+        RecyclerView listView = (RecyclerView)view.findViewById(R.id.listViewOtherHistView);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerAdapter RecyclerAdapter = new recyclerAdapter(TabbedActivityCheck.this,TabbedActivityCheck.this,fieldList,TWO_TEXT_FIELDS,pid,version);
 
-        listView.setLayoutManager(layoutManager);
-        listView.setAdapter(RecyclerAdapter);
+        if(fieldList.size()>0)
+
+        { listView.setLayoutManager(layoutManager);
+           // listView.setVisibility(View.VISIBLE);
+        listView.setAdapter(RecyclerAdapter);}
+        else
+        {
+           // listView.setVisibility(View.GONE);
+        }
     }
 
     private void dispatchTakeVideoIntent() throws IOException {
@@ -388,7 +409,7 @@ if(OtherObjsStatic.size()<3)
             }}
             for(int i = 0 ;i<NotesFields.size();i++)
             {
-                databaseHandler.saveGenericNote(NotesFields.get(i));
+                databaseHandler.saveGenericNote(NotesFields.get(i),"0");
             }
             Patient patient = databaseHandler.getPatient(pid);
             databaseHandler.updatePatient(patient,0);
@@ -409,6 +430,12 @@ if(OtherObjsStatic.size()<3)
     {
         Intent curIntent = getIntent();
         DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c.getTime());
+        Patient patient = databaseHandler.getPatient(pid);
+        patient.set_last_seen_date(formattedDate);
+        databaseHandler.updatePatient(patient,0);
         int version  =  databaseHandler.getMaxFollowupVersion(pid);
         Intent intent =  new Intent(this, followUp.class);
         int pid = curIntent.getIntExtra("id",0);
@@ -461,15 +488,33 @@ if(OtherObjsStatic.size()<3)
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-                case 3:
-                    return getString(R.string.title_section4).toUpperCase(l);
+            DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+            personal_obj personalInfo = databaseHandler.getPersonalInfo();
+            int specialityId = Integer.parseInt(personalInfo.get_speciality());
+            if(specialityId == 5)
+            {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.title_section1_physician).toUpperCase(l);
+                    case 1:
+                        return getString(R.string.title_section2_physician).toUpperCase(l);
+                    case 2:
+                        return getString(R.string.title_section3_physician).toUpperCase(l);
+
+                }
+
+            }
+            else {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.title_section1).toUpperCase(l);
+                    case 1:
+                        return getString(R.string.title_section2).toUpperCase(l);
+                    case 2:
+                        return getString(R.string.title_section3).toUpperCase(l);
+                    case 3:
+                        return getString(R.string.title_section4).toUpperCase(l);
+                }
             }
             return null;
         }
@@ -516,6 +561,45 @@ if(OtherObjsStatic.size()<3)
 
 
             View rootView = inflater.inflate(R.layout.activity_generic_notes, container, false);
+            TextView textView10 =(TextView)rootView.findViewById(R.id.textView10);
+            LinearLayout textView6 =(LinearLayout)rootView.findViewById(R.id.linearLayoutOtherCustomNotesTitle);
+            LinearLayout textView7 =(LinearLayout)rootView.findViewById(R.id.linearLayoutMediaTitle);
+            final ListView listView = (ListView)rootView.findViewById(R.id.filedsList);
+            final RecyclerView listView2 = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
+            final RecyclerView listView3 = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
+            final CardView cardView = (CardView)rootView.findViewById(R.id.view13);
+           // listView2.setVisibility(View.GONE);
+          //  listView3.setVisibility(View.GONE);
+            textView10.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        listView.setVisibility(View.VISIBLE);
+                        listView2.setVisibility(View.GONE);
+                    listView3.setVisibility(View.GONE);
+                   // expandView(cardView);
+                }
+            });
+            textView6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                        listView2.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    listView3.setVisibility(View.GONE);
+                    //CollapseView(cardView);
+                }
+            });
+            textView7.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    listView3.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    listView2.setVisibility(View.GONE);
+                    //CollapseView(cardView);
+                }
+            });
             FloatingActionButton floatingActionButton1 = (FloatingActionButton)rootView.findViewById(R.id.view2);
             floatingActionButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -553,6 +637,67 @@ if(OtherObjsStatic.size()<3)
             doWork(rootView);
             return rootView;
         }
+        public void CollapseView(final View v) {
+            v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            int targetHeight;
+
+            DisplayMetrics metrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+
+
+            targetHeight = 200;
+
+
+
+            final int finalTargetHeight = targetHeight;
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    super.applyTransformation(interpolatedTime, t);
+                    v.getLayoutParams().height = (int)(finalTargetHeight);
+
+                    v.requestLayout();
+                }
+                @Override
+                public boolean willChangeBounds() {
+                    return true;
+                }
+            };
+
+            a.setDuration(((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density)) * 8);
+            v.startAnimation(a);
+
+
+        }
+
+        public void expandView(final View v){
+            v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            DisplayMetrics metrics = new DisplayMetrics();
+
+
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            final int targetHeight = metrics.heightPixels;
+            final int targetWidth = metrics.widthPixels;
+
+            Animation a = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    super.applyTransformation(interpolatedTime, t);
+                    v.getLayoutParams().height = (int)(targetHeight);
+                    v.getLayoutParams().width = targetWidth;
+                    v.requestLayout();
+                }
+                @Override
+                public boolean willChangeBounds() {
+                    return true;
+                }
+            };
+
+            a.setDuration(((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density)) * 8);
+            v.startAnimation(a);
+        }
         private void doWork(View view) {
 
 
@@ -560,12 +705,15 @@ if(OtherObjsStatic.size()<3)
             Bundle args = getArguments();
             int section = args.getInt(ARG_SECTION_NUMBER);
             media = utility.getMediaList(pid, getActivity(), section);
-            final ArrayList<Item> listOfItems = NotesFields.get(section );
+            final ArrayList<Item> listOfItems = NotesFields.get(section);
+            TextView textView = (TextView)view.findViewById(R.id.numberOfOtherNotes);
+
             ListView listView1 = (ListView)view.findViewById(R.id.filedsList);
             InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(getActivity(),listOfItems);
             ArrayList<Item> field = displayOtherNotes(section);
+            textView.setText(String.valueOf(field.size()));
             TabbedActivityCheck tabbedActivityCheck = (TabbedActivityCheck)getActivity();
-            tabbedActivityCheck.displayAddedField(field,view);
+            tabbedActivityCheck.displayAddedField(field, view);
 
             if(databaseHandler.getLatestOtherNote(pid,section)!=null) {
                 if ((databaseHandler.getLatestOtherNote(pid, section).length > 0) || (otherObj.size() > 0)) {
@@ -582,6 +730,7 @@ if(OtherObjsStatic.size()<3)
 
                }
            });
+           // listView1.setVisibility(View.GONE);
             displayAddedMedia(media, view);
 
 
@@ -699,28 +848,96 @@ Tabselected = section;
         }
 
 
-        public void addVideo(View view) throws IOException {this.dispatchTakeVideoIntent();}
+        public void addVideo(View view) throws IOException {
+
+            final CharSequence[] items = { "Take Video", "Choose from Library", "Cancel" };
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Add Video!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("Take Video")) {
+                        try {
+                            dispatchTakeVideoIntent();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (items[item].equals("Choose from Library")) {
+                        uploadNotesFromSDCardVideo();
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+
+
+
+
+            }
         public void addPhoto(View view) throws IOException {
-           dispatchTakePictureIntent();
+
+            final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Add Photo!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("Take Photo")) {
+
+                            dispatchTakePictureIntent();
+
+                    } else if (items[item].equals("Choose from Library")) {
+                        uploadNotesFromSDCard();
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+
+
 
             // this.dispatchTakePictureIntent();
         }
+        public void uploadNotesFromSDCardVideo()
+        {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
+        }
+        public void uploadNotesFromSDCard()
+        {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
+        }
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c.getTime());
             Bundle args = getArguments();
             int section = args.getInt(ARG_SECTION_NUMBER);
+            DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+            Patient patient = databaseHandler.getPatient(pid);
+            if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_CANCELED) {
+//                Uri videoUri = data.getData();
+//                String path = videoUri.getPath();
+                if(new File(mediaObj.get_media_path()).length()<=0)
+                { new File(mediaObj.get_media_path()).delete();
+                    utility.recreateActivityCompat(getActivity());
+                    return;}
 
-            if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-                Uri videoUri = data.getData();
-                String path = videoUri.getPath();
 
-                DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
-                mediaObj.set_media_path(path);
+
                 mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 
                 mediaObj.set_pid(pid);
                 mediaObj.set_section(section);
                 mediaObj.set_version(1);
+//                patient.set_last_seen_date(formattedDate);
+//                databaseHandler.updatePatient(patient);
                 databaseHandler.addMedia(mediaObj);
 
                 Intent intent = getActivity().getIntent();
@@ -729,17 +946,24 @@ Tabselected = section;
                 startActivity(intent);
             }
 
-            if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {
 
-                DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
+
 
                 mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
                 Bitmap bitmap;
                 bitmap = BitmapFactory.decodeFile(mediaObj.get_media_path());
+                if(bitmap==null)
+                {
+                   new File(mediaObj.get_media_path()).delete();
+                    utility.recreateActivityCompat(getActivity());
+                    return;
+                }
+
                 ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
                 // save image into gallery
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, ostream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
 
                 try {
                     FileOutputStream fout = new FileOutputStream(new File(mediaObj.get_media_path()));
@@ -753,6 +977,8 @@ Tabselected = section;
                 mediaObj.set_pid(pid);
                 mediaObj.set_section(section);
                 mediaObj.set_version(1);
+//                patient.set_last_seen_date(formattedDate);
+//                databaseHandler.updatePatient(patient);
                 databaseHandler.addMedia(mediaObj);
 
                 Intent intent = getActivity().getIntent();
@@ -763,10 +989,91 @@ Tabselected = section;
 
 
             }
+            if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null)))
+            {Uri uri = data.getData();
+                File file = null;
+                String file_name = "";
+                String file_path = "";
+
+
+                if (uri.getScheme().compareTo("content")==0) {
+                    Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+                    if (cursor.moveToFirst()) {
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
+                        Uri filePathUri = Uri.parse(cursor.getString(column_index));
+                        file_name = filePathUri.getLastPathSegment();
+                        file_path=filePathUri.getPath();
+                    }
+                }
+
+
+                try
+                {
+                    File newFile = null;
+
+                    File storageDir =
+                            new File(Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Notes");
+                    if(!storageDir.exists())
+                        storageDir.mkdir();
+                    newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
+                    int file_size = Integer.parseInt(String.valueOf(newFile.length()/1024));
+                    if(file_size > 20480 )
+                    {
+                        Toast.makeText(getActivity(), "File Too Large", Toast.LENGTH_SHORT).show();
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        final File finalNewFile = newFile;
+                        builder.setMessage("File too large \nPlease choose a file less than 20 Mb")
+                                .setCancelable(false)
+                                .setTitle("ALERT")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        finalNewFile.delete();
+                                        //((Activity) followUp.this).recreate();
+                                        return;
+                                        //do things
+                                    }
+                                });
+                        android.support.v7.app.AlertDialog alert = builder.create();
+                        alert.show();
+
+
+                    }
+                    FileUtils.copyFile(new File(file_path), newFile);
+                    if((newFile.getName().contains(".jpeg"))||(newFile.getName().contains(".png"))
+                            ||(newFile.getName().contains(".mp4")) ||(newFile.getName().contains(".jpg"))) {
+                        mediaObj.set_media_path(newFile.getPath());
+                        mediaObj.set_pid(pid);
+                        mediaObj.set_section(section);
+                        mediaObj.set_version(1);
+                        if(newFile.getName().contains(".mp4"))
+                        {
+                            mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                        }
+                        else
+                        {
+                            mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
+                        }
+//                        patient.set_last_seen_date(formattedDate);
+//                        databaseHandler.updatePatient(patient);
+                        databaseHandler.addMedia(mediaObj);
+                        Intent intent = getActivity().getIntent();
+                        Tabselected = section;
+                        getActivity().finish();
+                        startActivity(intent);
+                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
 
         }
         private void dispatchTakePictureIntent() {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent takePictureIntent = new Intent(getActivity(),CameraDemoActivity.class);
             Intent intent = getActivity().getIntent();
 
 
@@ -781,15 +1088,18 @@ Tabselected = section;
                 try {
                     photoFile = PhotoHelper.createImageFileForNotes(pid,getContext());
 
-                } catch (IOException ex) {
+                }
+                catch (Exception e) {
                     // Error occurred while creating the File
-
+                    e.printStackTrace();
                 }
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    takePictureIntent.putExtra("output",
-                            Uri.fromFile(photoFile));
+                    takePictureIntent.putExtra("pid",pid);
+                    takePictureIntent.putExtra("filePath",photoFile.getPath());
+//                    takePictureIntent.putExtra("output",
+//                            Uri.fromFile(photoFile));
                     mediaObj.set_media_name(photoFile.getPath());
                     mediaObj.set_media_path(photoFile.getPath());
 
@@ -804,7 +1114,8 @@ Tabselected = section;
             }
         }
         private void dispatchTakeVideoIntent() throws IOException {
-            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            //Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            Intent intent = new Intent(getActivity(),Activity_Video_Capture.class);
 
             //fileUri = PhotoHelper.createVideoFile(pid);
             if (intent.resolveActivity(getContext().getPackageManager()) != null) {
@@ -821,9 +1132,12 @@ Tabselected = section;
             }
             if (fileUri != null) {
                 // create a file to save the video
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
+                intent.putExtra("videoPath", fileUri.getPath()) ;
+                mediaObj.set_media_path(fileUri.getPath());
+//                intent.putExtra("android.intent.extra.durationLimit", 120);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
+//
+//                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
 
                 // start the Video Capture Intent
                 startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
@@ -832,6 +1146,8 @@ Tabselected = section;
         public void displayAddedMedia(ArrayList<Item> fieldList,View rootView)
         {
             RecyclerView listView = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
+            TextView textView =(TextView)rootView.findViewById(R.id.numberOfMedia);
+            textView.setText(String.valueOf(fieldList.size()));
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             recyclerAdapter RecyclerAdapter = new recyclerAdapter(this.getActivity(),getContext(),fieldList,ONE_PHOTO,pid,version);

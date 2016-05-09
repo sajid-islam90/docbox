@@ -2,10 +2,10 @@
 <resources>
 
     <string-array name="follow_up">
-        <item>followup item 1</item>
-        <item>followup item 2</item>
-        <item>followup item 3</item>
-        <item>followup item 4</item>
+        <item>Chief Complaint</item>
+        <item>Complications</item>
+        <item>Medications(if any)</item>
+        <item>Remark</item>
         <item>followup item 5</item>
     </string-array>
 </resources>

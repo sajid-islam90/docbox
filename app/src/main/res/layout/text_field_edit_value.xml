@@ -1,29 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceLarge"
 
         android:id="@+id/fieldName"
         android:textColor="@color/green"
-        android:focusable="false" />
+        android:focusable="false"
+        android:visibility="visible"
+        android:background="@color/red"
+        android:text="GGGGGGG" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayoutField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <EditText
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:id="@+id/fieldValue"
         android:singleLine="false"
+        android:scrollHorizontally="false"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/contact_bar"
-        android:textAlignment="viewStart"
-        android:textColor="@color/half_black"
-        android:focusable="true" />
+
+
+        android:focusable="true"
+        android:inputType="textCapSentences|textLongMessage|textMultiLine"
+        android:textColor="@color/LightSkyBlue"
+        android:background="@color/blue_semi_transparent"
+        android:text="GGGGGGG" />
+    </android.support.design.widget.TextInputLayout>
+
 
 </LinearLayout>

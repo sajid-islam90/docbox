@@ -1,19 +1,28 @@
 package activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +34,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -35,11 +45,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import objects.DataBaseEnums;
+
+import com.example.sajid.myapplication.AccountVerificationActivity;
+import com.example.sajid.myapplication.AppointmentSettingsCheck;
 import com.example.sajid.myapplication.DatabaseHandler;
 import com.example.sajid.myapplication.R;
 import com.example.sajid.myapplication.util.calendar_descriptor;
 import com.example.sajid.myapplication.utility;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,13 +74,15 @@ import adapters.adapter_view_visit_calendar;
  * Created by nevermore on 10/24/2015.
  */
 
-public class activity_view_patient_visits extends AppCompatActivity {
+public class activity_view_patient_visits extends Fragment {
 
     GridView gridview_calendar;
     GridView gridview_days;
     TextView current_month;
+    private static final String ARG_SECTION_NUMBER = "section_number";
     //  int totaldays;
     Date startDateCalendar;
+    FragmentManager fragManager = null;
     Date endDateCalendar;
     static boolean SwitchState ;
    static adapter_view_visit_calendar adapter;
@@ -66,25 +90,32 @@ public class activity_view_patient_visits extends AppCompatActivity {
     RelativeLayout relativeLayout;
     int rightToLeftSwipe = 0;
     boolean isClicked = false;
+    boolean showOptionsMenu;
     int pid;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.layout_activity_view_patient_visits);
-
-        gridview_calendar = (GridView) findViewById(R.id.gridview_calendar);
-        listViewPatients = (ListView) findViewById(R.id.lvPatientsCalendar);
-        relativeLayout = (RelativeLayout) findViewById(R.id.view_inventory_relative_layout);
-
-        ActionBar actionBar = this.getSupportActionBar();
-        actionBar.setTitle("Patient Name");
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.layout_activity_view_patient_visits, container, false);
+        //setContentView(R.layout.layout_activity_view_patient_visits);
+final DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+        gridview_calendar = (GridView)rootView.findViewById(R.id.gridview_calendar);
+        listViewPatients = (ListView) rootView.findViewById(R.id.lvPatientsCalendar);
+        relativeLayout = (RelativeLayout) rootView.findViewById(R.id.view_inventory_relative_layout);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        showOptionsMenu = prefs.getBoolean("showOptionMenu",false);
+        getActivity().setTitle("Calender");
+        ActionBar actionBar = ((AppCompatActivity) this.getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Calender");
+        }
+        fragManager = getActivity().getSupportFragmentManager();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        final TextView textView = (TextView)rootView.findViewById(R.id.patientTextView);
+        final TextView textView2 = (TextView)rootView.findViewById(R.id.appointmentTextView);
         int totaldays = calendar_descriptor.getTotalDays();
         final String[] dates = calendar_descriptor.getDates(totaldays);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -92,9 +123,21 @@ public class activity_view_patient_visits extends AppCompatActivity {
         if (calendar_descriptor.startDate == null) {
             calendar_descriptor.startDate = cal.getTime();
         }
-        Switch aSwitch = (Switch)findViewById(R.id.switch2);
+        final Switch aSwitch = (Switch)rootView.findViewById(R.id.switch2);
+        setHasOptionsMenu(showOptionsMenu);
+//        SwitchState = aSwitch.isChecked();
         aSwitch.setChecked(SwitchState);
+        if(SwitchState)
+        {
 
+            textView.setTextColor(Color.BLACK);
+            textView2.setTextColor(Color.parseColor("gray"));
+        }
+        else
+        {
+            textView.setTextColor(Color.parseColor("gray"));
+            textView2.setTextColor(Color.BLACK);
+        }
         calendar_descriptor.startDate = cal.getTime();
         cal.setTime(calendar_descriptor.startDate);
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -109,24 +152,72 @@ public class activity_view_patient_visits extends AppCompatActivity {
         String days[] = {"Su", "M", "Tu", "W", "Th", "F", "Sa"};
         calendar_descriptor.inventory = new String[dates.length];
         calendar_descriptor.stopsellFlags = new boolean[dates.length];
+
         try {
             for (int i = 0; i < dates.length; i++) {
                 calendar_descriptor.inventory[i] = "N/A";
                 calendar_descriptor.stopsellFlags[i] = false;
 
             }
-            adapter = new adapter_view_visit_calendar(this, dates,pid,SwitchState);
+            adapter = new adapter_view_visit_calendar(getContext(), dates,pid,SwitchState);
             gridview_calendar.setAdapter(adapter);
-
+            adapter.notifyDataSetChanged();
+            final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
             aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     SwitchState = isChecked;
+                    if(SwitchState)
+                    {
+
+                        textView.setTextColor(Color.BLACK);
+                        textView2.setTextColor(Color.parseColor("gray"));
+                    }
+                    else
+                    {
+                        textView.setTextColor(Color.parseColor("gray"));
+                        textView2.setTextColor(Color.BLACK);
+                        setHasOptionsMenu(showOptionsMenu);
+                        String s1 = null;
+                        ArrayList<String>CstmrId = new ArrayList<>();
+                        int customerId = databaseHandler.getCustomerId();
+                        CstmrId.add(String.valueOf(customerId));
+                        final RequestParams params = new RequestParams();
+                        StringWriter out = new StringWriter();
+                        try {
+                            JSONValue.writeJSONString(CstmrId, out);
+                            s1 = out.toString();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        params.put("DoctorId", s1);
+                        final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+                        final ProgressDialog pdia;
+                        pdia = new ProgressDialog(getActivity());
+                        pdia.setMessage("Fetching appointments please wait");
+                        pdia.show();
+                       final String  address =  getResources().getString(R.string.action_server_ip_address);
+                        Thread thread = new Thread(){
+                            @Override
+                            public void run() {
+                                try {
+                                    hitApiForAppointment("http://" + address + "/fetchDoctorAppointments.php",params,client,getActivity(),fragManager,pdia);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        thread.start();
+
+
+                    }
+
                     int totaldays = calendar_descriptor.getTotalDays();
                     String[] datesnew = calendar_descriptor.getDates(totaldays);
-
-                    gridview_calendar.setAdapter(new adapter_view_visit_calendar(activity_view_patient_visits.this, datesnew,pid,SwitchState));                    Intent intent = getIntent();
+                   adapter = new adapter_view_visit_calendar(getContext(), datesnew,pid,SwitchState);
+                    gridview_calendar.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    Intent intent = getActivity().getIntent();
 
                    /* finish();
                     startActivity(intent);*/
@@ -137,8 +228,8 @@ public class activity_view_patient_visits extends AppCompatActivity {
             e.printStackTrace();
         }
         calendar_descriptor.inventory = null;
-        gridview_days = (GridView) findViewById(R.id.gridview_days);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, days) {
+        gridview_days = (GridView) rootView.findViewById(R.id.gridview_days);
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, days) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -155,36 +246,43 @@ public class activity_view_patient_visits extends AppCompatActivity {
 
         Calendar date = Calendar.getInstance();
         date.setTime(calendar_descriptor.startDate);
-        current_month = (TextView) findViewById(R.id.textview_current_month);
+        current_month = (TextView) rootView.findViewById(R.id.textview_current_month);
 
         String s = new SimpleDateFormat("MMMM").format(date.getTime());
         String year = new SimpleDateFormat("yyyy").format(date.getTime());
         current_month.setText(s + " " + year);
 
-        Intent i = getIntent();
+        Intent i = getActivity().getIntent();
         pid = i.getIntExtra("id",0);
 
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.view_inventory_relative_layout){
+                if (v.getId() == R.id.view_inventory_relative_layout) {
                     hideListView();
                 }
             }
         });
+adapter_view_visit_calendar adapterViewVisitCalendar = new adapter_view_visit_calendar(getActivity(), dates,pid,SwitchState);
+        gridview_calendar.setAdapter(adapterViewVisitCalendar);
 
-        gridview_calendar.setAdapter(new adapter_view_visit_calendar(activity_view_patient_visits.this, dates,pid,SwitchState));
-
-        final GestureDetector gestureDetector = new GestureDetector(new CalendarGestureDetector(activity_view_patient_visits.this));
+adapterViewVisitCalendar.notifyDataSetChanged();
+        final GestureDetector gestureDetector = new GestureDetector(new CalendarGestureDetector(getActivity()));
 
         gridview_calendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 try{
-                    DatabaseHandler db = new DatabaseHandler(activity_view_patient_visits.this);
-                   // showListView(db.getPatientsForDate(gridview_calendar.getAdapter().getItem(position).toString()));
-                    Toast.makeText(activity_view_patient_visits.this, "done " + position, Toast.LENGTH_SHORT).show();
+                    DatabaseHandler db = new DatabaseHandler(getActivity());
+                    if(SwitchState)
+                    showListView(db.getPatientsForDate(gridview_calendar.getAdapter().getItem(position).toString()),gridview_calendar.getAdapter().getItem(position).toString());
+                    else
+                    {
+                        showListView(db.getAppointmentsForDate(gridview_calendar.getAdapter().getItem(position).toString()),gridview_calendar.getAdapter().getItem(position).toString());
+                        Toast.makeText(getActivity(), "done " + position, Toast.LENGTH_SHORT).show();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -203,44 +301,196 @@ public class activity_view_patient_visits extends AppCompatActivity {
 
             }
         });
+        return rootView;
 
     }
 
 
-    private void hideListView(){
-        listViewPatients.setVisibility(View.GONE);
-    }
+    public void hitApiForAppointment(String apiAddress, RequestParams params, AsyncHttpClient client, final Context context, final FragmentManager fragmentManager, final ProgressDialog pdia) {
 
-    private void showListView(ArrayList<String> pids){
-        listViewPatients.setVisibility(View.VISIBLE);
-        adapter_on_calendar_date_patients adapter = new adapter_on_calendar_date_patients(activity_view_patient_visits.this,pids);
-        listViewPatients.setAdapter(adapter);
-    }
 
+        final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+        try
+        {
+
+            client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        JSONArray response;
+                        // JSONObject mainObject = new JSONObject(str);
+
+
+                            response = (JSONArray) JSONValue.parse(str);
+                        if(response.size()>0)
+                            if(response.get(0).equals("account not verified"))
+                            {
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putBoolean("showOptionMenu", false);
+                                editor.commit();
+                                setHasOptionsMenu(false);
+                                Intent intent = new Intent(context, AccountVerificationActivity.class);
+                                context.startActivity(intent);
+                            }
+                            else {
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putBoolean("showOptionMenu", true);
+                                editor.commit();
+                                setHasOptionsMenu(true);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                String date = sdf.format(new Date());
+                                databaseHandler.deleteAppointments(date);
+                                //if()
+                                utility.saveAppointmentsTable(response, context);
+                            }
+                        else
+                        {
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putBoolean("showOptionMenu", true);
+                            editor.commit();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            String date = sdf.format(new Date());
+                            databaseHandler.deleteAppointments(date);
+                            setHasOptionsMenu(true);
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFinish() {
+                    pdia.dismiss();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, activity_view_patient_visits.newInstance(1,false))
+                            .commit();
+
+
+                    // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                    //((Activity) context).recreate();
+
+                }
+
+
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        // return customerId[0];
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_view_patient_visits, menu);
-        return true;
+        inflater.inflate(R.menu.menu_view_patient_visits, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home : {
-                finish();
+                getActivity().finish();
                 break;
             }
             case R.id.action_settings : {
-               Intent intent = new Intent(this,appointment_settings.class);
+                Intent intent = new Intent( getActivity(),AppointmentSettingsCheck.class);
                 startActivity(intent);
-                break;
+
+                return  true;
+
             }
 
         }
         return super.onOptionsItemSelected(item);
     }
+    public static activity_view_patient_visits newInstance(int sectionNumber,boolean stateOfSwitch) {
+        activity_view_patient_visits fragment = new activity_view_patient_visits();
+
+        Bundle args = new Bundle();
+        SwitchState = stateOfSwitch;
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private void hideListView(){
+        listViewPatients.setVisibility(View.GONE);
+    }
+
+    private void showListView(ArrayList<String> pids,String date){
+//        listViewPatients.setVisibility(View.VISIBLE);
+//        listViewPatients.requestFocus();
+        adapter_on_calendar_date_patients adapter = new adapter_on_calendar_date_patients(getActivity(),pids,date);
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        final View promptsView = li.inflate(R.layout.calender_patient_list, null);
+//        ListView listViewCalenderPatientList = (ListView)
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getActivity());
+        alertDialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        adapter.notifyDataSetChanged();
+        alertDialogBuilder
+                .setCancelable(false)
+
+                .setNegativeButton("Dismiss",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                fragManager.beginTransaction()
+                                        .replace(R.id.container, activity_view_patient_visits.newInstance(1,true))
+                                        .commit();
+                                fragManager.beginTransaction()
+                                        .replace(R.id.container, activity_view_patient_visits.newInstance(1,false))
+                                        .commit();
+                                pid =0;
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
+
+
+
+        //listViewPatients.setAdapter(adapter);
+    }
+
+
+
+
 
     class CalendarGestureDetector extends GestureDetector.SimpleOnGestureListener {
         Context context;
@@ -325,8 +575,9 @@ public class activity_view_patient_visits extends AppCompatActivity {
         int totaldays = calendar_descriptor.getTotalDays();
         String[] datesnew = calendar_descriptor.getDates(totaldays);
 
-        gridview_calendar.setAdapter(new adapter_view_visit_calendar(this, datesnew,pid,SwitchState));
+        gridview_calendar.setAdapter(new adapter_view_visit_calendar(getActivity(), datesnew,pid,SwitchState));
 
 
     }
+
 }

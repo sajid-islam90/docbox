@@ -1,5 +1,6 @@
 package activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -12,6 +13,7 @@ import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.opengl.Matrix;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -46,6 +48,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
     private boolean flashmode = false;
     private int rotation;
     private int pid;
+    private String filePath;
 
 
 
@@ -64,6 +67,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         Intent intent = getIntent();
         pid = intent.getIntExtra("pid", 0);
+        filePath = intent.getStringExtra("filePath");
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         flipCamera.setOnClickListener(this);
@@ -118,7 +122,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
     private void alertCameraDialog() {
         AlertDialog.Builder dialog =  new AlertDialog.Builder(this);
-        dialog.setMessage("error to open camera");
+        dialog.setMessage("error to open camera\nTry restarting your phone");
         dialog.setTitle("Camera info");
 
 
@@ -126,6 +130,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                finish();
 
             }
         });
@@ -142,12 +147,13 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             camera =
                     Camera.open(cameraId);
             Camera.Parameters param = camera.getParameters();
-           /* List<Camera.Size> pictureSizes = param.getSupportedPictureSizes();
-            int height = pictureSizes.get(pictureSizes.size()-2).height;
-            int width = pictureSizes.get(pictureSizes.size()-2).width;
+            //camera.setParameters();
+            List<Camera.Size> pictureSizes = param.getSupportedPictureSizes();
+           /* int height = pictureSizes.get(pictureSizes.size()-2).height;
+            int width = pictureSizes.get(pictureSizes.size()-2).width;*/
             param.setPictureSize(612,816);
 
-            camera.setParameters(param);*/
+            camera.setParameters(param);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -249,13 +255,18 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void flashOnButton() {
         if (camera != null) {
             try {
                 Camera.Parameters param = camera.getParameters();
-                param.setFlashMode(!flashmode ? Camera.Parameters.FLASH_MODE_TORCH
+                param.setFlashMode(!flashmode ? Camera.Parameters.FLASH_MODE_AUTO
                         : Camera.Parameters.FLASH_MODE_OFF);
                 camera.setParameters(param);
+                if(!flashmode)
+                flashCameraButton.setBackground(getResources().getDrawable(R.drawable.ic_action_flash_on));
+                else
+                    flashCameraButton.setBackground(getResources().getDrawable(R.drawable.ic_action_flash_off));
                 flashmode = !flashmode;
             } catch (Exception e) {
                 // TODO: handle exception
@@ -271,6 +282,11 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 
     private void takeImage() {
         camera.takePicture(null, null, new Camera.PictureCallback() {
@@ -293,20 +309,22 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                             rotateMatrix, false);
                     String state = Environment.getExternalStorageState();
 
-                    imageFile = PhotoHelper.createImageFileForDocument(pid,getApplicationContext());
-
-
+                    imageFile = new File(filePath);
+                    //= PhotoHelper.createImageFileForNotes(pid, getApplicationContext());
 
 
                     ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
                     // save image into gallery
-                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 20, ostream);
+                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 10, ostream);
 
 
                     FileOutputStream fout = new FileOutputStream(imageFile);
                     fout.write(ostream.toByteArray());
                     fout.close();
+                    Camera.Parameters param = camera.getParameters();
+                    param.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                    camera.setParameters(param);
                     // ContentValues values = new ContentValues();
 
                    /* values.put(MediaStore.Images.Media.DATE_TAKEN,
@@ -317,6 +335,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
                   /*  CameraDemoActivity.this.getContentResolver().insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);*/
+
                     finish();
 
                 } catch (Exception e) {

@@ -2,16 +2,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sajid.myapplication" >
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <permission
+        android:name="com.example.sajid.myapplication.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.sajid.myapplication.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Maps API needs OpenGL ES 2.0. -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <supports-screens
         android:anyDensity="true"
@@ -20,13 +38,26 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
+    <uses-library android:name="com.google.android.maps" />
+    <uses-library android:name="com.google.android.maps" />
+
+    <!-- <meta-data -->
+    <!-- android:name="com.google.android.maps.v2.API_KEY" -->
+    <!-- android:value="AIzaSyB6hI6Of7oCq1FYh46pE2Qip6trvqLg0gw" /> -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon4"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat" >
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyArQk7JhZV2ulQF1YrhRzZhN9SJPd7YMYI" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
-            android:name="activity.MainActivity"
+            android:name="activity.Activity_main_2"
             android:label="@string/app_name"
             android:logo="@drawable/ic_1"
             android:theme="@style/MainActivity"
@@ -35,15 +66,16 @@
         <activity
             android:name="activity.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="activity.MainActivity"
+            android:parentActivityName="activity.Activity_main_2"
             android:screenOrientation="portrait"
             android:theme="@style/MainActivity" >
         </activity>
         <activity
             android:name="activity.PatientProfileActivity"
             android:label="@string/title_activity_patient_profile"
-            android:parentActivityName="activity.MainActivity"
-            android:theme="@style/MainActivity" >
+            android:parentActivityName="activity.Activity_main_2"
+            android:theme="@style/MainActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.UI_OPTIONS"
                 android:value="splitActionBarWhenNarrow" />
@@ -61,12 +93,6 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name="activity.FullImage"
-            android:label="@string/title_activity_full_image"
-            android:parentActivityName="activity.documents"
-            android:theme="@style/MainActivity" >
-        </activity>
-        <activity
             android:name="activity.ClinicalNotesActivity"
             android:label="@string/title_activity_clinical_notes"
             android:parentActivityName="activity.PatientProfileActivity"
@@ -80,12 +106,9 @@
         <activity
             android:name="activity.TabbedActivityCheck"
             android:label="@string/title_activity_tabbed_activity_check"
+            android:screenOrientation="portrait"
             android:theme="@style/TabbedActivity"
-            android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustPan" >
-            <meta-data
-                android:name="android.support.UI_OPTIONS"
-                android:value="splitActionBarWhenNarrow" />
         </activity>
         <activity
             android:name=".UploadToServer"
@@ -94,7 +117,7 @@
         <activity
             android:name="activity.TABBED_ACTIVITY_FUNCTIONALITY"
             android:label="@string/title_activity_tabbed__activity__functionality"
-            android:theme="@style/MainActivity" >
+            android:theme="@style/TabbedActivity" >
 >
         </activity>
         <activity
@@ -105,11 +128,6 @@
         <activity
             android:name="activity.Treatment_Activity"
             android:label="@string/title_activity_treatment_"
-            android:theme="@style/MainActivity" >
-        </activity>
-        <activity
-            android:name="activity.Exam_Activity"
-            android:label="@string/title_activity_exam_"
             android:theme="@style/MainActivity" >
         </activity>
         <activity
@@ -130,20 +148,6 @@
         <activity
             android:name="activity.View_Media_notes_grid"
             android:label="@string/title_activity_view__media_notes_grid"
-            android:theme="@style/MainActivity" >
-        </activity>
-        <activity
-            android:name="activity.VideoFull"
-            android:label="@string/title_activity_video_full"
-            android:parentActivityName="activity.MainActivity"
-            android:theme="@style/MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".NavigationDrawer"
-            android:label="@string/title_activity_navigation_drawer"
             android:theme="@style/MainActivity" >
         </activity>
         <activity
@@ -179,12 +183,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-        <activity
-            android:name=".UserProfile"
-            android:label="@string/title_activity_user_profile"
-            android:theme="@style/MainActivity" >
         </activity>
         <activity
             android:name="activity.genericNotesActivity"
@@ -194,6 +192,7 @@
         <activity
             android:name="activity.followUp"
             android:label="@string/title_activity_follow_up"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity"
             android:windowSoftInputMode="adjustPan" >
         </activity>
@@ -208,15 +207,49 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name="activity.activity_view_patient_visits"
-            android:label="calender"
-            android:theme="@style/MainActivity" >
-        </activity>
-        <activity
             android:name="activity.appointment_settings"
             android:label="@string/title_activity_appointment_settings"
             android:theme="@style/MainActivity" >
+        </activity>
+        <activity
+            android:name=".dataRestoreActivity"
+            android:label="@string/title_activity_data_restore" >
+        </activity>
+        <activity
+            android:name=".AppointmentSettingsCheck"
+            android:label="@string/title_activity_appointment_settings_check"
+            android:theme="@style/MainActivity" >
+        </activity>
 
+        <service
+            android:name=".MyTestService"
+            android:exported="false" />
+
+        <activity
+            android:name=".AccountVerificationActivity"
+            android:label="@string/title_activity_account_verification"
+            android:parentActivityName="activity.Activity_main_2"
+            android:theme="@style/MainActivity" >
+        </activity>
+        <activity
+            android:name=".Activity_Video_Capture"
+            android:label="@string/title_activity_activity__video__capture"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".payment_activity"
+            android:label="@string/title_activity_payment_activity" >
+        </activity>
+        <activity
+            android:name=".PaymentActivity"
+            android:label="@string/title_activity_payment" >
+        </activity>
+        <activity android:name="com.razorpay.CheckoutActivity" />
+        <activity
+            android:name="com.example.sajid.myapplication.patients_today"
+            android:label="@string/title_activity_patients_today"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" >
         </activity>
     </application>
 

@@ -1,6 +1,7 @@
 package activity;
 //ADDING A NEW PATIENT
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -26,15 +28,16 @@ import android.widget.Toast;
 
 import com.example.sajid.myapplication.DatabaseHandler;
 
-import cz.msebera.android.httpclient.client.cache.Resource;
+
 import objects.Item;
 import objects.Patient;
 import com.example.sajid.myapplication.PhotoHelper;
 import com.example.sajid.myapplication.R;
+import com.example.sajid.myapplication.patients_today;
 import com.example.sajid.myapplication.utility;
+import com.loopj.android.http.RequestParams;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,16 +45,24 @@ import java.util.Calendar;
 
 public class DisplayMessageActivity extends ActionBarActivity {
     Patient newPatient = new Patient();
+    String parentActivity = "main";
+    String accountType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
+        Intent intent = getIntent();
+        parentActivity = intent.getStringExtra("parent");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DisplayMessageActivity.this);
+        accountType  = prefs.getString(DisplayMessageActivity.this.getString(R.string.account_type), "");
         Button btn_AddPatient = (Button)findViewById(R.id.save_patient_button);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
 
     }
+
+
 
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -109,10 +120,12 @@ public class DisplayMessageActivity extends ActionBarActivity {
     }
     public void savePatientData()
     {
-        Intent intent =  new Intent(this, documents.class);
+        Intent intent =  new Intent(this, PatientProfileActivity.class);
         String patientName = new String();
         String patientAge = new String();
-        String patientHeight = new String();
+        String patientWeight = new String();
+        String patientOPDIPD = new String();
+
         String patientGender = new String();
         String patientDiagnosis = new String();
         String patientOccupation= new String();
@@ -131,9 +144,10 @@ public class DisplayMessageActivity extends ActionBarActivity {
         EditText edit_email = (EditText)findViewById(R.id.edit_email);
         EditText edit_contact = (EditText)findViewById(R.id.edit_phone);
         EditText edit_age = (EditText) findViewById(R.id.edit_age);
-        EditText edit_height = (EditText) findViewById(R.id.edit_height);
+        EditText weight = (EditText) findViewById(R.id.edit_weight);
         ImageView bmp_image = (ImageView) findViewById(R.id.imageView);
         RadioGroup edit_gender = (RadioGroup) findViewById(R.id.edit_gender);
+        EditText edit_OPDIPD = (EditText)findViewById(R.id.edit_Opd_Ipd);
         selectedGender = edit_gender.getCheckedRadioButtonId();
         RadioButton edit_gender_rb = (RadioButton)findViewById(selectedGender);
 
@@ -153,7 +167,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
 
 
-        if(newPatient.get_bmp()==null) {
+        if((newPatient.get_bmp()==null)||(newPatient.get_bmp().length==0)) {
 
             bmp_image.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
             bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
@@ -163,15 +177,16 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
         patientName = edit_name.getText().toString();
         patientAge =edit_age.getText().toString();
-        patientHeight = edit_height.getText().toString();
+        patientWeight = weight.getText().toString();
         patientGender = edit_gender_rb.getText().toString();
         patientDiagnosis = edit_diagnosis.getText().toString();
         patientAddress = edit_address.getText().toString();
         patientContact = edit_contact.getText().toString();
         patientEmail = edit_email.getText().toString();
         patientOccupation = edit_occupation.getText().toString();
+        patientOPDIPD = edit_OPDIPD.getText().toString();
 
-        newPatient.set_height(patientHeight);
+        newPatient.set_weight(patientWeight);
         newPatient.set_diagnosis(patientDiagnosis);
         newPatient.set_gender(patientGender);
         newPatient.set_age(patientAge);
@@ -180,6 +195,8 @@ public class DisplayMessageActivity extends ActionBarActivity {
         newPatient.set_contact_number(patientContact);
         newPatient.set_email(patientEmail);
         newPatient.set_ocupation(patientOccupation);
+        newPatient.set_next_follow_up_date("");
+        newPatient.set_opd_ipd(patientOPDIPD);
 
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
@@ -187,26 +204,34 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
         dbHandler.onCreate(myDataBase);
 
-        dbHandler.addPatient(newPatient);
-
+       long id = dbHandler.addPatient(newPatient);
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+patientName);
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id);
         if(!storageDir.exists()) {
 
-            storageDir.mkdir();
-           /* File storageDir1 =
-                    new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+patientName+"/Documents");
-            storageDir1.mkdir();
-            File storageDir2 =
-                    new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+patientName+"/Notes");
-            storageDir2.mkdir();*/
+            storageDir.mkdir(); }
 
-
-
+        if(parentActivity.equals("patients_today"))
+        {
+            if(!accountType.equals(DisplayMessageActivity.this.getString(R.string.account_type_helper)))
+            {  Resources res = DisplayMessageActivity.this.getResources();
+            final String address = res.getString(R.string.action_server_ip_address);
+            final RequestParams params = new RequestParams();
+            String patientJson = dbHandler.composeJSONfromSQLitePatient(String.valueOf(id), DisplayMessageActivity.this);
+            params.put("usersJSON", patientJson);
+            utility.sync("http://" + address + "/insertPatient.php", params, DisplayMessageActivity.this);
+            utility.bookAppointmentToday((int) id, DisplayMessageActivity.this);
+            intent = new Intent(DisplayMessageActivity.this,patients_today.class);}
+            else
+            {
+                utility.bookAppointmentTodayLocally((int) id, DisplayMessageActivity.this);
+                intent = new Intent(DisplayMessageActivity.this,patients_today.class);
+            }
         }
+
+
+
 
         Toast.makeText(this, "Patient Added", Toast.LENGTH_SHORT)
                 .show();
@@ -216,8 +241,12 @@ public class DisplayMessageActivity extends ActionBarActivity {
         intent.putExtra("parent", DisplayMessageActivity.class.toString());
         addNotesFieldsTask task = new addNotesFieldsTask(patient.get_id());
         task.execute();
-        startActivity(intent);
-        finish();
+        if(parentActivity.equals("patients_today")) {
+            finish();
+        }
+        else
+        {startActivity(intent);
+        finish();}
 
 
     }
@@ -246,7 +275,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
                 item.setDate(formattedDate);
                 listOfItems.add(item);
             }
-            databaseHandler.saveGenericNote(listOfItems);
+            databaseHandler.saveGenericNote(listOfItems,"0");
         }
     }
     @Override

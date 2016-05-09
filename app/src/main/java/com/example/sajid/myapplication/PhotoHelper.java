@@ -2,11 +2,13 @@ package com.example.sajid.myapplication;
 //UTILITY CLASS FOR PHOTO
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 
@@ -34,7 +36,7 @@ public class PhotoHelper {
     public static File createImageFile(int id) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_P"+id;
+        String imageFileName = "JPEG_" + timeStamp + "_P"+id+"_";
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), "Patient Manager/"+"profile_pictures");
@@ -56,13 +58,13 @@ public class PhotoHelper {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         DatabaseHandler databaseHandler = new DatabaseHandler(context);
         Patient patient = databaseHandler.getPatient(id);
-        String name = patient.get_name();
-        String imageFileName = "JPEG_" + timeStamp + "_P"+id;
+       ///String id = patient.get_name();
+        String imageFileName = "JPEG_" + timeStamp + "_P"+id+"_";
 
 
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+name+"/Notes");
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id+"/Notes");
         if(!storageDir.exists())
             storageDir.mkdir();
 
@@ -86,10 +88,10 @@ public class PhotoHelper {
         DatabaseHandler databaseHandler = new DatabaseHandler(context);
        Patient patient = databaseHandler.getPatient(id);
         String name = patient.get_name();
-        String imageFileName = "JPEG_" + timeStamp + "_P"+id;
+        String imageFileName = "JPEG_" + timeStamp + "_P"+id+"_";
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+name+"/Documents");
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id+"/Documents");
         if(!storageDir.exists())
          storageDir.mkdir();
 
@@ -101,9 +103,22 @@ public class PhotoHelper {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
+        String accountType;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        accountType = prefs.getString(context.getString(R.string.account_type), "");
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        if(accountType.equals(context.getString(R.string.account_type_helper))) {
+            int docPid = databaseHandler.checkDoctorHelperPatientMapping(id);
+            File storageDir1 =
+                    new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+docPid+"/Documents");
+
+            String path = storageDir1.getPath()+"/"+image.getName();
+
+           //  path.replaceAll("/" + String.valueOf(id) + "/", "/" + docPid + "/");
+            databaseHandler.mapDoctorHelperDocuments(path,image.getPath());
+        }
         return image;
     }
 
@@ -111,7 +126,7 @@ public class PhotoHelper {
     public static File createVideoFile(int id) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "VID_" + timeStamp + "_P"+id;
+        String imageFileName = "VID_" + timeStamp + "_P"+id+"_";
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -127,16 +142,14 @@ public class PhotoHelper {
 
     public static File createVideoFile(int id,Context context) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "VID_" + timeStamp + "_P"+id;
-        DatabaseHandler databaseHandler = new DatabaseHandler(context);
-        Patient patient = databaseHandler.getPatient(id);
-        String name = patient.get_name();
+        String imageFileName = "VID_" + timeStamp + "_P"+id+"_";
+
 
 
 
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+name+"/Notes");
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id+"/Notes");
         if(!storageDir.exists())
             storageDir.mkdir();
 
@@ -157,8 +170,14 @@ public class PhotoHelper {
 
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        return outputStream.toByteArray();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        byte[] a = outputStream.toByteArray();
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  a;
     }
 
     /*public Bitmap getImage(int i){
@@ -183,7 +202,9 @@ public class PhotoHelper {
     {
 
 
+       // while (BitmapFactory.decodeFile(doc_obj.get_doc_path())==null);
         Bitmap bmp = BitmapFactory.decodeFile(doc_obj.get_doc_path());
+        if(bmp!=null)
         bmp = getResizedBitmap(bmp,150,150);
         doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
         return doc_obj;
@@ -209,8 +230,11 @@ public class PhotoHelper {
             bmp = BitmapFactory.decodeFile(mediaObj.get_media_path());
 
         }
-        bmp = getResizedBitmap(bmp,150,150);
-        mediaObj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
+        if(bmp!=null)
+        { bmp = getResizedBitmap(bmp,150,150);
+        mediaObj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));}
+        else
+        mediaObj.set_bmp(new byte[0]);
         return mediaObj;
 
     }

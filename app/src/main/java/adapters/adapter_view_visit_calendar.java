@@ -55,7 +55,11 @@ public class adapter_view_visit_calendar extends BaseAdapter {
         //   cal.add(Calendar.MONTH, calendar_descriptor.months_added);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.add(Calendar.DAY_OF_MONTH, position - calendar_descriptor.number_last_days_last_month);
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df;
+        if(SwitchState)
+         df = new SimpleDateFormat("dd-MMM-yyyy");
+        else
+        df = new SimpleDateFormat("yyyy-MM-dd");
 
         return df.format(cal.getTime());
     }
@@ -102,6 +106,8 @@ public class adapter_view_visit_calendar extends BaseAdapter {
                     ArrayList<String> list = new ArrayList<String>();
                     if(SwitchState)
                     list = db.getPatientsForDate(getItem(position).toString());
+                    else
+                        list= db.getAppointmentsForDate(getItem(position).toString());
 
 
                     if (list.size() == 0){

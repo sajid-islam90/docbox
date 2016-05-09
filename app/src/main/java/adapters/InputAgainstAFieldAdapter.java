@@ -1,6 +1,7 @@
 package adapters;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -46,10 +47,14 @@ public class InputAgainstAFieldAdapter extends ArrayAdapter<Item> {
 
         // 2. Get rowView from inflater
         View rowView = inflater.inflate(R.layout.text_field_edit_value, parent, false);
+        TextInputLayout textInputLayout = (TextInputLayout)rowView.findViewById(R.id.textInputLayoutField);
        // final int actual_position = itemsArrayList.getPositionForView((View) rowView.getParent());
         TextView Fieldname = (TextView) rowView.findViewById(R.id.fieldName);
        final EditText editText = (EditText)rowView.findViewById(R.id.fieldValue);
+        textInputLayout.setHint(itemsArrayList.get(position).getTitle());
+        if(!itemsArrayList.get(position).getDiagnosis().equals(""))
         editText.setText(itemsArrayList.get(position).getDiagnosis());
+
 
 
 

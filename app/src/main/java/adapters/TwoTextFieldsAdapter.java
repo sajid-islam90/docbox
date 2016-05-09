@@ -60,8 +60,12 @@ fieldName.setVisibility(View.GONE);
 
         fieldName.setText(itemsArrayList.get(position).getTitle());
 
-        if(!itemsArrayList.get(position).getDiagnosis().equals(""))
-        filedValue.setText (itemsArrayList.get(position).getDiagnosis());
+        if(itemsArrayList.get(position).getDiagnosis()!=null)
+        { if (!itemsArrayList.get(position).getDiagnosis().equals(""))
+                filedValue.setText (itemsArrayList.get(position).getDiagnosis());
+        else
+            filedValue.setHint(itemsArrayList.get(position).getTitle());
+        }
         else
         filedValue.setHint(itemsArrayList.get(position).getTitle());
 

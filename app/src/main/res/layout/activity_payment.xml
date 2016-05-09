@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/theMainMagicView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:weightSum="1.0"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.05">
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_weight="0.9"
+            android:orientation="vertical"
+            android:id="@+id/outerbox"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="110dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#E2E2E2"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Order #RZP42"
+                        android:id="@+id/orderid"
+                        android:paddingTop="35dp"
+                        android:paddingBottom="0dp"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/razorpay"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/icon4"
+                    android:background="@color/green"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="15dp"
+                android:paddingBottom="20dp"
+                android:gravity="center"
+                android:id="@+id/innerbox"
+                android:background="#f2f2f2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DocBox Subscription"
+                    android:id="@+id/otpValue"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please choose your subscription"
+                    android:id="@+id/sender"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:textSize="12sp"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@android:color/darker_gray" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:gravity="fill_vertical">
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rs 250/1 month"
+                            android:id="@+id/radioButton"
+                            android:layout_weight="1"
+                            android:textColor="@android:color/darker_gray"
+                            android:buttonTint="#000000" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rs 1250/6 months"
+                            android:id="@+id/radioButton2"
+                            android:layout_weight="1"
+                            android:textColor="@android:color/darker_gray"
+                            android:buttonTint="#000000" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rs 2500/1 year"
+                            android:id="@+id/radioButton3"
+                            android:layout_weight="1"
+                            android:textColor="@android:color/darker_gray"
+                            android:buttonTint="#000000" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/warning"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="0dp"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Purchase"
+                    android:id="@+id/pay_btn"
+                    android:textSize="14sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/green"
+                    android:textColor="#fcfcfc"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Secure Payments by Razorpay"
+                android:id="@+id/securedpayments"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="12sp"
+                android:textColor="#a1ddee"
+                android:textStyle="italic"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

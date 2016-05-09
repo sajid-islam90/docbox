@@ -9,10 +9,14 @@
     <string name="action_add">Add</string>
     <string name="action_settings">Settings</string>
     <string name="action_save">SAVE</string>
+    <string name="action_next_follow_up">Next FollowUp Date</string>
     <string name="action_reload">Reload</string>
     <string name="action_server_ip_address">docbox.co.in/sajid</string>
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
-
+    <string name="hash_code">Hash</string>
+    <string name="account_type">AccountType</string>
+    <string name="account_type_doctor">AccountTypeDoctor</string>
+    <string name="account_type_helper">AccountTypeHelper</string>
     <string name="demo_external_activity">Demo External Activity</string>
     <string name="demo_collection">Demo Collection</string>
 
@@ -40,9 +44,19 @@
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer closed</string>
     <string name="title_section1">Pre-Op</string>
-    <string name="title_section2">During-Op</string>
+    <string name="title_section2">Intra-Op</string>
     <string name="title_section3">Post-Op</string>
+    <string name="title_section1_physician">Before Treatment</string>
+    <string name="title_section2_physician">During Treatment</string>
+    <string name="title_section3_physician">Post Treatment</string>
     <string name="title_section4">Others</string>
+    <string name="nav_drawer_item1">My Patients</string>
+    <string name="nav_drawer_item2">My Appointments</string>
+    <string name="nav_drawer_item3">Profile Settings</string>
+    <string name="nav_drawer_item4">Today Schedule</string>
+    <string name="nav_drawer_item5">Payment Options</string>
+    <string name="nav_drawer_item6">Others</string>
+
     <string name="delete_button">"Delete Record</string>
     <string name="edit_button">"Edit Record</string>
     <string name="title_activity_edit_patient_data">Edit Patient Profile</string>
@@ -53,7 +67,7 @@
     <string name="title_activity_full_image">FullImage</string>
     <string name="title_activity_clinical_notes">ClinicalNotesActivity</string>
     <string name="title_activity_add_clinical_notes">ClinicalNotes</string>
-    <string name="title_activity_tabbed_activity_check">tabbed_activity_check</string>
+    <string name="title_activity_tabbed_activity_check">Clinical Notes</string>
 
     <string name="title_activity_tabbed__activity__functionality">TABBED_ACTIVITY_FUNCTIONALITY
     </string>
@@ -73,8 +87,8 @@
 
     <string name="action_example">Example action</string>
     <string name="title_activity_view_notes_version">view_notes_version</string>
-    <string name="title_activity_sync_">Sync_Activity</string>
-    <string name="title_activity_data_sync_activity">data_sync_activity</string>
+    <string name="title_activity_sync_">Save Data To Cloud</string>
+    <string name="title_activity_data_sync_activity">Save Data To Cloud</string>
     <string name="title_activity_view_all_versions">All Versions</string>
 
     <string name="title_activity_title_">Doc Box</string>
@@ -103,9 +117,20 @@
         <item>Pediatrics</item>
     </string-array>
     <string name="title_activity_generic_notes">genericNotesActivity</string>
-    <string name="title_activity_follow_up">followUp</string>
-    <string name="title_activity_view_follow_up_">ViewFollowUp_Activity</string>
+    <string name="title_activity_follow_up">Add Follow Up</string>
+    <string name="title_activity_view_follow_up_">View Follow Up</string>
     <string name="title_activity_appointments">Appointments</string>
-    <string name="title_activity_appointment_settings">appointment_settings</string>
+    <string name="title_activity_appointment_settings">Appointment Seetings</string>
+    <string name="title_activity_main2">Home</string>
+    <string name="title_activity_data_restore">Restore All Data</string>
+    <string name="title_activity_appointment_settings_check">Appointment Settings</string>
+    <string name="title_activity_account_verification">Account Verification</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_activity__video__capture">Activity_Video_Capture</string>
+    <string name="title_activity_payment_activity">payment_activity</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_patients_today">Appointments for Today</string>
 
 </resources>

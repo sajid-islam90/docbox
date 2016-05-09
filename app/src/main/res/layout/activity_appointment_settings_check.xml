@@ -1,0 +1,207 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.sajid.myapplication.AppointmentSettingsCheck"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+   >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/settings"
+
+        android:gravity="center"
+        android:dividerPadding="5dp"
+        android:divider="@android:color/white"
+        android:baselineAligned="false"
+
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:focusable="false">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:id="@+id/checkBoxSunday"
+                android:background="@drawable/radio_button_background"
+                android:checked="false"
+                android:clickable="false"
+                android:focusable="false"
+                android:button="@android:color/transparent"
+                android:text="S"
+                android:gravity="center"
+                android:textSize="20dp" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="3dp"
+                android:id="@+id/sliderSunday"
+                android:background="@color/LightSkyBlue"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <CheckBox
+            android:layout_margin="5dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/checkBoxMonday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="M"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="3dp"
+                android:id="@+id/sliderMonday"
+                android:background="@color/LightSkyBlue"
+                android:layout_gravity="center" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBoxTuesday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="T"
+            android:gravity="center"
+            android:textSize="20dp" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:id="@+id/sliderTuesday"
+            android:background="@color/LightSkyBlue"
+            android:layout_gravity="center" />
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBoxWednesday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="W"
+            android:gravity="center"
+            android:textSize="20dp" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="3dp"
+        android:id="@+id/sliderWednesday"
+        android:background="@color/LightSkyBlue"
+        android:layout_gravity="center" />
+</LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBoxThursday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="Th"
+            android:gravity="center"
+            android:textSize="20dp" />
+<ImageView
+android:layout_width="30dp"
+android:layout_height="3dp"
+android:id="@+id/sliderThursday"
+android:background="@color/LightSkyBlue"
+android:layout_gravity="center" />
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBoxFriday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="F"
+            android:gravity="center"
+            android:textSize="20dp" />
+<ImageView
+android:layout_width="30dp"
+android:layout_height="3dp"
+android:id="@+id/sliderFriday"
+android:background="@color/LightSkyBlue"
+android:layout_gravity="center" />
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:id="@+id/checkBoxSaturday"
+            android:background="@drawable/radio_button_background"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:button="@android:color/transparent"
+            android:text="Sa"
+            android:gravity="center"
+            android:textSize="20dp" />
+<ImageView
+android:layout_width="30dp"
+android:layout_height="3dp"
+android:id="@+id/sliderSaturday"
+android:background="@color/LightSkyBlue"
+android:layout_gravity="center" />
+    </LinearLayout>
+    </LinearLayout>
+<android.support.v4.view.ViewPager android:id="@+id/pager"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    >
+
+</android.support.v4.view.ViewPager>
+</LinearLayout>

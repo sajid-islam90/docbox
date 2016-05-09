@@ -20,15 +20,25 @@
         android:orientation="horizontal"
         android:id="@+id/linear_layout3"
         android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/edit_name"
+
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_name"
-            android:layout_weight="1"
+            android:id="@+id/view8"
             android:layout_gravity="bottom|center"
+            android:layout_weight="1" >
+
+        <EditText
+            android:id="@+id/edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_name"
+
+
             android:inputType="textCapWords|textPersonName" />
 
+</android.support.design.widget.TextInputLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,8 +47,7 @@
             android:visibility="gone"
 
             android:onClick="startCamera"
-            android:layout_marginTop="10dp"
-            android:layout_weight="0" />
+            android:layout_marginTop="10dp" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -55,29 +64,50 @@
         android:id="@+id/linear_layout"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear_layout3">
-        <EditText
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/view9"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/edit_weight"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_gravity="bottom|center"
+            android:layout_weight="1">
+        <EditText
+
             android:hint="@string/enter_age"
             android:id="@+id/edit_age"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/edit_height"
-            android:layout_alignWithParentIfMissing="true"
-            android:inputType="number" />
 
-        <EditText
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_height"
-            android:id="@+id/edit_height"
+            android:id="@+id/view10"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/edit_weight"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_gravity="bottom|center"
+            android:layout_weight="1">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Weight"
+            android:id="@+id/edit_weight"
             android:layout_weight="1"
             android:layout_alignWithParentIfMissing="true"
             android:layout_alignTop="@+id/edit_age"
             android:layout_alignRight="@+id/edit_name"
             android:layout_alignEnd="@+id/edit_name"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <RadioGroup
@@ -90,7 +120,7 @@
         android:orientation="horizontal"
         android:checkedButton="@+id/radio1"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/edit_email">
+        android:layout_below="@+id/textInputLayoutEmail">
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -125,6 +155,28 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/edit_gender" />
 
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/textInputLayoutOpdIpd"
+        android:id="@+id/textInputLayoutAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_add"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/linear_layout"
+            android:hint="@string/enter_add"
+            android:layout_alignParentRight="true"
+            android:inputType="textPostalAddress|textMultiLine" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/textInputLayoutAddress"
+        android:id="@+id/textInputLayoutOccupation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -133,17 +185,26 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/edit_add" />
+        android:layout_below="@+id/textInputLayoutAddress" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/textInputLayoutOccupation"
+        android:id="@+id/textInputLayoutDiagnosis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/edit_add"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/linear_layout"
-        android:hint="@string/enter_add"
-        android:layout_alignParentRight="true"
-        android:inputType="textPostalAddress|textMultiLine" />
+        android:id="@+id/edit_diagnosis"
+        android:layout_below="@+id/textInputLayoutOccupation"
+        android:hint="@string/enter_diagnosis"
+        android:layout_marginTop="10dp" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/textInputLayoutDiagnosis"
+        android:id="@+id/textInputLayoutPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <EditText
         android:layout_width="match_parent"
@@ -155,30 +216,44 @@
         android:layout_alignParentStart="false"
         android:layout_marginTop="10dp"
         android:hint="@string/enter_phone"
-        android:layout_below="@+id/edit_diagnosis" />
+        android:layout_below="@+id/textInputLayoutDiagnosis" />
+    </android.support.design.widget.TextInputLayout>
 
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/textInputLayoutPhone"
+        android:id="@+id/textInputLayoutEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/edit_email"
-        android:layout_below="@+id/edit_phone"
+        android:layout_below="@+id/textInputLayoutPhone"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:hint="@string/enter_email"
         android:layout_marginTop="10dp" />
+    </android.support.design.widget.TextInputLayout>
 
-    <EditText
+    <android.support.design.widget.TextInputLayout android:layout_below="@+id/linear_layout"
+        android:id="@+id/textInputLayoutOpdIpd"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edit_diagnosis"
-        android:layout_below="@+id/edit_occupation"
-        android:hint="@string/enter_diagnosis"
-        android:layout_marginTop="10dp" />
-
-
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/edit_Opd_Ipd"
+            android:layout_below="@+id/textInputLayoutEmail"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:hint="Enter OPD/IPD Number"
+            android:layout_marginTop="10dp" />
+    </android.support.design.widget.TextInputLayout>
 </RelativeLayout>
 </ScrollView>

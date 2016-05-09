@@ -14,133 +14,214 @@
     <!-- Login progress -->
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp" android:visibility="gone" />
+        android:layout_marginBottom="8dp" android:visibility="gone"
+        android:layout_centerHorizontal="true" />
 
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
         android:layout_centerInParent="true">
 
     </ScrollView>
 
-    <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="vertical"
-        android:background="@drawable/rounded_edittext"
-        android:padding="9dp"
-        android:backgroundTint="#9951A5BA"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:baselineAligned="false">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView7"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="LOGIN"
-            android:id="@+id/textView18"
-            android:layout_gravity="center_horizontal"
-            android:textColor="#ffffff" />
+        <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical"
+            android:background="@drawable/rounded2"
+            android:padding="9dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:baselineAligned="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Email"
-            android:id="@+id/textView16"
-
-            android:textColor="#ffffff"
-            android:layout_margin="5dp" />
-
-        <CheckedTextView android:id="@+id/emailSignIn" android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:background="@drawable/rounded_edittext"
-            android:inputType="none"
-            android:enabled="true"
-            android:checked="true"
-            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-            android:editable="false"
-            android:layout_margin="5dp"
-            android:textAlignment="gravity"
-            android:textSize="15dp"
-            android:checkMarkTint="@color/green"
-            android:paddingLeft="5dp" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="LOGIN"
+                android:id="@+id/textView18"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#ffffff" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Phone Number"
-                android:id="@+id/textView15"
+                android:text="Name"
+                android:id="@+id/textView48"
                 android:textColor="#ffffff"
                 android:layout_margin="5dp" />
 
-            <EditText android:id="@+id/password" android:layout_width="fill_parent"
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:maxLines="1" android:singleLine="true"
-                android:focusable="true"
-                android:enabled="true"
-                android:elegantTextHeight="false"
+                android:inputType="textCapWords|textPersonName"
+                android:ems="10"
+                android:id="@+id/name"
+                android:layout_below="@+id/textView48"
                 android:background="@drawable/rounded_edittext"
-
-                android:inputType="phone"
                 android:layout_margin="5dp"
+                android:padding="5dp"
                 android:textAlignment="center"
+                android:singleLine="true"
                 android:textSize="15dp"
-                android:layout_below="@+id/textView15"
-                android:paddingLeft="5dp" />
+                android:gravity="center_vertical" />
 
-            <CheckedTextView
-                android:layout_width="fill_parent"
-                android:layout_margin="5dp"
-                android:textAlignment="center"
-                android:textSize="15dp"
-                android:background="@null"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/checkedTextView"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-                android:layout_below="@+id/textView15"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Email"
+                android:id="@+id/textView16"
+
+                android:textColor="#ffffff"
+                android:layout_margin="5dp" />
+
+            <CheckedTextView android:id="@+id/emailSignIn" android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:background="@drawable/rounded_edittext"
+                android:inputType="none"
+                android:enabled="true"
                 android:checked="true"
-                android:checkMarkTint="@color/green" />
-        </RelativeLayout>
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:editable="false"
+                android:layout_margin="5dp"
+                android:textSize="15dp"
+                android:checkMarkTint="@color/green"
+                android:paddingLeft="5dp"
+                android:gravity="center_vertical" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Speciality"
-            android:id="@+id/textView17"
-            android:textColor="#ffffff"
-            android:layout_margin="5dp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner"
-            android:layout_gravity="center_horizontal"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Phone Number"
+                    android:id="@+id/textView15"
+                    android:textColor="#ffffff"
+                    android:layout_margin="5dp" />
 
-            android:layout_margin="5dp"
-            android:background="@drawable/rounded_edittext" />
+                <EditText android:id="@+id/password" android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:maxLines="1" android:singleLine="true"
+                    android:focusable="true"
+                    android:enabled="true"
+                    android:elegantTextHeight="false"
+                    android:background="@drawable/rounded_edittext"
 
-        <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:text="@string/action_sign_in"
-            android:textStyle="bold"
-            android:enabled="true"
-            android:background="@drawable/rounded_edittext"
-            android:backgroundTint="#5F6B61"
-            android:textColor="#ffffff" />
+                    android:inputType="phone"
+                    android:layout_margin="5dp"
+                    android:textAlignment="center"
+                    android:textSize="15dp"
+                    android:layout_below="@+id/textView15"
+                    android:paddingLeft="5dp"
+                    android:gravity="center_vertical" />
 
-    </LinearLayout>
+                <CheckedTextView
+                    android:layout_width="fill_parent"
+                    android:layout_margin="5dp"
+                    android:textAlignment="center"
+                    android:textSize="15dp"
+                    android:background="@null"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/checkedTextView"
+                    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                    android:layout_below="@+id/textView15"
+                    android:checked="true"
+                    android:checkMarkTint="@color/green"
+                    android:gravity="center_vertical" />
+            </RelativeLayout>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Helper"
+                android:id="@+id/checkBoxHelper"
+                android:layout_gravity="right"
+                android:checked="false" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayoutSpeciality">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Speciality"
+                        android:id="@+id/textView17"
+                        android:textColor="#ffffff"
+                        android:layout_margin="5dp" />
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinner"
+                        android:layout_gravity="center_horizontal"
+
+                        android:layout_margin="5dp"
+                        android:background="@drawable/rounded_edittext" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayoutAttachedDoctorEmail"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Attached Doctor&apos;s Emial Id"
+                        android:id="@+id/textViewAttachedDoctorEmail"
+                        android:textColor="#ffffff"
+                        android:layout_margin="5dp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:inputType="textEmailAddress"
+                        android:ems="10"
+                        android:id="@+id/editTextAttachedDoctorEmail"
+                        android:background="@drawable/rounded_edittext"
+                        android:layout_margin="5dp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:text="@string/action_sign_in"
+                android:textStyle="bold"
+                android:enabled="true"
+                android:background="@drawable/round3"
+
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <ImageView
         android:layout_width="wrap_content"

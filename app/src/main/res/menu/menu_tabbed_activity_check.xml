@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="activity.TabbedActivityCheck">
 
-    <item android:id="@+id/action_view_previous_versions" android:title="View Previous Versions"
+    <item android:id="@+id/action_view_previous_versions" android:title="View Follow Ups"
         android:orderInCategory="100" app:showAsAction="never" />
 
     <item android:title="Add"
