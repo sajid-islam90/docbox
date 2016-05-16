@@ -12,16 +12,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

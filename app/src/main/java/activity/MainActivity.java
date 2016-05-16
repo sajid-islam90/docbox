@@ -2,36 +2,23 @@ package activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,52 +29,27 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.AccountVerificationActivity;
-import com.example.sajid.myapplication.Activity_Video_Capture;
-import com.example.sajid.myapplication.ConnectionDetector;
-import com.example.sajid.myapplication.DatabaseHandler;
-
-import adapters.DrawerListAdapter;
+import utilityClasses.ConnectionDetector;
+import utilityClasses.DatabaseHandler;
 
 import objects.*;
 import adapters.MyAdapter;
 import objects.Patient;
 
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.RoundImage;
-import com.example.sajid.myapplication.UserProfile;
-import com.example.sajid.myapplication.patients_today;
-import com.example.sajid.myapplication.utility;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.RoundImage;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-
-import static com.example.sajid.myapplication.R.drawable.ic_action_person;
 
 
 public class MainActivity extends Fragment {

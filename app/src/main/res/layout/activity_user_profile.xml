@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.sajid.myapplication.UserProfile">
+    tools:context="fragments.UserProfile">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -555,7 +555,7 @@
                 android:id="@+id/card_view_college"
                 android:layout_gravity="center"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 card_view:cardCornerRadius="2dp"
                 card_view:contentPadding="5dp"
@@ -601,73 +601,81 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <android.support.design.widget.TextInputLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/view18" >
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/graduatingCollageLinearLayout">
 
-                            <EditText
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="textPersonName"
-                                android:ems="10"
-                                android:id="@+id/editText"
-                                android:hint="Graduating College" />
-                            </android.support.design.widget.TextInputLayout>
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/view18" >
 
-                            <android.support.design.widget.TextInputLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/view19"
-                                android:layout_toRightOf="@+id/view18">
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPersonName"
+                                    android:ems="10"
+                                    android:id="@+id/editText"
+                                    android:hint="Graduating College" />
+                                </android.support.design.widget.TextInputLayout>
 
-                            <EditText
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:ems="10"
-                                android:id="@+id/editText2"
-                                android:hint="Batch" />
-                            </android.support.design.widget.TextInputLayout>
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/view19"
+                                    android:layout_toRightOf="@+id/view18">
 
-                            <android.support.design.widget.TextInputLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/view20"
-                                android:layout_below="@+id/view18">
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:ems="10"
+                                    android:id="@+id/editText2"
+                                    android:hint="Batch" />
+                                </android.support.design.widget.TextInputLayout>
+                            </LinearLayout>
 
-                            <EditText
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="textPersonName"
-                                android:ems="10"
-                                android:id="@+id/editText3"
-                                android:hint="Post Graduation College" />
-                            </android.support.design.widget.TextInputLayout>
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@+id/graduatingCollageLinearLayout">
 
-                            <android.support.design.widget.TextInputLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/view21"
-                                android:layout_toRightOf="@+id/view20"
-                                android:layout_below="@+id/view18">
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/view20"
+                                    android:layout_below="@+id/graduatingCollageLinearLayout">
 
-                            <EditText
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:ems="10"
-                                android:id="@+id/editText4"
-                                android:hint="Batch" />
-                            </android.support.design.widget.TextInputLayout>
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPersonName"
+                                    android:ems="10"
+                                    android:id="@+id/editText3"
+                                    android:hint="Post Graduation College" />
+                                </android.support.design.widget.TextInputLayout>
+
+                                <android.support.design.widget.TextInputLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/view21"
+                                    android:layout_toRightOf="@+id/view20"
+                                    android:layout_below="@+id/graduatingCollageLinearLayout">
+
+                                <EditText
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:ems="10"
+                                    android:id="@+id/editText4"
+                                    android:hint="Batch" />
+                                </android.support.design.widget.TextInputLayout>
+                            </LinearLayout>
+
                         </RelativeLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                        </LinearLayout>
 
                     </LinearLayout>
 

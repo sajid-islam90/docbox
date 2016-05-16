@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 
 
 public class TABBED_ACTIVITY_FUNCTIONALITY extends ActionBarActivity {

@@ -20,11 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.RoundImage;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.RoundImage;
+import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
@@ -199,6 +199,10 @@ public class adapter_on_calendar_date_patients extends BaseAdapter {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     list.add(String.valueOf(dbHandle.getCustomerId()));
                     Patient patient = dbHandle.getPatient(Integer.parseInt(names.get(position)));
+                    if(patient == null)
+                    {
+                        patient = dbHandle.getPatientFromFirstAidId(Integer.parseInt(names.get(position)));
+                    }
                     list.add(String.valueOf(patient.get_first_aid_id()));
                     list.add(date);
                     String dayOfTheWeek ="";

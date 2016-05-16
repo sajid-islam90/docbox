@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,18 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
 
 import adapters.DrawerListAdapter;
 import objects.Item;
-
-import static android.view.Gravity.START;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -65,7 +61,7 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
-
+    String accountType;
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
@@ -102,6 +98,9 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View mView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        accountType  = prefs.getString(getActivity().getString(R.string.account_type), "");
         //mDrawerListView = (ListView) inflater.inflate( R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView = (ListView) mView.findViewById(R.id.navDrawerListView);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,6 +138,12 @@ public class NavigationDrawerFragment extends Fragment {
         item.setTitle(getString(R.string.nav_drawer_item5));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
         items.add(item);
+
+        if(accountType.equals(getActivity().getString(R.string.account_type_doctor)))
+        {  item =new Item();
+            item.setTitle(getString(R.string.nav_drawer_item6));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_add_helper));
+        items.add(item);}
        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(getActivity(),items);
 //        mDrawerListView.setAdapter(drawerListAdapter);
        // mDrawerListView.bringToFront();

@@ -17,7 +17,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 
 /**
  * Created by Mikhael LOPEZ on 09/10/2015.

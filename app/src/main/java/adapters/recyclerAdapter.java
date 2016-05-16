@@ -3,8 +3,6 @@ package adapters;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,12 +23,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import activity.PatientProfileActivity;
 import objects.*;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHolder>{
 

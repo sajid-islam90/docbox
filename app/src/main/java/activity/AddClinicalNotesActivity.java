@@ -8,21 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.example.sajid.myapplication.*;
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.UserProfile;
+
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
 
 import objects.*;
-import objects.notes_obj;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class AddClinicalNotesActivity extends ActionBarActivity {

@@ -4,342 +4,442 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
 
     tools:context="activity.PatientProfileActivity"
     android:id="@+id/relativeLayoutRoot">
 
 
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/view14"
-        app:cardCornerRadius="2dp"
-        app:contentPadding="10dp">
-
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/photoEmailLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@color/cardview_light_background">
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/view14"
+            app:cardCornerRadius="2dp"
+            app:contentPadding="10dp">
 
-<com.example.sajid.myapplication.CircularImageView
-    android:layout_width="70dp"
-    android:layout_height="70dp"
-    android:scaleType="centerCrop"
-    android:id="@+id/patientPic"
-    android:src="@drawable/default_photo"
-    app:border="true"
-    app:border_color="@color/green"
-    app:border_width="4dp"
-    app:shadow="true"
-    app:shadow_radius="10"
-    app:shadow_color="@android:color/black"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_alignTop="@+id/patientProfileEditIcon"
-    android:layout_marginLeft="5dp"
-    android:layout_marginTop="5dp" />
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:id="@+id/patientPic1"
-            android:scaleType="centerCrop"
-            android:layout_alignTop="@+id/patientProfileEditIcon"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/photoEmailLayout"
+
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@color/cardview_light_background">
+
+    <utilityClasses.CircularImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/patientPic"
+        android:src="@drawable/default_photo"
+        app:border="true"
+        app:border_color="@color/green"
+        app:border_width="4dp"
+        app:shadow="true"
+        app:shadow_radius="10"
+        app:shadow_color="@android:color/black"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/patientProfileEditIcon"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp" />
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:id="@+id/patientPic1"
+                android:scaleType="centerCrop"
+                android:layout_alignTop="@+id/patientProfileEditIcon"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentTop="false"
+                android:layout_below="@+id/linearLayoutPersonalDetails"
+                android:layout_alignParentBottom="false"
+                android:layout_centerHorizontal="true"
+                android:showDividers="middle|beginning|end"
+                android:divider="@color/green"
+                android:dividerPadding="5dp"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/msg_button"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_action_msg"
+                    android:background="@drawable/contact_bar"
+                    android:clickable="true"
+                    android:longClickable="true"
+                    android:padding="5dp"
+                    android:layout_marginRight="2dp"
+                    android:onClick="msgPatient" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/call_button"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_action_call"
+                    android:clickable="true"
+                    android:longClickable="true"
+                    android:onClick="callPatient"
+                    android:background="@drawable/contact_bar"
+                    android:padding="5dp"
+                    android:layout_marginLeft="2dp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/patientProfileEditIcon"
+                android:src="@drawable/ic_action_edit"
+                android:onClick="editpatient"
+                android:layout_weight=".1"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="false"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp" />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/deleteProfile"
+                android:src="@drawable/ic_action_delete_profile"
+                android:layout_below="@+id/patientPic"
+                android:layout_alignRight="@+id/patientProfileEditIcon"
+                android:layout_alignEnd="@+id/patientProfileEditIcon" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/patientPic"
+                android:layout_toEndOf="@+id/patientPic"
+                android:id="@+id/linearLayoutPersonalDetails"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/patientProfile_name"
+                    android:layout_below="@+id/patientPic"
+                    android:layout_alignParentStart="false"
+                    android:textColor="@color/green"
+                    android:layout_alignParentLeft="false"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:text="Sajid Islam"
+                    android:layout_margin="2dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="m/f ,"
+                        android:id="@+id/textViewGender" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="24"
+                        android:id="@+id/textViewAge" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="55 Kg"
+                    android:id="@+id/textViewWeight"
+                    android:layout_margin="2dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="OPD/IPD : "
+                        android:id="@+id/textView43"
+                        android:textColor="#ff0400" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="RT2345JTH5"
+                        android:id="@+id/textViewOPDIPD" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/linearLayoutAddNextFollowupDate"
+
+                android:layout_below="@+id/patientProfileEditIcon"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next App. Date"
+                    android:id="@+id/textView44"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewNextFollowUpDate"
+                    android:textSize="12dp"
+                    android:hint="click here..." />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view14"
+            android:id="@+id/detailList"
+            android:background="@color/cardview_light_background"
+            android:visibility="gone">
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/patientDatalist"
+                android:divider="@color/green"
+                android:padding="5dp"
+                android:dividerHeight="1dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentTop="false"
-            android:layout_below="@+id/linearLayoutPersonalDetails"
-            android:layout_alignParentBottom="false"
+            android:layout_height="40dp"
             android:layout_centerHorizontal="true"
-            android:showDividers="middle|beginning|end"
-            android:divider="@color/green"
-            android:dividerPadding="5dp"
-            android:layout_marginTop="10dp"
-            android:padding="5dp"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentRight="false"
-            android:visibility="gone">
+            android:id="@+id/linearLayoutPatientProfileTabs"
+            android:layout_below="@+id/detailList"
+            android:layout_marginTop="5dp">
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/msg_button"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/ic_action_msg"
-                android:background="@drawable/contact_bar"
-                android:clickable="true"
-                android:longClickable="true"
-                android:padding="5dp"
-                android:layout_marginRight="2dp"
-                android:onClick="msgPatient" />
+                android:gravity="center"
+                android:background="@color/green"
+                android:id="@+id/linearLayoutPatientProfileTabsDiagnosis">
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/call_button"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Diagnosis"
+                    android:id="@+id/textView"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/ic_action_call"
-                android:clickable="true"
-                android:longClickable="true"
-                android:onClick="callPatient"
-                android:background="@drawable/contact_bar"
-                android:padding="5dp"
-                android:layout_marginLeft="2dp" />
+                android:gravity="center"
+                android:id="@+id/linearLayoutPatientProfileTabsFollowUp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Follow Ups"
+                    android:id="@+id/textView41"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/linearLayoutPatientProfileTabsContact">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Contact"
+                    android:id="@+id/textView42"
+                    android:gravity="center" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:id="@+id/patientProfileEditIcon"
-            android:src="@drawable/ic_action_edit"
-            android:onClick="editpatient"
-            android:layout_weight=".1"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="false"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp" />
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="2dp"
+            app:contentPadding="4dp"
+            android:layout_margin="5dp"
+            android:layout_below="@+id/linearLayoutPatientProfileTabs"
+            android:id="@+id/view15" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.v4.view.ViewPager
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pagerPatientProfile"
 
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:id="@+id/deleteProfile"
-            android:src="@drawable/ic_action_delete_profile"
-            android:layout_below="@+id/patientPic"
-            android:layout_alignRight="@+id/patientProfileEditIcon"
-            android:layout_alignEnd="@+id/patientProfileEditIcon" />
+            android:layout_centerHorizontal="true"
+            android:showDividers="middle|beginning|end" />
 
-        <LinearLayout
-            android:orientation="vertical"
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fabButtonPatientProfile"
+            android:src="@drawable/ic_action_patient_profile_fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false" />
+
+
+    </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#90000000"
+        android:visibility="visible"
+        android:id="@+id/relativeLayoutHelp">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/patientPic"
-            android:layout_toEndOf="@+id/patientPic"
-            android:id="@+id/linearLayoutPersonalDetails"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:visibility="visible">
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Press Here to add  Reports and Clinical Notes"
+            android:id="@+id/textView52"
+            android:textColor="#ffffff"
+            android:layout_above="@+id/fabButtonPatientProfileHelp"
+            android:gravity="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/patientProfile_name"
-                android:layout_below="@+id/patientPic"
-                android:layout_alignParentStart="false"
-                android:textColor="@color/green"
-                android:layout_alignParentLeft="false"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:text="Sajid Islam"
-                android:layout_margin="2dp" />
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fabButtonPatientProfileHelp"
+            android:src="@drawable/ic_action_patient_profile_fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="9dp"
+            android:layout_marginBottom="9dp" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="2dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView9"
+            android:src="@drawable/ic_help_right_arrow"
+            android:layout_below="@+id/textView52"
+            android:layout_toLeftOf="@+id/fabButtonPatientProfileHelp"
+            android:layout_toStartOf="@+id/fabButtonPatientProfileHelp"
+            android:layout_marginRight="33dp"
+            android:layout_marginEnd="33dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="m/f ,"
-                    android:id="@+id/textViewGender" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="24"
-                    android:id="@+id/textViewAge" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="55 Kg"
-                android:id="@+id/textViewWeight"
-                android:layout_margin="2dp" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="2dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="OPD/IPD : "
-                    android:id="@+id/textView43"
-                    android:textColor="#ff0400" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="RT2345JTH5"
-                    android:id="@+id/textViewOPDIPD" />
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Press here  to set next Appointment Date"
+            android:id="@+id/textView53"
+            android:textColor="#ffffff"
+            android:layout_below="@+id/imageView10"
+            android:layout_alignLeft="@+id/imageView10"
+            android:layout_alignStart="@+id/imageView10" />
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/linearLayoutAddNextFollowupDate"
+            android:id="@+id/linearLayoutAddNextFollowupDateHelp"
 
-            android:layout_below="@+id/patientProfileEditIcon"
-            android:layout_marginTop="10dp">
+
+            android:layout_alignTop="@+id/imageView10"
+            android:layout_alignRight="@+id/fabButtonPatientProfileHelp"
+            android:layout_alignEnd="@+id/fabButtonPatientProfileHelp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Next App. Date"
-                android:id="@+id/textView44"
+                android:id="@+id/textView44Help"
                 android:textSize="10dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="#ffffff" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textViewNextFollowUpDate"
-                android:textSize="12dp"
-                android:hint="click here..." />
+                android:id="@+id/textViewNextFollowUpDateHelp"
+                android:textSize="12sp"
+                android:hint="click here..."
+                android:textColor="#ffffff"
+                android:text="click here..." />
 
 
         </LinearLayout>
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view14"
-        android:id="@+id/detailList"
-        android:background="@color/cardview_light_background"
-        android:visibility="gone">
-
-        <ListView
+        <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/patientDatalist"
-            android:divider="@color/green"
-            android:padding="5dp"
-            android:dividerHeight="1dp" />
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView10"
+            android:src="@drawable/ic_help_right_up_arrow"
+            android:layout_marginTop="49dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/fabButtonPatientProfileHelp"
+            android:layout_toStartOf="@+id/fabButtonPatientProfileHelp" />
 
     </RelativeLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/linearLayoutPatientProfileTabs"
-        android:layout_below="@+id/detailList"
-        android:layout_marginTop="5dp">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:background="@color/green"
-            android:id="@+id/linearLayoutPatientProfileTabsDiagnosis">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Diagnosis"
-                android:id="@+id/textView"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/linearLayoutPatientProfileTabsFollowUp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Follow Ups"
-                android:id="@+id/textView41"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/linearLayoutPatientProfileTabsContact">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Contact"
-                android:id="@+id/textView42"
-                android:gravity="center" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:contentPadding="4dp"
-        android:layout_margin="5dp"
-        android:layout_below="@+id/linearLayoutPatientProfileTabs"
-        android:id="@+id/view15" >
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <android.support.v4.view.ViewPager
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pagerPatientProfile"
-
-        android:layout_centerHorizontal="true"
-        android:showDividers="middle|beginning|end" />
-
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fabButtonPatientProfile"
-        android:src="@drawable/ic_action_patient_profile_fab"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
-</RelativeLayout>
-    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

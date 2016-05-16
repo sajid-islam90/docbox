@@ -5,14 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -2,8 +2,6 @@ package adapters;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,16 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 
 import activity.TabbedActivityCheck;
 import objects.DataBaseEnums;
 import objects.Item;
 
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 import objects.document_obj;
 
-import com.example.sajid.myapplication.utility;
+import utilityClasses.utility;
 
 import activity.History_Activity;
 import activity.Other_Notes_Activity;

@@ -7,10 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 import objects.Patient;
-import com.example.sajid.myapplication.R;
-import objects.exam_obj;
+import com.elune.sajid.myapplication.R;
+
 import objects.history_obj;
 import objects.notes_obj;
 

@@ -15,14 +15,14 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 import adapters.DocumentsAdapter;
 import objects.Item;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
 import objects.media_obj;
 import objects.treatment_obj;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

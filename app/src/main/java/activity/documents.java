@@ -26,16 +26,16 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 import adapters.DocumentsAdapter;
 import objects.Item;
 import objects.Patient;
 
-import com.example.sajid.myapplication.FileUtils;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
+import redundant.FileUtils;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
 import objects.document_obj;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
 
 
@@ -46,8 +46,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -220,7 +218,27 @@ public class documents extends ActionBarActivity {
         }
         else
         {
-           dispatchTakePictureIntent();
+            final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(documents.this);
+            builder.setTitle("Add Photo!");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("Take Photo")) {
+
+                        dispatchTakePictureIntent();
+
+                    } else if (items[item].equals("Choose from Library")) {
+                        uploadNotesFromSDCard();
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+
+
+            //dispatchTakePictureIntent();
             //newCam();
         }
 
@@ -228,6 +246,12 @@ public class documents extends ActionBarActivity {
 
 
 
+    }
+    public void uploadNotesFromSDCard()
+    {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
     }
     private void newCam()
     {
@@ -372,7 +396,7 @@ public class documents extends ActionBarActivity {
                    // Toast.makeText(documents.this,"Please Select from .jpg,.png,.txt,.doc,.pdf files",Toast.LENGTH_SHORT);
                     android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(this);
 
-                    builder1.setMessage("Please Select from .jpg,.png,.txt,.doc,.pdf files")
+                    builder1.setMessage("Please Select from .jpg,.pngfiles")
                             .setCancelable(false)
                             .setTitle("ALERT")
                             .setIcon(android.R.drawable.ic_dialog_alert)

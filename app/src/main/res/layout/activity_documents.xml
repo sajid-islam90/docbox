@@ -16,7 +16,7 @@
             android:id="@+id/listViewDocuments"
             android:layout_weight="1" />
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
+        <utilityClasses.floatingactionbutton.FloatingActionsMenu
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/view5"
@@ -27,7 +27,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_icon="@drawable/ic_action_new"
@@ -40,7 +40,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
-            <com.getbase.floatingactionbutton.FloatingActionButton
+            <utilityClasses.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_icon="@drawable/ic_action_upload"
@@ -52,7 +52,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </utilityClasses.floatingactionbutton.FloatingActionsMenu>
 
 
     </RelativeLayout>

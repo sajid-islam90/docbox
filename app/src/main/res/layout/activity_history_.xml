@@ -156,29 +156,29 @@
 
     </LinearLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
+    <utilityClasses.floatingactionbutton.FloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/view"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <utilityClasses.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
             app:fab_icon="@drawable/ic_action_video"
         android:id="@+id/view2" />
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_icon="@drawable/ic_action_new_picture"
             android:id="@+id/view3" />
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_icon="@android:drawable/ic_menu_add"
             android:id="@+id/view4" />
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </utilityClasses.floatingactionbutton.FloatingActionsMenu>
 
 
 </RelativeLayout>

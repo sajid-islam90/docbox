@@ -21,7 +21,7 @@
     <string name="demo_collection">Demo Collection</string>
 
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_display_message">New Patient</string>
+    <string name="title_activity_display_message">Add New Patient</string>
     <string name="hello_world">Hello world!</string>
     <string name="enter_name">Enter Name</string>
     <string name="enter_age">Enter Age</string>
@@ -55,7 +55,7 @@
     <string name="nav_drawer_item3">Profile Settings</string>
     <string name="nav_drawer_item4">Today Schedule</string>
     <string name="nav_drawer_item5">Payment Options</string>
-    <string name="nav_drawer_item6">Others</string>
+    <string name="nav_drawer_item6">Add Helper</string>
 
     <string name="delete_button">"Delete Record</string>
     <string name="edit_button">"Edit Record</string>
@@ -106,15 +106,82 @@
     <string name="title_activity_user_profile">UserProfile</string>
 
 
+    <string-array name="specialitiesSurgery">
+        <item>Orthopedic Surgery</item>
+        <item>Ophthalmics</item>
+        <item>Dentist</item>
+        <item>ENT</item>
+        <item>Cardiology</item>
+        <item>OBS and Gynecology</item>
+        <item>General Surgery</item>
+        <item>Plastic Surgery</item>
+        <item>Neurosurgery</item>
+        <item>Pediatric Surgery</item>
+        <item>Urology</item>
+        <item>Surgical Gastroenterology</item>
+        <item>CTVS</item>
+        <item>Surgical Oncology</item>
+        <item>Endocrine Surgery</item>
+
+        </string-array>
+    <string-array name="specialitiesMedicine">
+        <item>General Medicine</item>
+        <item>Neurology</item>
+        <item>Pediatrics</item>
+        <item>Internal Medicine</item>
+        <item>Neurology</item>
+        <item>Medical Gastroenterology</item>
+        <item>Nephrology</item>
+        <item>Medical Endocrinology</item>
+        <item>Rheumatology</item>
+        <item>Neonatology</item>
+        <item>Radiotherapy</item>
+        <item>Radiology</item>
+        <item>Anesthesia and Critical Care</item>
+        <item>Respiratory Medicine</item>
+        <item>Skin and VD</item>
+        <item>Clinical Hematology</item>
+
+    </string-array>
+
     <string-array name="specialities">
         <item>Orthopedic Surgery</item>
         <item>Ophthalmics</item>
         <item>Dentist</item>
-        <item>Cardiologist</item>
-        <item>General Practice</item>
-        <item>Gynecology</item>
+        <item>Cardiology</item>
+        <item>General Medicine</item>
+        <item>OBS and Gynecology</item>
         <item>Neurology</item>
         <item>Pediatrics</item>
+
+        <item>ENT</item>
+        <item>General Surgery</item>
+        <item>Plastic Surgery</item>
+        <item>Neurosurgery</item>
+        <item>Pediatric Surgery</item>
+        <item>Urology</item>
+        <item>Surgical Gastroenterology</item>
+        <item>CTVS</item>
+        <item>Surgical Oncology</item>
+        <item>Endocrine Surgery</item>
+
+
+        <item>Internal Medicine</item>
+        <item>Neurology</item>
+        <item>Medical Gastroenterology</item>
+        <item>Nephrology</item>
+        <item>Medical Endocrinology</item>
+        <item>Rheumatology</item>
+
+
+        <item>Neonatology</item>
+        <item>Radiotherapy</item>
+        <item>Radiology</item>
+        <item>Anesthesia and Critical Care</item>
+        <item>Respiratory Medicine</item>
+        <item>Skin and VD</item>
+        <item>Clinical Hematology</item>
+
     </string-array>
     <string name="title_activity_generic_notes">genericNotesActivity</string>
     <string name="title_activity_follow_up">Add Follow Up</string>

@@ -1,21 +1,13 @@
 package activity;
 
 
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -26,8 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.*;
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 
@@ -36,8 +27,11 @@ import java.util.HashMap;
 
 import objects.media_obj;
 import objects.personal_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.uploadfile;
+import utilityClasses.utility;
 
-import static com.example.sajid.myapplication.R.layout.activity_data_sync_activity;
+import static com.elune.sajid.myapplication.R.layout.activity_data_sync_activity;
 
 public class data_sync_activity extends AppCompatActivity {
     DatabaseHandler controller = new DatabaseHandler(this);
@@ -64,7 +58,7 @@ public class data_sync_activity extends AppCompatActivity {
             //Set the User Array list in ListView
             ListAdapter adapter = new SimpleAdapter( data_sync_activity.this,userList, R.layout.view_user_entry, new String[] { "userId","userName"}, new int[] {R.id.userId, R.id.customerId});
             ListView myList=(ListView)findViewById(R.id.synclist);
-            textView.setText("Cloud Sync Required");
+            textView.setText("Press button to save your data on our Cloud to keep it safe");
             myList.setAdapter(adapter);
             button.setVisibility(View.VISIBLE);
 
@@ -99,7 +93,7 @@ public class data_sync_activity extends AppCompatActivity {
                 //progressBar.setProgress(50);
                 if(mediaObjsFollowUp.size()>0)
                 {relativeLayout.setVisibility(View.VISIBLE);
-                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp,progressBar,textViewFileNumber);}
+                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp, progressBar, textViewFileNumber);}
 
             }
         });
@@ -182,7 +176,7 @@ public class data_sync_activity extends AppCompatActivity {
                 params.put("usersJSON", jSon);
                 String address = getResources().getString(R.string.action_server_ip_address);
                 //Toast.makeText(getApplicationContext(),    "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
-                utility.syncData("http://"+ address +"/insertPatient.php", params, data_sync_activity.this, prgDialog, userList.get(i).get("userId"),mediaObjsFollowUp.size());
+                utility.syncData("http://" + address + "/insertPatient.php", params, data_sync_activity.this, prgDialog, userList.get(i).get("userId"), mediaObjsFollowUp.size());
 
 
 

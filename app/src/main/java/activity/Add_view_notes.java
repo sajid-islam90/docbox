@@ -7,10 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 import objects.Patient;
-import com.example.sajid.myapplication.R;
-import objects.notes_obj;
+import com.elune.sajid.myapplication.R;
 
 
 public class Add_view_notes extends ActionBarActivity {

@@ -12,11 +12,14 @@ import java.util.Locale;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -35,29 +38,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.Activity_Video_Capture;
-import com.example.sajid.myapplication.FileUtils;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.example.sajid.myapplication.DatabaseHandler;
+import redundant.FileUtils;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
+import utilityClasses.DatabaseHandler;
 
 import objects.DataBaseEnums;
 import objects.Item;
 import objects.Patient;
 import objects.personal_obj;
 
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+
+import utilityClasses.floatingactionbutton.FloatingActionsMenu;
+import utilityClasses.utility;
 
 import adapters.*;
 import objects.history_obj;
@@ -67,7 +73,15 @@ import objects.other_obj;
 
 public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.TabListener {
     static int pid;
+     static RelativeLayout relativeLayoutHelp;
+    static FloatingActionsMenu floatingActionsMenuHelp;
+    static FloatingActionButton floatingActionButton1Help;
+    static FloatingActionButton floatingActionButton2Help;
+    static FloatingActionButton floatingActionButton3Help;
+    static  TextView textViewHelp;
+    static ImageView imageView;
     static  int version;
+    boolean firstTime;
     static  String parent;
     private static history_obj historyObj = null;
     private static media_obj mediaObj = new media_obj() ;
@@ -105,10 +119,58 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_activity_check);
         Intent intent = getIntent();
+
         pid = intent.getIntExtra("id", 0);
         version = intent.getIntExtra("version", 1);
         parent  =intent.getStringExtra("parent");
-DatabaseHandler databaseHandler =new DatabaseHandler(TabbedActivityCheck.this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(TabbedActivityCheck.this);
+        SharedPreferences.Editor editor = prefs.edit();
+        firstTime = prefs.getBoolean("firstNotes",true);
+         textViewHelp  = (TextView)findViewById(R.id.textView54);
+         imageView = (ImageView)findViewById(R.id.imageView11);
+        relativeLayoutHelp = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
+        // relativeLayoutHelp = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
+         floatingActionsMenuHelp = (FloatingActionsMenu)findViewById(R.id.viewHelp);
+        if(firstTime) {
+            relativeLayoutHelp.setVisibility(View.VISIBLE);
+            editor.putBoolean("firstNotes",false);
+            editor.commit();
+            firstTime = false;
+        }
+        else {
+            relativeLayoutHelp.setVisibility(View.GONE);
+        }
+         floatingActionButton1Help  = (FloatingActionButton)findViewById(R.id.view2Help);
+        floatingActionButton1Help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                relativeLayoutHelp.setVisibility(View.GONE);
+                //addVideo(v);
+
+            }
+        });
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+         floatingActionButton2Help = (FloatingActionButton)findViewById(R.id.view3Help);
+        floatingActionButton2Help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                relativeLayoutHelp.setVisibility(View.GONE);
+                //addPhoto(v);
+
+            }
+        });
+
+        floatingActionButton3Help  = (FloatingActionButton)findViewById(R.id.view4Help);
+        floatingActionButton3Help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                relativeLayoutHelp.setVisibility(View.GONE);
+               // addHistField(v);
+
+            }
+        });
+
+        DatabaseHandler databaseHandler =new DatabaseHandler(TabbedActivityCheck.this);
 if(OtherObjsStatic.size()<3)
 {
     for(int c=1;c<=3;c++){
@@ -129,10 +191,11 @@ if(OtherObjsStatic.size()<3)
             NotesFields.add(field);
             OtherObjs.add(other);
         }
-                getLatestVersionTitle();
+               // getLatestVersionTitle();
        // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Notes");
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
@@ -179,44 +242,10 @@ if(OtherObjsStatic.size()<3)
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
        // notes_obj notesObj  = dbHandler.getLatestNote(pid);
         Patient patient = dbHandler.getPatient(pid);
-        String title = null;
-       history_obj historyObj =   dbHandler.getVersionedHistNote(pid,version);
-
-        if
-                (historyObj._date==null)
-        {
-           if( dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_EXAM)==null)
-           {
-               if( dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_TREATMENT)==null)
-               {
-                  title = dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_OTHER);
-               }
-               else
-               {
-                   title =  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_TREATMENT);
-               }
-           }
-            else
-           {
-               title =  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_EXAM);
-           }
-        }
-        else
-        {
-            title=  dbHandler.getVersionedNote(pid,version, DataBaseEnums.TABLE_HISTORY);
-        }
-
-       // int version = dbHandler.getCurrentVersion(pid);
-        if (version >0) {
-            setTitle(title);
-
-            //displayNote(notesObj);
-        }
-        else
-        {
-            setTitle(patient.get_name() + "'s Notes ");
-            // setContentView(R.layout.activity_clinical_notes_empty);
-        }
+//        setTitleColor(R.color.white);
+//       setTitle(patient.get_name()+" Notes");
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(patient.get_name()+" Notes");
 
     }
 
@@ -386,18 +415,14 @@ if(OtherObjsStatic.size()<3)
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add_notes) {
-            this.startAddNotes();
-
-
+        if (id == R.id.action_help) {
+if(relativeLayoutHelp.getVisibility()==View.GONE)
+            relativeLayoutHelp.setVisibility(View.VISIBLE);
+            else
+    relativeLayoutHelp.setVisibility(View.GONE);
             return true;
         }
-        else if(id == R.id.action_view_previous_versions)
-        {
-            Intent intent = new Intent(this,view_all_versions.class);
-            intent.putExtra("id",pid);
-            startActivity(intent);
-        }
+
         else if(id == R.id.action_save)
         {
            Fragment fragment =  mSectionsPagerAdapter.fragment; //(PlaceholderFragment) getSupportFragmentManager().findFragmentById(R.id.pager);// mSectionsPagerAdapter.fragment;
@@ -485,13 +510,23 @@ if(OtherObjsStatic.size()<3)
             return 3;
         }
 
+
+
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
+            Resources res = getResources();
+            String[] Lines = res.getStringArray(R.array.specialities);
+
             DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
             personal_obj personalInfo = databaseHandler.getPersonalInfo();
             int specialityId = Integer.parseInt(personalInfo.get_speciality());
-            if(specialityId == 5)
+            String mySpeciality = Lines[specialityId-1];
+            String[] surgicalSpecialities = res.getStringArray(R.array.specialitiesSurgery);
+            String[] medicalSpecialities =  res.getStringArray(R.array.specialitiesMedicine);
+
+
+            if(utility.valuePresentInStringArray(mySpeciality,medicalSpecialities))
             {
                 switch (position) {
                     case 0:
@@ -568,6 +603,42 @@ if(OtherObjsStatic.size()<3)
             final RecyclerView listView2 = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
             final RecyclerView listView3 = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
             final CardView cardView = (CardView)rootView.findViewById(R.id.view13);
+
+            relativeLayoutHelp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    relativeLayoutHelp.setVisibility(View.GONE);
+                }
+            });
+//            floatingActionsMenuHelp = (FloatingActionsMenu)rootView.findViewById(R.id.viewHelp);
+            final FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu)rootView.findViewById(R.id.view);
+floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+    @Override
+    public void onMenuExpanded() {
+        textViewHelp.setVisibility(View.GONE);
+        imageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onMenuCollapsed() {
+        textViewHelp.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.VISIBLE);
+    }
+});
+//           floatingActionsMenuHelp.setOnClickListener(new View.OnClickListener() {
+//               @Override
+//               public void onClick(View v) {
+//                   if(textViewHelp.getVisibility() == View.VISIBLE)
+//                   {
+//                       textViewHelp.setVisibility(View.GONE);
+//                   }
+//                   else
+//                   textViewHelp.setVisibility(View.VISIBLE);
+//                   floatingActionsMenu.expand();
+//                   floatingActionsMenuHelp.collapseImmediately();
+//                   relativeLayoutHelp.setVisibility(View.GONE);
+//               }
+//           });
            // listView2.setVisibility(View.GONE);
           //  listView3.setVisibility(View.GONE);
             textView10.setOnClickListener(new View.OnClickListener() {
@@ -609,6 +680,41 @@ if(OtherObjsStatic.size()<3)
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                }
+            });
+            floatingActionButton1Help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    relativeLayoutHelp.setVisibility(View.GONE);
+                    try {
+                        addVideo(v);
+                        floatingActionsMenuHelp.collapseImmediately();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            floatingActionButton2Help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    relativeLayoutHelp.setVisibility(View.GONE);
+                    try {
+                        addPhoto(v);
+                        floatingActionsMenuHelp.collapseImmediately();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            floatingActionButton3Help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    relativeLayoutHelp.setVisibility(View.GONE);
+                    floatingActionsMenuHelp.collapseImmediately();
+                     addHistField(v);
 
                 }
             });

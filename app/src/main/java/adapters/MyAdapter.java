@@ -3,7 +3,6 @@ package adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 import objects.Item;
 import objects.Patient;
-import activity.PatientProfileActivity;
 
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.RoundImage;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.RoundImage;
 
 public class MyAdapter extends ArrayAdapter<Item> {
 

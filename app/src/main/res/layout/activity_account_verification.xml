@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.sajid.myapplication.AccountVerificationActivity">
+    tools:context="activity.AccountVerificationActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -105,49 +105,22 @@
 
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/idProofRelativeLayout"
             android:layout_below="@+id/graduationRegnRelativelayout"
-            android:id="@+id/postGraduationRegnRelativelayout"
-            android:layout_marginTop="15dp"
             android:padding="5dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Post Graduation registeration number"
-                android:id="@+id/postGraduationRegnTitleTextView"
-                android:gravity="center"
-                android:layout_alignLeft="@+id/postGraduationRegistrationNumberEditText"
-                android:textStyle="bold" />
-
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/postGraduationRegistrationYearEditText"
-                android:hint="Year of Regn."
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="false"
+                android:id="@+id/idProofEditText"
                 android:gravity="center"
-                android:layout_toEndOf="@+id/postGraduationRegistrationNumberEditText"
+                android:hint="click to upload Id proof..."
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:layout_below="@+id/postGraduationRegnTitleTextView" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/postGraduationRegistrationNumberEditText"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:hint="Enter your MCI/State Regn. Number"
-                android:gravity="center"
-                android:layout_below="@+id/postGraduationRegnTitleTextView" />
-
+                android:editable="false"
+                android:focusable="false" />
         </RelativeLayout>
-
 
         <Button
             android:layout_width="wrap_content"
@@ -156,7 +129,7 @@
             android:id="@+id/submitButton"
             android:layout_alignParentTop="false"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/postGraduationRegnRelativelayout" />
+            android:layout_below="@+id/idProofRelativeLayout" />
 
     </RelativeLayout>
     </android.support.v7.widget.CardView>

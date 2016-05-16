@@ -1,6 +1,5 @@
 package fragments;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,18 +14,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
@@ -37,7 +32,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 import objects.DataBaseEnums;
-import objects.Item;
 import objects.Patient;
 
 public class Contact_Fragment extends Fragment {

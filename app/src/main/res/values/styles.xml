@@ -47,8 +47,9 @@
     </style>
 
 
-    <style name="TabbedActivity" parent="Theme.AppCompat.Light">
+    <style name="TabbedActivity" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarStyle">@style/MyActionBarTab</item>
+
         <item name="android:colorPrimary" tools:targetApi="lollipop">@color/green</item>
         <item name="actionBarTabTextStyle">@style/TabStyle</item>
     </style>
@@ -73,7 +74,7 @@
 
         <!-- Support library compatibility -->
         <item name="background">@color/green</item>
-        <item name="android:textColor">@color/pagerTab</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">

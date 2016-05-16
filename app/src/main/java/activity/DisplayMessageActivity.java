@@ -1,8 +1,11 @@
 package activity;
 //ADDING A NEW PATIENT
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,15 +29,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
+import utilityClasses.DatabaseHandler;
 
 
 import objects.Item;
 import objects.Patient;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.patients_today;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+
+import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
 
 import java.io.File;
@@ -47,6 +50,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
     Patient newPatient = new Patient();
     String parentActivity = "main";
     String accountType;
+    static final int PICKFILE_RESULT_CODE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +100,34 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
     public void startCamera(View view)
     {
-        dispatchTakePictureIntent();
+        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayMessageActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
 
+                    dispatchTakePictureIntent();
+
+                } else if (items[item].equals("Choose from Library")) {
+                    uploadNotesFromSDCard();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+
+
+       // dispatchTakePictureIntent();
+
+    }
+    public void uploadNotesFromSDCard()
+    {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -112,6 +142,27 @@ public class DisplayMessageActivity extends ActionBarActivity {
             button.setVisibility(View.GONE);
 
 
+        }
+
+        if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null)))
+        {
+            Uri uri = data.getData();
+            String file_path = "";
+
+            if (uri.getScheme().compareTo("content")==0) {
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
+                    Uri filePathUri = Uri.parse(cursor.getString(column_index));
+                    file_path=filePathUri.getPath();
+
+                    ImageView mImageView = (ImageView) findViewById(R.id.imageView);
+                    mImageView.setImageBitmap(BitmapFactory.decodeFile(file_path));
+                    Button button = (Button) findViewById(R.id.button);
+                    button.setVisibility(View.GONE);
+
+                }
+            }
         }
     }
     public void saveNewPatient(View view)

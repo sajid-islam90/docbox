@@ -20,9 +20,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

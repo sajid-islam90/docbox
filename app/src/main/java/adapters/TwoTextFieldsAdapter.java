@@ -14,7 +14,7 @@ package adapters;
 
         import activity.PatientProfileActivity;
         import objects.Item;
-        import com.example.sajid.myapplication.R;
+        import com.elune.sajid.myapplication.R;
 
 public class TwoTextFieldsAdapter extends ArrayAdapter<Item> {
 

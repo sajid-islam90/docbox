@@ -1,11 +1,9 @@
 package activity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,12 +17,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.R;
+import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
-
-import objects.Item;
 
 public class view_all_versions extends Fragment {
     static int pid;

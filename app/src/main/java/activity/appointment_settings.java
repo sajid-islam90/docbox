@@ -17,13 +17,12 @@ import android.widget.TimePicker;
 
 import objects.*;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.MyAnalogClock;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
+import utilityClasses.DatabaseHandler;
+import redundant.MyAnalogClock;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONStringer;
 import org.json.simple.JSONValue;
 
 import java.io.IOException;

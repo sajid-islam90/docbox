@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.example.sajid.myapplication.R;
+import com.elune.sajid.myapplication.R;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 

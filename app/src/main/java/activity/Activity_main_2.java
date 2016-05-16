@@ -8,66 +8,50 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.AccountVerificationActivity;
-import com.example.sajid.myapplication.ConnectionDetector;
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.LoginActivity;
-import com.example.sajid.myapplication.NsdHelper;
-import com.example.sajid.myapplication.PaymentActivity;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.RoundImage;
+import utilityClasses.ConnectionDetector;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.NsdHelper;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.RoundImage;
 
-import com.example.sajid.myapplication.UserProfile;
-import com.example.sajid.myapplication.patients_today;
-import com.example.sajid.myapplication.utility;
+import fragments.UserProfile;
+import utilityClasses.utility;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.apache.http.Header;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -186,6 +170,126 @@ public class  Activity_main_2 extends AppCompatActivity
     }
 
 
+    public void addHelper()
+    {
+        LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
+        final RequestParams params = new RequestParams();
+        Resources res = Activity_main_2.this.getResources();
+        final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
+        final String address = res.getString(R.string.action_server_ip_address);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        boolean helper  = prefs.getBoolean("helperAdded", false);
+        if(!helper)
+        {
+            final View promptsView = li.inflate(R.layout.sms_text, null);
+            final TextView textView = (TextView)promptsView.findViewById(R.id.sms_Edit_Text);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    Activity_main_2.this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setTitle("Enter Helper Email")
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    String s1 = null;
+                                    ArrayList<String> personalInfo = new ArrayList<>();
+                                    personalInfo.add(String.valueOf(databaseHandler.getCustomerId()));
+                                    personalInfo.add(textView.getText().toString());
+
+                                    StringWriter out = new StringWriter();
+                                    try {
+                                        JSONValue.writeJSONString(personalInfo, out);
+                                        s1 = out.toString();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String Json = s1;
+                                    params.put("emailPasswordJSON", Json);
+
+                                    // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
+
+                                    Thread thread = new Thread(){
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+                                                client.post("http://" + address + "/registerHelperByDoctor.php", params, new AsyncHttpResponseHandler() {
+                                                    // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+                                                    @Override
+                                                    public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                                                        try {
+                                                            String str = new String(bytes, "UTF-8");
+                                                            JSONParser parser = new JSONParser();
+                                                            JSONObject object = (JSONObject) parser.parse(str);
+                                                            String message = (String) object.get("message");
+                                                            if(message.equals("registered"))
+                                                            {
+
+                                                            }
+                                                            else
+                                                            {
+
+                                                            }
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                                                        try {
+
+
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                    }
+
+                                                    @Override
+                                                    public void onFinish() {
+
+
+                                                    }
+
+
+                                                });
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    };
+                                    thread.start();
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+
+        }
+    }
+
+
 
 
     @Override
@@ -199,7 +303,7 @@ public class  Activity_main_2 extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         accountType = prefs.getString(Activity_main_2.this.getString(R.string.account_type), "");
         ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
-        if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
+       // if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
         {    String s1 = null;
         ArrayList<String> CstmrId = new ArrayList<>();
         int customerId = databaseHandler.getCustomerId();
@@ -442,11 +546,15 @@ public class  Activity_main_2 extends AppCompatActivity
 
             //mTitle = "My Calender";
         }
+            if(position == 5)
+            {
+                addHelper();
+            }
     }
-        else
-        {
-            Toast.makeText(Activity_main_2.this,"Please Save your user settings first to continue",Toast.LENGTH_LONG).show();
-        }
+//        else
+//        {
+//            Toast.makeText(Activity_main_2.this,"Please Save your user settings first to continue",Toast.LENGTH_LONG).show();
+//        }
        // mTitle = "My Other Thing";
     }
     @Override

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -13,9 +12,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
 

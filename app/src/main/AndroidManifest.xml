@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sajid.myapplication" >
+    package="com.elune.sajid.myapplication" >
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -51,7 +51,7 @@
         android:theme="@style/Theme.AppCompat" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyArQk7JhZV2ulQF1YrhRzZhN9SJPd7YMYI" />
+            android:value="AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -111,7 +111,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".UploadToServer"
+            android:name="redundant.UploadToServer"
             android:label="Upload" >
         </activity>
         <activity
@@ -151,11 +151,11 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name=".view_notes_version"
+            android:name="activity.view_notes_version"
             android:label="@string/title_activity_view_notes_version" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/MainActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
@@ -176,7 +176,7 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name=".Title_Activity"
+            android:name="activity.Title_Activity"
             android:label="@string/title_activity_title_" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -202,7 +202,7 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name=".Appointments"
+            android:name="activity.Appointments"
             android:label="@string/title_activity_appointments"
             android:theme="@style/MainActivity" >
         </activity>
@@ -212,11 +212,11 @@
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name=".dataRestoreActivity"
+            android:name="activity.dataRestoreActivity"
             android:label="@string/title_activity_data_restore" >
         </activity>
         <activity
-            android:name=".AppointmentSettingsCheck"
+            android:name="activity.AppointmentSettingsCheck"
             android:label="@string/title_activity_appointment_settings_check"
             android:theme="@style/MainActivity" >
         </activity>
@@ -226,13 +226,13 @@
             android:exported="false" />
 
         <activity
-            android:name=".AccountVerificationActivity"
+            android:name="activity.AccountVerificationActivity"
             android:label="@string/title_activity_account_verification"
             android:parentActivityName="activity.Activity_main_2"
             android:theme="@style/MainActivity" >
         </activity>
         <activity
-            android:name=".Activity_Video_Capture"
+            android:name="activity.Activity_Video_Capture"
             android:label="@string/title_activity_activity__video__capture"
             android:screenOrientation="portrait" >
         </activity>
@@ -241,12 +241,12 @@
             android:label="@string/title_activity_payment_activity" >
         </activity>
         <activity
-            android:name=".PaymentActivity"
+            android:name="activity.PaymentActivity"
             android:label="@string/title_activity_payment" >
         </activity>
         <activity android:name="com.razorpay.CheckoutActivity" />
         <activity
-            android:name="com.example.sajid.myapplication.patients_today"
+            android:name="activity.patients_today"
             android:label="@string/title_activity_patients_today"
             android:screenOrientation="portrait"
             android:theme="@style/MainActivity" >

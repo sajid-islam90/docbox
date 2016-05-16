@@ -1,7 +1,6 @@
 package activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,20 +20,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.Activity_Video_Capture;
-import com.example.sajid.myapplication.DatabaseHandler;
-import com.example.sajid.myapplication.FileUtils;
-import com.example.sajid.myapplication.PhotoHelper;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import utilityClasses.DatabaseHandler;
+import redundant.FileUtils;
+import utilityClasses.PhotoHelper;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
+import utilityClasses.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,7 +75,7 @@ public class followUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_up);
-
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Intent intent = getIntent();
         media = new ArrayList<>();
         pid = intent.getIntExtra("id", 0);
@@ -446,7 +444,8 @@ public class followUp extends AppCompatActivity {
 
         }
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null)))
-        {Uri uri = data.getData();
+        {
+            Uri uri = data.getData();
             File file = null;
             String file_name = "";
             String file_path = "";

@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
-import android.widget.Switch;
 
 import adapters.DocumentsAdapter;
 import objects.Item;
-import com.example.sajid.myapplication.R;
-import com.example.sajid.myapplication.utility;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.utility;
 
 import java.util.ArrayList;
 

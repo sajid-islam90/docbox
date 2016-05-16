@@ -10,4 +10,70 @@
     android:backgroundTint="@color/green" >
 
 </android.support.v4.view.ViewPager>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#90000000"
+        android:id="@+id/relativeLayoutHelp"
+        android:visibility="visible"
+        android:padding="3dp">
+
+        <utilityClasses.floatingactionbutton.FloatingActionsMenu
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/viewHelp"
+            app:fab_labelStyle="@style/menu_labels_style"
+            app:fab_labelsPosition="left"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+            <utilityClasses.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_action_video"
+                app:fab_title="Add Video"
+                android:id="@+id/view2Help" />
+            <utilityClasses.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_title="Add Photo"
+                app:fab_icon="@drawable/ic_action_new_picture"
+                android:id="@+id/view3Help" />
+            <utilityClasses.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_title="Add Custom Note"
+                app:fab_icon="@android:drawable/ic_menu_add"
+                android:id="@+id/view4Help" />
+
+        </utilityClasses.floatingactionbutton.FloatingActionsMenu>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Press to Add Media and Other Notes"
+            android:id="@+id/textView54"
+            android:textStyle="bold"
+            android:layout_above="@+id/imageView11"
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/viewHelp"
+            android:layout_alignStart="@+id/viewHelp"
+            android:textColor="#ffffff" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView11"
+            android:src="@drawable/ic_help_right_arrow"
+            android:layout_marginRight="113dp"
+            android:layout_marginEnd="113dp"
+            android:layout_alignBottom="@+id/viewHelp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="33dp" />
+    </RelativeLayout>
+
+
 </RelativeLayout>

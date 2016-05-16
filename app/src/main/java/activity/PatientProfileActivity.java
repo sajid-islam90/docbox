@@ -29,16 +29,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sajid.myapplication.*;
-import com.example.sajid.myapplication.R;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.elune.sajid.myapplication.R;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
 import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
@@ -58,6 +57,10 @@ import fragments.Diagnosis;
 import objects.Item;
 import objects.Patient;
 import objects.personal_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import utilityClasses.RoundImage;
+import utilityClasses.utility;
 
 
 public class PatientProfileActivity extends AppCompatActivity implements ActionBar.TabListener {
@@ -68,8 +71,11 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
     private static String nextFollowUpDate ="";
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
+    boolean firstTime;
     private static int Tabselected = 0;
+    RelativeLayout helpLayout;
     FloatingActionButton floatingActionButton;
+    FloatingActionButton floatingActionButtonHelp;
     String accountType;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -83,9 +89,10 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
         Tabselected = intent.getIntExtra("tab",0);
         sliderFunction(Tabselected);
         final ActionBar actionBar = getSupportActionBar();
-       Patient patient = databaseHandler.getPatient(id);
+        Patient patient = databaseHandler.getPatient(id);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(PatientProfileActivity.this);
-
+        SharedPreferences.Editor editor = prefs.edit();
+        firstTime = prefs.getBoolean("firstTimePatientProfile",true);
         accountType  = prefs.getString(PatientProfileActivity.this.getString(R.string.account_type), "");
 
         LinearLayout linearLayout3 = (LinearLayout)findViewById(R.id.linearLayoutAddNextFollowupDate);
@@ -99,10 +106,65 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
         LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
         LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
         LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
-
+        LinearLayout linearLayout4 = (LinearLayout)findViewById(R.id.linearLayoutAddNextFollowupDateHelp);
+        helpLayout = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
+        if(firstTime) {
+            helpLayout.setVisibility(View.VISIBLE);
+            editor.putBoolean("firstTimePatientProfile",false);
+            editor.commit();
+            firstTime = false;
+        }
+        else {
+            helpLayout.setVisibility(View.GONE);
+        }
+        assert linearLayout4 != null;
+        linearLayout4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                helpLayout.setVisibility(View.GONE);
+                doMoreWork();
+            }
+        });
+        helpLayout = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
+helpLayout.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        helpLayout.setVisibility(View.GONE);
+    }
+});
 
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        floatingActionButtonHelp =(FloatingActionButton)findViewById(R.id.fabButtonPatientProfileHelp);
+        floatingActionButtonHelp.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                helpLayout.setVisibility(View.GONE);
+                final CharSequence[] items = { "Add Clinical Notes", "Add A Report", "Cancel" };
+                AlertDialog.Builder builder = new AlertDialog.Builder(PatientProfileActivity.this);
+
+                builder.setTitle("Add Info!");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (items[item].equals("Add Clinical Notes")) {
+                            if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
+                                showNotes();
+                            else
+                            Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
+                        } else if (items[item].equals("Add A Report")) {
+                            showDocuments();
+                        } else if (items[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+
+            }
+        });
+
         floatingActionButton =(FloatingActionButton)findViewById(R.id.fabButtonPatientProfile);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +179,7 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
                         if (items[item].equals("Add Clinical Notes")) {
                             if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
                             showNotes();
+                            else
                             Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
                         } else if (items[item].equals("Add A Report")) {
                             showDocuments();
@@ -566,9 +629,12 @@ finish();
                 finish();
                 break;
 //
-//            case R.id.action_next_follow_up_date:
-//                doMoreWork();
-//                return true;
+            case R.id.action_help:
+                if(helpLayout.getVisibility()==View.VISIBLE)
+               helpLayout.setVisibility(View.GONE);
+                else
+                helpLayout.setVisibility(View.VISIBLE);
+                return true;
 //            case R.id.add_follow_up:
 //                startAddNotes();
 //                return true;
