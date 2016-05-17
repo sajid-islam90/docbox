@@ -105,6 +105,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         boolean restoreFlag = prefs.getBoolean("restore", false);
+       int fragmentNumberToShow =  getIntent().getIntExtra("fragmentNumber",1);
 //        Toolbar toolbar = (Toolbar)findViewById(R.id.main_activity_toolbar);
 //        setSupportActionBar(toolbar);
         if(restoreFlag){
@@ -161,9 +162,16 @@ public class  Activity_main_2 extends AppCompatActivity
                 .commit();
         else
         {
+            if(fragmentNumberToShow == 2)
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, activity_view_patient_visits.newInstance(2, true))
+
+                        .commit();
+            else
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MainActivity.newInstance(1))
                     .commit();
+
         }
 
 

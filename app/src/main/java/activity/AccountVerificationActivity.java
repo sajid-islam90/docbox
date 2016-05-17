@@ -46,7 +46,7 @@ EditText idProof;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_verification);
         try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
         catch (Exception e)
         {
@@ -264,6 +264,15 @@ EditText idProof;
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(AccountVerificationActivity.this,Activity_main_2.class);
+        intent.putExtra("fragmentNumber",2);
+        startActivity(intent);
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -272,6 +281,13 @@ EditText idProof;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.home) {
+            Intent intent = new Intent(AccountVerificationActivity.this,Activity_main_2.class);
+            intent.putExtra("fragmentNumber",2);
+            startActivity(intent);
+            finish();
             return true;
         }
 

@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
@@ -26,6 +27,7 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -467,11 +469,11 @@ return;}
 
 
     t.start();
-    try {
-        t.join();
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    }
+//    try {
+//        t.join();
+//    } catch (InterruptedException e) {
+//        e.printStackTrace();
+//    }
 
 
 
@@ -482,7 +484,8 @@ return;}
                     LoginActivity.this);
 
             Button submit = (Button)promptsView.findViewById(R.id.button5);
-            Button reEnterOTP = (Button)promptsView.findViewById(R.id.button3);
+            Button cancelButton = (Button) promptsView.findViewById(R.id.button3);
+            TextView reEnterOTP = (TextView)promptsView.findViewById(R.id.textViewResendOTP);
             submit.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -491,7 +494,7 @@ return;}
 //                                    pdia = new ProgressDialog(LoginActivity.this);
 //                                    pdia.setMessage("Restoring Data Please Wait");
 //                                    pdia.show();
-                    EditText textView = (EditText) promptsView.findViewById(R.id.verifyOTPEditText);
+                    final EditText textView = (EditText) promptsView.findViewById(R.id.verifyOTPEditText);
                     final String otpEnter = textView.getText().toString();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                     final SharedPreferences.Editor editor = prefs.edit();
@@ -549,8 +552,8 @@ return;}
                                     } else {
                                         new AlertDialog.Builder(LoginActivity.this)
                                                 .setTitle(email + "Already Exists")
-                                                .setMessage("Sure want to create new account??")
-                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                .setMessage("Sure want to create new account??\nPrevious data will be lost")
+                                                .setPositiveButton("Create a new account", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         mAuthTask = new UserLoginTask(email, password);
                                                         CREDENTIALS = new String[]{""};
@@ -558,7 +561,7 @@ return;}
                                                         // continue with delete
                                                     }
                                                 })
-                                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                .setNegativeButton("Restore my previous account", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         // do nothing
                                                         allDataRestore(customerId);
@@ -577,8 +580,14 @@ return;}
                                 }
                                 else
                                 {
-                                    mPasswordView.setError("Invalid OTP");
+
                                     mPasswordView.requestFocus();
+                                    showProgress(false);
+                                    textView.setError("Wrong OTP");
+                                    textView.requestFocus();
+                                   // alertDialog.dismiss();
+//                                    alertDialog = alertDialogBuilder.create();
+//                                    alertDialog.show();
                                     editor.putBoolean("otpVerified", false);
                                     editor.commit();
                                 }
@@ -599,6 +608,7 @@ return;}
 
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                showProgress(false);
                                 mPasswordView.setError("Something went wrong please check internet connection");
                                 mPasswordView.requestFocus();
                             }
@@ -608,7 +618,7 @@ return;}
 
                         @Override
                         public void onFinish() {
-
+alertDialog.dismiss();
 
                         }
 
@@ -625,6 +635,14 @@ return;}
                         public void run() {
                             try {
                                 generateOTP(password);
+                                LoginActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(LoginActivity.this, "OTP sent", Toast.LENGTH_LONG).show();
+
+
+                                    }
+                                });
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -634,6 +652,13 @@ return;}
 
                     thread.start();
 
+                }
+            });
+            cancelButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showProgress(false);
+                    alertDialog.dismiss();
                 }
             });
 
@@ -729,58 +754,7 @@ return;}
 //            }
         }
     }
-    //i: patient id
-    //s: file path
-   public void downloadFile(int i, String s){
-        int totalSize = 0;
-        int downloadedSize = 0;DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
-        int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
-        File file1 = new File(s);
 
-        String dwnload_file_path = "http://docbox.co.in/sajid/"+customerId+"//"+String.valueOf(i)+"//"+file1.getName();
-        try {
-            URL url = new URL(dwnload_file_path);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
-
-            //connect
-            urlConnection.connect();
-
-            //set the path where we want to save the file
-            File SDCardRoot = Environment.getExternalStorageDirectory();
-            //create a new file, to save the downloaded file
-            File file = new File(file1,file1.getName());
-
-            FileOutputStream fileOutput = new FileOutputStream(file);
-
-            //Stream used for reading the data from the internet
-            InputStream inputStream = urlConnection.getInputStream();
-
-            //this is the total size of the file which we are downloading
-            totalSize = urlConnection.getContentLength();
-
-
-            //create a buffer...
-            byte[] buffer = new byte[1024];
-            int bufferLength = 0;
-
-            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-                fileOutput.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
-                // update the progressbar //
-
-            }
-            //close the output stream when complete //
-            fileOutput.close();
-
-
-        }
-        catch (final Exception e) {
-           e.printStackTrace();
-        }
-    }
 
 
 
@@ -1232,12 +1206,7 @@ return;}
             DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
             // TODO: attempt authentication against a network service.
 boolean a = false;
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+
 
             for (String credential : CREDENTIALS) {
                 String[] pieces = credential.split(":");

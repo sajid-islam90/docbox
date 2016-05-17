@@ -73,7 +73,8 @@ public class activity_view_patient_visits extends Fragment {
     FragmentManager fragManager = null;
     Date endDateCalendar;
     static boolean SwitchState ;
-   static adapter_view_visit_calendar adapter;
+     Switch aSwitch;
+    static adapter_view_visit_calendar adapter;
     ListView listViewPatients;
     RelativeLayout relativeLayout;
     int rightToLeftSwipe = 0;
@@ -111,7 +112,7 @@ final DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         if (calendar_descriptor.startDate == null) {
             calendar_descriptor.startDate = cal.getTime();
         }
-        final Switch aSwitch = (Switch)rootView.findViewById(R.id.switch2);
+         aSwitch = (Switch)rootView.findViewById(R.id.switch2);
         setHasOptionsMenu(showOptionsMenu);
 //        SwitchState = aSwitch.isChecked();
         aSwitch.setChecked(SwitchState);
@@ -321,8 +322,17 @@ adapterViewVisitCalendar.notifyDataSetChanged();
                                 editor.putBoolean("showOptionMenu", false);
                                 editor.commit();
                                 setHasOptionsMenu(false);
+//                                SwitchState = true;
+//                                aSwitch.setChecked(true);
+//                                fragmentManager.beginTransaction()
+//                                        .replace(R.id.container, activity_view_patient_visits.newInstance(2,true))
+//                                        .commit();
+
                                 Intent intent = new Intent(context, AccountVerificationActivity.class);
                                 context.startActivity(intent);
+                                getActivity().finish();
+
+
                             }
                             else {
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
