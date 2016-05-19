@@ -627,7 +627,7 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
             actionBar.setDisplayHomeAsUpEnabled(false);
             if(!gpsOn)
             {
-                Toast.makeText(getActivity(),"Please Move The GPS to High Accuracy To Get Your Current Location",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Please Move The GPS to High Accuracy To Get Your Current Location",Toast.LENGTH_LONG).show();
             }
         }
         if (currentLocation != null) {
@@ -1269,8 +1269,13 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+            ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
+            if (((String.valueOf(searchedLocation.latitude) != null) && (String.valueOf(searchedLocation.longitude) != null) && (!String.valueOf(searchedLocation.latitude).equals("")) && (!String.valueOf(searchedLocation.longitude).equals(""))))
 
             savePersonalInfo();
+            else
+            Toast.makeText(getActivity(),"Please Switch GPS to high accuracy to save profile",Toast.LENGTH_LONG).show();
 
 
 

@@ -313,7 +313,7 @@ public class  Activity_main_2 extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         accountType = prefs.getString(Activity_main_2.this.getString(R.string.account_type), "");
         ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
-       // if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
+        if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
         {    String s1 = null;
         ArrayList<String> CstmrId = new ArrayList<>();
         int customerId = databaseHandler.getCustomerId();
@@ -335,7 +335,6 @@ public class  Activity_main_2 extends AppCompatActivity
 
         hasHelper = prefs.getBoolean("hasHelper", false);
         if (position == 0) {
-
 
             {
                 fragmentNumber = 1;
