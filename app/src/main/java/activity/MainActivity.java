@@ -66,6 +66,7 @@ public class MainActivity extends Fragment {
     private TextView mEmail;
     private ListView listView;
     private ProgressDialog pdia;
+    boolean doubleBackToExitPressedOnce = false;
     RoundImage roundedImage;
     private static final String ARG_SECTION_NUMBER = "section_number";
     final Context context = getActivity();

@@ -17,6 +17,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import objects.Patient;
 import objects.document_obj;
 import objects.personal_obj;
@@ -90,7 +92,7 @@ public class  Activity_main_2 extends AppCompatActivity
     private TextView mName;
     RoundImage roundedImage;
     private CharSequence mTitle;
-    private int fragmentNumber;
+    private int fragmentNumber = 1;
     private ProgressDialog pdia;
      ProgressDialog pdia1;
     String accountType;
@@ -336,6 +338,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
 
             {
+                fragmentNumber = 1;
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, MainActivity.newInstance(position + 1))
 
@@ -349,11 +352,13 @@ public class  Activity_main_2 extends AppCompatActivity
             //mTitle = "My Calender";
         } else if (position == 1) {
 
-            if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
+            if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))) {
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, activity_view_patient_visits.newInstance((position + 1), true))
 
                         .commit();
+                fragmentNumber = 2;
+            }
             else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
 //                fragmentManager.beginTransaction()
@@ -409,6 +414,7 @@ public class  Activity_main_2 extends AppCompatActivity
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
+                fragmentNumber = 3;
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, UserProfile.newInstance(position + 1))
                         .commit();
@@ -474,6 +480,7 @@ public class  Activity_main_2 extends AppCompatActivity
                                         @Override
                                         public void run() {
                                             try {
+                                                fragmentNumber = 4;
                                                 Intent intent = new Intent(Activity_main_2.this, patients_today.class);
                                                 intent.putExtra("nsd", mNsdHelper);
                                                 startActivity(intent);
@@ -542,6 +549,7 @@ public class  Activity_main_2 extends AppCompatActivity
             if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
 
             {
+                fragmentNumber = 5;
                 Intent intent = new Intent(Activity_main_2.this, PaymentActivity.class);
                 startActivity(intent);
             } else {
@@ -556,6 +564,7 @@ public class  Activity_main_2 extends AppCompatActivity
         }
             if(position == 5)
             {
+                fragmentNumber = 6;
                 addHelper();
             }
     }
@@ -568,25 +577,32 @@ public class  Activity_main_2 extends AppCompatActivity
     @Override
     public void onBackPressed() {
 //
-//        if (doubleBackToExitPressedOnce) {
-//            super.onBackPressed();
-//            return;
-//        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if(fragmentNumber!=1)
+        {
+            fragmentNumber = 1;
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MainActivity.newInstance(1))
 
-                .commit();
-//        this.doubleBackToExitPressedOnce = true;
-//        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-//
-//        new Handler().postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                doubleBackToExitPressedOnce=false;
-//            }
-//        }, 2000);
+                .commit();}
+        else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+        }
     }
 
     public void onSectionAttached(int number) {
