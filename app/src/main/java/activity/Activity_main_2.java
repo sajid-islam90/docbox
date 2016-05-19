@@ -582,7 +582,7 @@ public class  Activity_main_2 extends AppCompatActivity
         {
             fragmentNumber = 1;
             FragmentManager fragmentManager = getSupportFragmentManager();
-
+//comment
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MainActivity.newInstance(1))
 
