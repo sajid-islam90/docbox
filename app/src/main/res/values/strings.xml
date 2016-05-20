@@ -109,13 +109,13 @@
     <string-array name="specialitiesSurgery">
         <item>Orthopedic Surgery</item>
         <item>Ophthalmics</item>
-        <item>Dentist</item>
+        <item>Dental Surgery</item>
         <item>ENT</item>
         <item>Cardiology</item>
         <item>OBS and Gynecology</item>
         <item>General Surgery</item>
         <item>Plastic Surgery</item>
-        <item>Neurosurgery</item>
+        <item>Neuro Surgery</item>
         <item>Pediatric Surgery</item>
         <item>Urology</item>
         <item>Surgical Gastroenterology</item>

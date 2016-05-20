@@ -1,11 +1,13 @@
 package fragments;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,10 +21,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -909,6 +913,15 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
     public void addProfilePic() throws IOException
     {
+        if ((ContextCompat.checkSelfPermission(getActivity(),  Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED))
+
+        {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO},
+                    1);
+        }
+
+
         final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Photo!");

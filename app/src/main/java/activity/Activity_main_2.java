@@ -158,7 +158,8 @@ public class  Activity_main_2 extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         FragmentManager fragmentManager = getSupportFragmentManager();
         ArrayList<String> latLong = dbHandle.getSavedLatitudeLongitude();
-        if((latLong.get(0)==null)&&(latLong.get(1)==null)&&(!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
+        if (((latLong.get(0) == null) || (latLong.get(1) == null) || (latLong.get(0).equals("")) || (latLong.get(1).equals("")))
+                &&(!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
         fragmentManager.beginTransaction()
                 .replace(R.id.container, UserProfile.newInstance(3))
                 .commit();

@@ -1,5 +1,6 @@
 package activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,12 +36,15 @@ import objects.Patient;
 import objects.media_obj;
 import objects.personal_obj;
 import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
 import utilityClasses.uploadfile;
 import utilityClasses.utility;
 
 public class AccountVerificationActivity extends AppCompatActivity {
 EditText idProof;
+    static final int REQUEST_TAKE_PHOTO = 1;
     static final int PICKFILE_RESULT_CODE = 2;
+    String profilePicPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +67,29 @@ EditText idProof;
         idProof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
+                final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AccountVerificationActivity.this);
+                builder.setTitle("Add Photo!");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (items[item].equals("Take Photo")) {
+
+                            dispatchTakePictureIntent();
+
+                        } else if (items[item].equals("Choose from Library")) {
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(galleryIntent, PICKFILE_RESULT_CODE);
+                        } else if (items[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+
+
+
             }
         });
 
@@ -125,6 +149,39 @@ EditText idProof;
         });
     }
 
+
+    public void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(AccountVerificationActivity.this,CameraDemoActivity.class);
+
+        //media_obj mediaObj = new media_obj();
+
+        final DatabaseHandler dbHandler = new DatabaseHandler(AccountVerificationActivity.this);
+
+
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(AccountVerificationActivity.this.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = PhotoHelper.createImageFile(0);
+
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra("filePath",photoFile.getPath());
+                profilePicPath = photoFile.getPath();
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Calendar c = Calendar.getInstance();
@@ -134,7 +191,9 @@ EditText idProof;
 
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c.getTime());
-
+        if (requestCode == REQUEST_TAKE_PHOTO ) {
+            idProof.setText(profilePicPath);
+        }
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null))) {
             Uri uri = data.getData();
             File file = null;

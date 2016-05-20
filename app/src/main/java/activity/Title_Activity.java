@@ -2,6 +2,7 @@ package activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.elune.sajid.myapplication.R;
 
 import utilityClasses.DatabaseHandler;
+import utilityClasses.utility;
 
 public class Title_Activity extends AppCompatActivity {
 
@@ -83,12 +85,17 @@ public class Title_Activity extends AppCompatActivity {
 //
 //        }
         String[] perms = {"android.permission.RECORD_AUDIO", "android.permission.CAMERA","android.permission.GET_ACCOUNTS","android.permission.WRITE_EXTERNAL_STORAGE",
-                "android.permission.READ_PHONE_STATE","android.permission.FINE_LOCATION","android.permission.SEND_SMS","android.permission.ACCESS_COARSE_LOCATION"};
+                "android.permission.READ_PHONE_STATE","android.permission.ACCESS_FINE_LOCATION"};
+//        String[] perms = { "android.permission.GET_ACCOUNTS","android.permission.WRITE_EXTERNAL_STORAGE",
+//                "android.permission.READ_PHONE_STATE","android.permission.ACCESS_FINE_LOCATION"};
 
         int permsRequestCode = 200;
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)!= PackageManager.PERMISSION_GRANTED)
-         ||(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
-               ||(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED))
+         ||(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+               ||(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
+                ||(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
+                ||(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
+                ||(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED))
 
         requestPermissions(perms, permsRequestCode);
         else
@@ -104,6 +111,7 @@ public class Title_Activity extends AppCompatActivity {
 
 
     }
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
 
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
@@ -116,15 +124,16 @@ public class Title_Activity extends AppCompatActivity {
 
                 boolean cameraAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
 
-                boolean accountsAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
+                boolean accountsAccepted = grantResults[2]==PackageManager.PERMISSION_GRANTED;
 
-                boolean storageAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
+                boolean storageAccepted = grantResults[3]==PackageManager.PERMISSION_GRANTED;
 
-                boolean phoneStateAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
+                boolean phoneStateAccepted = grantResults[4]==PackageManager.PERMISSION_GRANTED;
 
-                boolean LocationAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
+                boolean LocationAccepted = grantResults[5]==PackageManager.PERMISSION_GRANTED;
 
-                if(storageAccepted && LocationAccepted)
+
+                if(storageAccepted && LocationAccepted&&accountsAccepted&&phoneStateAccepted && cameraAccepted && audioAccepted)
                 {
                     DatabaseHandler databaseHandler = new DatabaseHandler(Title_Activity.this);
 
@@ -136,7 +145,18 @@ public class Title_Activity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(Title_Activity.this,"Please Grant Permissions Before Continuing",Toast.LENGTH_SHORT).show();
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Title_Activity.this);
+                    builder.setTitle("Permissions Missing");
+                    builder.setMessage("Please grant all the permissions requested\nThese permissions are necessary for your android version to run all the services smoothly");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            utility.recreateActivityCompat(Title_Activity.this);
+                        }
+                    });
+                    builder.show();
+                    //Toast.makeText(Title_Activity.this,"Please Grant Permissions Before Continuing",Toast.LENGTH_SHORT).show();
+
                 }
 
                 break;

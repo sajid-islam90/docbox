@@ -1,5 +1,6 @@
 package activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +13,8 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -49,7 +52,6 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cameradema_activity);
         // camera surface view created
-
 
 
         cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
@@ -308,7 +310,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                     ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 
                     // save image into gallery
-                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 10, ostream);
+                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
 
 
                     FileOutputStream fout = new FileOutputStream(imageFile);

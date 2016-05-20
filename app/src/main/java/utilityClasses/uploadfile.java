@@ -267,7 +267,7 @@ public class uploadfile  {
         }
 
         @SuppressWarnings("deprecation")
-        private String uploadFile(int i) {
+        private String uploadFile(final int i) {
             String responseString = null;
             //if(!pid .equals("profilepictures"))
            // progressBar.setMessage(path.get(i));
@@ -283,8 +283,10 @@ public class uploadfile  {
                             public void transferred(long num) {
                             int percentageUpload = (int) ((num / (float) totalSize) * 100);
 
-                            if((percentageUpload%20 == 0)&&(percentageUpload!=0)&&(percentageUpload!=progressBar.getProgress()))
-                            {
+                            if((percentageUpload%20 == 0)&&(percentageUpload!=0))
+                            { if (progressBar!=null)
+                                if(percentageUpload!=progressBar.getProgress())
+                                if(!String.valueOf(path.get(i).get_pid()).equals("0"))
                                 publishProgress(percentageUpload);}
                             }
                         });

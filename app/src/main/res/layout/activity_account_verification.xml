@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/idProofEditText"
                 android:gravity="center"
-                android:hint="click to upload Id proof..."
+                android:hint="click to upload Photo Id proof..."
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:editable="false"
                 android:focusable="false" />

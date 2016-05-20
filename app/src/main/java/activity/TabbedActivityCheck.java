@@ -149,7 +149,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
 
             }
         });
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
          floatingActionButton2Help = (FloatingActionButton)findViewById(R.id.view3Help);
         floatingActionButton2Help.setOnClickListener(new View.OnClickListener() {
             @Override
