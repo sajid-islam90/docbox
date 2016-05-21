@@ -828,7 +828,7 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 }
             }
             listView1.setAdapter(inputAgainstAFieldAdapter);
-            listView1.setItemsCanFocus(true);
+          //  listView1.setItemsCanFocus(true);
            listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                @Override
                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
