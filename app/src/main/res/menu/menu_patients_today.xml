@@ -4,11 +4,11 @@
     tools:context="activity.patients_today">
 
     <item android:id="@+id/action_refresh" android:title="Refresh"
+        android:icon="@drawable/ic_action_refresh"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_connect" android:title="Connect"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_add_helper" android:title="Add Helper"
-        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/action_add" android:title="Add Patient"
         android:icon="@drawable/ic_action_add_person"
         app:showAsAction="ifRoom"/>

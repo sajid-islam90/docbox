@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -424,6 +425,12 @@ public class utility {
             public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
                 try {
                     String str = new String(bytes, "UTF-8");
+                    ((AppCompatActivity)(context)).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"Error Please check internet connection and try again",Toast.LENGTH_LONG);
+                        }
+                    });
                    // Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {

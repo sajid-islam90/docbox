@@ -19,6 +19,7 @@
 
     <item android:id="@+id/action_sync"
         android:title="Sync"
+        android:icon="@drawable/ic_action_sync"
         myapp:showAsAction="ifRoom|withText"  />
 
 </menu>

@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -138,6 +139,7 @@ public class patients_today extends AppCompatActivity {
         { mNsdHelper = new NsdHelper(this);
         mNsdHelper.initializeNsd();}
         mConnection = new ChatConnection(mUpdateHandler,patients_today.this,mNsdHelper);
+        TextView textView = (TextView) findViewById(R.id.textView55);
         final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
         listView = (ListView)findViewById(R.id.listViewPatientToday);
         button = (Button)findViewById(R.id.button2);
@@ -170,6 +172,17 @@ public class patients_today extends AppCompatActivity {
         numberAddedPatients =  getPatientList();
 
         displayPatientList(patientListToDisplay);
+        if(patientListToDisplay.size()==0)
+        {
+            button.setVisibility(View.GONE);
+            textView.setVisibility(View.VISIBLE);
+
+        }
+        else
+        {
+            button.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.GONE);
+        }
 
         final int finalNumberAddedPatients = numberAddedPatients;
         button.setOnClickListener(
@@ -575,123 +588,123 @@ public class patients_today extends AppCompatActivity {
 
         }
 
-        if (id == R.id.action_add_helper) {
-            LayoutInflater li = LayoutInflater.from(patients_today.this);
-            final RequestParams params = new RequestParams();
-            Resources res = patients_today.this.getResources();
-            final String address = res.getString(R.string.action_server_ip_address);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(patients_today.this);
-            boolean helper  = prefs.getBoolean("helperAdded", false);
-            if(!helper)
-            {
-                final View promptsView = li.inflate(R.layout.sms_text, null);
-                final TextView textView = (TextView)promptsView.findViewById(R.id.sms_Edit_Text);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        patients_today.this);
-
-                // set prompts.xml to alertdialog builder
-                alertDialogBuilder.setView(promptsView);
-
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setTitle("Enter Helper Email")
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-
-                                        String s1 = null;
-                                        ArrayList<String> personalInfo = new ArrayList<>();
-                                        personalInfo.add(String.valueOf(databaseHandler.getCustomerId()));
-                                        personalInfo.add(textView.getText().toString());
-
-                                        StringWriter out = new StringWriter();
-                                        try {
-                                            JSONValue.writeJSONString(personalInfo, out);
-                                            s1 = out.toString();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                        String Json = s1;
-                                        params.put("emailPasswordJSON", Json);
-
-                                        // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
-
-                                        Thread thread = new Thread(){
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
-                                                    client.post("http://" + address + "/registerHelperByDoctor.php", params, new AsyncHttpResponseHandler() {
-                                                        // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
-                                                        @Override
-                                                        public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
-
-                                                            try {
-                                                                String str = new String(bytes, "UTF-8");
-                                                                JSONParser parser = new JSONParser();
-                                                                JSONObject object = (JSONObject) parser.parse(str);
-                                                                String message = (String) object.get("message");
-                                                                if(message.equals("registered"))
-                                                                {
-
-                                                                }
-                                                                else
-                                                                {
-
-                                                                }
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        }
-
-                                                        @Override
-                                                        public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
-                                                            try {
-
-
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-
-
-                                                        }
-
-                                                        @Override
-                                                        public void onFinish() {
-
-
-                                                        }
-
-
-                                                    });
-
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        };
-                                        thread.start();
-
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
-                alertDialog.show();
-
-
-            }
-
-        }
+//        if (id == R.id.action_add_helper) {
+//            LayoutInflater li = LayoutInflater.from(patients_today.this);
+//            final RequestParams params = new RequestParams();
+//            Resources res = patients_today.this.getResources();
+//            final String address = res.getString(R.string.action_server_ip_address);
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(patients_today.this);
+//            boolean helper  = prefs.getBoolean("helperAdded", false);
+//            if(!helper)
+//            {
+//                final View promptsView = li.inflate(R.layout.sms_text, null);
+//                final TextView textView = (TextView)promptsView.findViewById(R.id.sms_Edit_Text);
+//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+//                        patients_today.this);
+//
+//                // set prompts.xml to alertdialog builder
+//                alertDialogBuilder.setView(promptsView);
+//
+//                alertDialogBuilder
+//                        .setCancelable(false)
+//                        .setTitle("Enter Helper Email")
+//                        .setPositiveButton("OK",
+//                                new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//
+//                                        String s1 = null;
+//                                        ArrayList<String> personalInfo = new ArrayList<>();
+//                                        personalInfo.add(String.valueOf(databaseHandler.getCustomerId()));
+//                                        personalInfo.add(textView.getText().toString());
+//
+//                                        StringWriter out = new StringWriter();
+//                                        try {
+//                                            JSONValue.writeJSONString(personalInfo, out);
+//                                            s1 = out.toString();
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                        String Json = s1;
+//                                        params.put("emailPasswordJSON", Json);
+//
+//                                        // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
+//
+//                                        Thread thread = new Thread(){
+//                                            @Override
+//                                            public void run() {
+//                                                try {
+//                                                    AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+//                                                    client.post("http://" + address + "/registerHelperByDoctor.php", params, new AsyncHttpResponseHandler() {
+//                                                        // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
+//                                                        @Override
+//                                                        public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+//
+//                                                            try {
+//                                                                String str = new String(bytes, "UTF-8");
+//                                                                JSONParser parser = new JSONParser();
+//                                                                JSONObject object = (JSONObject) parser.parse(str);
+//                                                                String message = (String) object.get("message");
+//                                                                if(message.equals("registered"))
+//                                                                {
+//
+//                                                                }
+//                                                                else
+//                                                                {
+//
+//                                                                }
+//                                                            } catch (Exception e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//
+//                                                        }
+//
+//                                                        @Override
+//                                                        public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+//                                                            try {
+//
+//
+//                                                            } catch (Exception e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//
+//
+//                                                        }
+//
+//                                                        @Override
+//                                                        public void onFinish() {
+//
+//
+//                                                        }
+//
+//
+//                                                    });
+//
+//                                                } catch (Exception e) {
+//                                                    e.printStackTrace();
+//                                                }
+//                                            }
+//                                        };
+//                                        thread.start();
+//
+//                                    }
+//                                })
+//                        .setNegativeButton("Cancel",
+//                                new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog,int id) {
+//                                        dialog.cancel();
+//                                    }
+//                                });
+//
+//                // create alert dialog
+//                AlertDialog alertDialog = alertDialogBuilder.create();
+//
+//                // show it
+//                alertDialog.show();
+//
+//
+//            }
+//
+//        }
         if (id == R.id.action_connect) {
             String message = "";
             boolean wifiEnable = false;

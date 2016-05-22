@@ -1103,15 +1103,17 @@ return max;
 String sql="";
 
 
-        sql =  "SELECT DISTINCT "+DataBaseEnums.KEY_ID+
-                " FROM ( "+
-                " select  "+DataBaseEnums.KEY_ID+" from "+
-                DataBaseEnums.TABLE_NOTES+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
-                " UNION " +
-                "select  "+DataBaseEnums.KEY_ID+" from " +
-                TABLE_FOLLOW_UP+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
-
-                ")";
+//        sql =  "SELECT DISTINCT "+DataBaseEnums.KEY_ID+
+//                " FROM ( "+
+//                " select  "+DataBaseEnums.KEY_ID+" from "+
+//                DataBaseEnums.TABLE_NOTES+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
+//                " UNION " +
+//                "select  "+DataBaseEnums.KEY_ID+" from " +
+//                TABLE_FOLLOW_UP+" where "+DataBaseEnums.KEY_DATE+" = '"+date+"' " +
+//
+//                ")";
+        sql = "SELECT DISTINCT "+DataBaseEnums.KEY_ID+" FROM "+DataBaseEnums.TABLE_PATIENT+" WHERE "+KEY_SYNC_STATUS+" != '3' AND "
+        +KEY_DATE +" = '"+date+"'";
 
 try {
     Cursor cursor = db.rawQuery(sql, null);

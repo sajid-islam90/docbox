@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.AlertDialog;
@@ -21,6 +22,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -32,6 +35,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -570,6 +575,7 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
         private static ArrayList<Item> media = new ArrayList<>();
+        private List<EditText> editTextList = new ArrayList<EditText>();
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -596,6 +602,8 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
 
 
             View rootView = inflater.inflate(R.layout.activity_generic_notes, container, false);
+
+
             TextView textView10 =(TextView)rootView.findViewById(R.id.textView10);
             LinearLayout textView6 =(LinearLayout)rootView.findViewById(R.id.linearLayoutOtherCustomNotesTitle);
             LinearLayout textView7 =(LinearLayout)rootView.findViewById(R.id.linearLayoutMediaTitle);
@@ -776,6 +784,32 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
 
 
         }
+        private EditText editText(String hint, final int section, final int i) {
+String viewId = String.valueOf(section)+String.valueOf(i);
+            final EditText editText = new EditText(getActivity());
+            editText.setId(Integer.valueOf(viewId));
+            editText.setHint(hint);
+            editText.setText( NotesFields.get(section).get(i).getDiagnosis());
+            editTextList.add(editText);
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    NotesFields.get(section).get(i).setDiagnosis(editText.getText().toString());
+
+                }
+            });
+            return editText;
+        }
 
         public void expandView(final View v){
             v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -809,9 +843,19 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
 
             DatabaseHandler databaseHandler = new DatabaseHandler(getContext());
             Bundle args = getArguments();
+            LinearLayout linearLayoutList = (LinearLayout)view.findViewById(R.id.linearLayoutList);
+
             int section = args.getInt(ARG_SECTION_NUMBER);
             media = utility.getMediaList(pid, getActivity(), section);
             final ArrayList<Item> listOfItems = NotesFields.get(section);
+            for(int i = 1;i<=listOfItems.size();i++)
+            {
+                TextInputLayout textInputLayout = new TextInputLayout(getActivity());
+                textInputLayout.setId(Integer.parseInt((String.valueOf(section)+String.valueOf(i)+String.valueOf(i))));
+
+                linearLayoutList.addView(textInputLayout);
+                textInputLayout.addView(editText(listOfItems.get(i-1).getTitle(),section,i-1));
+            }
             TextView textView = (TextView)view.findViewById(R.id.numberOfOtherNotes);
 
             ListView listView1 = (ListView)view.findViewById(R.id.filedsList);
@@ -827,15 +871,9 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
 
                 }
             }
-            listView1.setAdapter(inputAgainstAFieldAdapter);
-          //  listView1.setItemsCanFocus(true);
-           listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-               @Override
-               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                   Toast.makeText(getContext(), position + " " + id, Toast.LENGTH_SHORT);
+           // listView1.setAdapter(inputAgainstAFieldAdapter);
+            listView1.setItemsCanFocus(true);
 
-               }
-           });
            // listView1.setVisibility(View.GONE);
             displayAddedMedia(media, view);
 

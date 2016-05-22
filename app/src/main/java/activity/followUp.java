@@ -11,11 +11,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +46,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import adapters.InputAgainstAFieldAdapter;
 import adapters.recyclerAdapter;
@@ -71,6 +76,7 @@ public class followUp extends AppCompatActivity {
     recyclerAdapter RecyclerAdapter;
     recyclerAdapter RecyclerAdapterOtherNotes;
     ArrayList<Item> field;
+    private List<EditText> editTextList = new ArrayList<EditText>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +167,32 @@ public class followUp extends AppCompatActivity {
         doWork();
 
     }
+    private EditText editText(String hint, final int i) {
+        String viewId = String.valueOf(i);
+        final EditText editText = new EditText(followUp.this);
+        editText.setId(Integer.valueOf(viewId));
+        editText.setHint(hint);
+        editText.setText( FollowUpFields.get(i).getDiagnosis());
+        editTextList.add(editText);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                FollowUpFields.get(i).setDiagnosis(editText.getText().toString());
+
+            }
+        });
+        return editText;
+    }
     private void doWork() {
 
         Resources resource = getResources();
@@ -179,9 +211,18 @@ public class followUp extends AppCompatActivity {
             item.setDate(formattedDate);
             FollowUpFields.add(item);
         }}
+        LinearLayout linearLayoutList = (LinearLayout)findViewById(R.id.linearLayoutList);
+        for(int i = 1;i<=FollowUpFields.size();i++)
+        {
+            TextInputLayout textInputLayout = new TextInputLayout(followUp.this);
+            textInputLayout.setId(Integer.parseInt((String.valueOf(i)+String.valueOf(i))));
+
+            linearLayoutList.addView(textInputLayout);
+            textInputLayout.addView(editText(FollowUpFields.get(i-1).getTitle(),i-1));
+        }
         ListView listView1 = (ListView)findViewById(R.id.filedsList);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
-        listView1.setAdapter(inputAgainstAFieldAdapter);
+       // listView1.setAdapter(inputAgainstAFieldAdapter);
         listView1.setItemsCanFocus(true);
 
          getOtherNotesToDisplay();
@@ -696,6 +737,7 @@ public class followUp extends AppCompatActivity {
             intent.putExtra("id",pid);
             intent.putExtra("tab",1);
             startActivity(intent);
+
             otherObj.clear();
             mediaObj.clear();
             FollowUpFields.clear();

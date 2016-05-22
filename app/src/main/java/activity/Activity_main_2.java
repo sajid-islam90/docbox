@@ -202,7 +202,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
             alertDialogBuilder
                     .setCancelable(false)
-                    .setTitle("Enter Helper Email")
+                    .setTitle("Enter Helper Email Address")
                     .setPositiveButton("OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -241,11 +241,21 @@ public class  Activity_main_2 extends AppCompatActivity
                                                             String message = (String) object.get("message");
                                                             if(message.equals("registered"))
                                                             {
-
+                                                            runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Toast.makeText(Activity_main_2.this,"Helper Added",Toast.LENGTH_LONG);
+                                                                }
+                                                            });
                                                             }
                                                             else
                                                             {
-
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(Activity_main_2.this,"Error in adding helper",Toast.LENGTH_LONG);
+                                                                    }
+                                                                });
                                                             }
                                                         } catch (Exception e) {
                                                             e.printStackTrace();
@@ -256,7 +266,12 @@ public class  Activity_main_2 extends AppCompatActivity
                                                     @Override
                                                     public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
                                                         try {
-
+                                                            runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Toast.makeText(Activity_main_2.this,"Error in adding helper\nPlease the internet connection and try again",Toast.LENGTH_LONG);
+                                                                }
+                                                            });
 
                                                         } catch (Exception e) {
                                                             e.printStackTrace();

@@ -32,8 +32,9 @@
             android:layout_marginBottom="5dp"
 
 
-            android:focusable="true"
-            android:inputType="textCapSentences|textLongMessage|textMultiLine" />
+
+            android:inputType="textCapSentences|textLongMessage|textMultiLine"
+            />
     </android.support.design.widget.TextInputLayout>
 
 

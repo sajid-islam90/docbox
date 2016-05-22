@@ -323,7 +323,7 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Alert!!");
-        alert.setMessage("Are you sure to delete record");
+        alert.setMessage("Are you sure you want to delete patient");
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             @Override

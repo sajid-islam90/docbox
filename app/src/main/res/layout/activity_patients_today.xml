@@ -5,6 +5,18 @@
     android:layout_height="match_parent">
     <!-- The main content view -->
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="All the patients having an appointment today are listed here\nList is empty as you have no appointments today"
+        android:id="@+id/textView55"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:gravity="center"
+        android:background="#90000000"
+        android:textColor="#ffffff" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="400dp"
@@ -13,13 +25,12 @@
         android:layout_weight="1" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Send"
         android:id="@+id/button2"
-        android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/listViewPatientToday" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

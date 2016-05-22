@@ -46,13 +46,15 @@ import objects.personal_obj;
  */
 public class adapter_on_calendar_date_patients extends BaseAdapter {
     Context context;
+    boolean showCancelButton;
     LayoutInflater lf;
     ArrayList<String> names;
     String date;
     FragmentManager fragManager = null;
 
-    public adapter_on_calendar_date_patients(Context ctx, ArrayList<String> names,String date) {
+    public adapter_on_calendar_date_patients(Context ctx, ArrayList<String> names,String date,boolean showCancelButton) {
         this.context = ctx;
+        this.showCancelButton = showCancelButton;
         this.names = names;
         this.date = date;
         lf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,6 +93,14 @@ public class adapter_on_calendar_date_patients extends BaseAdapter {
             }
 
 
+        }
+        if(showCancelButton)
+        {
+            imageButtonCancelAppointment.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            imageButtonCancelAppointment.setVisibility(View.GONE);
         }
         imageButtonCancelAppointment.setOnClickListener(new View.OnClickListener() {
             @Override

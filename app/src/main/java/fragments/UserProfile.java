@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +42,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -145,6 +147,15 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
         getActivity().setTitle("Profile Settings");
         TextView DOB = (TextView)rootView.findViewById(R.id.ageTextBox);
         autoCompleteTextView = (AutoCompleteTextView)rootView.findViewById(R.id.textSearchedLocationUserProfile);
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                   hideSoftKeyboard();
+                }
+                return false;
+            }
+        });
         relativeLayoutMap = (RelativeLayout)rootView.findViewById(R.id.location_map_relative_layout);
         final TextView personalDetailsTextView = (TextView)rootView.findViewById(R.id.personalDetailsTextView);
         final TextView experienceFeeTextView = (TextView)rootView.findViewById(R.id.experienceFeeTextView);
@@ -154,8 +165,14 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
         addressEditText =(EditText)rootView.findViewById(R.id.addressEditText);
         feeEditText = (EditText)rootView.findViewById(R.id.feeEditText);
         experienceEditText = (EditText)rootView.findViewById(R.id.experienceEditText);
+        ImageView imageView1 = (ImageView)rootView.findViewById(R.id.imageViewScrollDown) ;
         scrollView =(ScrollView)rootView.findViewById(R.id.scrollView6);
-
+imageView1.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        scrollView.fullScroll(View.FOCUS_DOWN);
+    }
+});
         cardViewCollege = (CardView)rootView.findViewById(R.id.card_view_college);
         cardViewFeeExperience = (CardView)rootView.findViewById(R.id.card_view_fees_experience);
          cardViewPersonalInfo =(CardView)rootView.findViewById(R.id.card_view);
@@ -330,6 +347,10 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
             }
         });
         return rootView;
+    }
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
     private void expandMapSegment() {
         //set Visible

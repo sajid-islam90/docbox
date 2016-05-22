@@ -50,7 +50,7 @@ EditText idProof;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_verification);
         try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         catch (Exception e)
         {
@@ -192,6 +192,7 @@ EditText idProof;
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c.getTime());
         if (requestCode == REQUEST_TAKE_PHOTO ) {
+            if(new File(profilePicPath).length()>0)
             idProof.setText(profilePicPath);
         }
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null))) {
@@ -214,6 +215,7 @@ EditText idProof;
                 String a = file.getAbsolutePath();
                 if ((file.getName().contains(".jpeg")) || (file.getName().contains(".jpg"))
                         || (file.getName().contains(".png"))) {
+                    if(new File(profilePicPath).exists())
                     idProof.setText(file_path);
 
                 } else {
@@ -342,7 +344,7 @@ EditText idProof;
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id == R.id.home) {
+        if (id == android.R.id.home) {
             Intent intent = new Intent(AccountVerificationActivity.this,Activity_main_2.class);
             intent.putExtra("fragmentNumber",2);
             startActivity(intent);
