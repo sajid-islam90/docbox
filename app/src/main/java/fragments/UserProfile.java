@@ -104,6 +104,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     personal_obj personalObj;
     int collapseHeight;
     int collapseHeightMap;
+    int expandFlag = 0;
     //map
     public GoogleMap mMap;
     private String profilePicPath;
@@ -124,6 +125,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private final String API_KEY ="AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE"; //"AIzaSyBhivIm9hCGwEbVgEE95mHT6_aXahGmcPs";
     private final String OUT_JSON = "/json";
     private static final int REQUEST_TAKE_PHOTO = 100;
+     ImageView imageView1;
     static final int PICKFILE_RESULT_CODE = 2;
     AutoCompleteTextView autoCompleteTextView;
     RelativeLayout relativeLayoutMap;
@@ -165,7 +167,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
         addressEditText =(EditText)rootView.findViewById(R.id.addressEditText);
         feeEditText = (EditText)rootView.findViewById(R.id.feeEditText);
         experienceEditText = (EditText)rootView.findViewById(R.id.experienceEditText);
-        ImageView imageView1 = (ImageView)rootView.findViewById(R.id.imageViewScrollDown) ;
+        imageView1 = (ImageView)rootView.findViewById(R.id.imageViewScrollDown) ;
         scrollView =(ScrollView)rootView.findViewById(R.id.scrollView6);
 imageView1.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -202,6 +204,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                     // imageView.setVisibility(View.GONE);
                     //imageView1.setVisibility(View.VISIBLE);
                     expandPersonalDetailSegment();
+                    imageView1.setVisibility(View.GONE);
                     // personalDetailsTextView.setTextSize(12);
 
                 } else {
@@ -211,6 +214,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                     //imageView.setVisibility(View.VISIBLE);
                     // imageView1.setVisibility(View.GONE);
                     collapsePersonalDetailSegment();
+                    imageView1.setVisibility(View.VISIBLE);
                     // personalDetailsTextView.setTextSize(15);
 
                 }
@@ -225,6 +229,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                     //makeMapAppear();
                    // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_contract);
                     expandCollegeDetailSegment();
+                    imageView1.setVisibility(View.GONE);
                     // personalDetailsTextView.setTextSize(12);
 
                 }
@@ -232,6 +237,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                 {
                    // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_expand);
                     collapseCollegeDetailSegment();
+                    imageView1.setVisibility(View.VISIBLE);
                     // personalDetailsTextView.setTextSize(15);
 
                 }
@@ -247,6 +253,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                     //makeMapAppear();
                    // imageViewExperienceFeeExpand.setImageResource(R.drawable.ic_action_contract);
                     expandExperienceFeeSegment();
+                    imageView1.setVisibility(View.GONE);
                     // personalDetailsTextView.setTextSize(12);
 
                 }
@@ -254,6 +261,7 @@ imageView1.setOnClickListener(new View.OnClickListener() {
                 {
                     //imageViewExperienceFeeExpand.setImageResource(R.drawable.ic_action_expand);
                     collapseExperienceFeeSegment();
+                    imageView1.setVisibility(View.VISIBLE);
                     // personalDetailsTextView.setTextSize(15);
 
                 }
@@ -283,6 +291,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
                 if(linearLayoutMap.getVisibility()==View.GONE) {
                     //makeMapAppear();
                     expandMapSegment();
+                    imageView1.setVisibility(View.GONE);
 
                     //imageViewLocationExpand.setImageResource(R.drawable.ic_action_contract);
 
@@ -293,6 +302,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
                 else {
                    // makeMapDisAppear();
                     collapseMapSegment();
+                    imageView1.setVisibility(View.VISIBLE);
                    // imageViewLocationExpand.setImageResource(R.drawable.ic_action_expand);
                     addLocation.setText("Clinic/Hospital Location");
                    // addLocation.setTextSize(15);
@@ -348,15 +358,20 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         });
         return rootView;
     }
+
+
+
     public void hideSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
+
+
     private void expandMapSegment() {
         //set Visible
         linearLayoutMap.setVisibility(View.VISIBLE);
         autoCompleteTextView.setVisibility(View.VISIBLE);
-
+        expandFlag =1;
         relativeLayoutMap.setVisibility(View.VISIBLE);
        // linearLayoutNameAndDetails.setVisibility(View.GONE);
         final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -371,7 +386,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 //        int finalHeight = linearLayoutMap.getHeight();
 //
 //        ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
-
+        expandFlag = 0;
         linearLayoutMap.setVisibility(View.GONE);
         autoCompleteTextView.setVisibility(View.GONE);
 
@@ -381,32 +396,37 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
     private void expandPersonalDetailSegment()
     {
         expandView(cardViewPersonalInfo);
-
+        expandFlag =2;
         linearLayoutNameAndDetails.setVisibility(View.VISIBLE);
     }
     private void collapsePersonalDetailSegment()
     {
         CollapseView(cardViewPersonalInfo);
+        expandFlag = 0;
         linearLayoutNameAndDetails.setVisibility(View.GONE);
     }
     private void expandCollegeDetailSegment()
     {
        expandView(cardViewCollege);
+        expandFlag =4;
         linearLayoutCollege.setVisibility(View.VISIBLE);
     }
     private void collapseCollegeDetailSegment()
     {
         CollapseView(cardViewCollege);
+        expandFlag = 0;
         linearLayoutCollege.setVisibility(View.GONE);
     }
     private void expandExperienceFeeSegment()
     {
         expandView(cardViewFeeExperience);
+        expandFlag =3;
         linearLayoutExperienceFees.setVisibility(View.VISIBLE);
     }
     private void collapseExperienceFeeSegment()
     {
         CollapseView(cardViewFeeExperience);
+        expandFlag = 0;
         linearLayoutExperienceFees.setVisibility(View.GONE);
     }
 
@@ -545,6 +565,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         else
         {
             collapseHeightMap = v.getMeasuredHeight();
+            expandFlag=1;
         }
 
        // scrollView.removeView(cardViewMap);
@@ -594,6 +615,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         else
         {
             targetHeight = collapseHeightMap;
+            expandFlag = 0;
         }
 
         //if((v == cardViewMap)||(v == linearLayoutMap))
@@ -1331,6 +1353,31 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
+    }
+    public  boolean contractAll()
+    {
+        if(expandFlag==1) {
+            CollapseView(cardViewMap);
+            imageView1.setVisibility(View.VISIBLE);
+            return true;
+        }
+       else if(expandFlag==2)
+        { imageView1.setVisibility(View.VISIBLE);
+            collapsePersonalDetailSegment();
+        return true;}
+        else   if(expandFlag==3)
+        {
+            imageView1.setVisibility(View.VISIBLE);
+            collapseExperienceFeeSegment();
+        return true;}
+        else  if(expandFlag==4)
+            { imageView1.setVisibility(View.VISIBLE);
+                collapseCollegeDetailSegment();
+        return true;}
+        else
+        return false;
+
+
     }
 
 }

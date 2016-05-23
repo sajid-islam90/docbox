@@ -82,6 +82,7 @@ public class  Activity_main_2 extends AppCompatActivity
     private static final int REQUEST_TAKE_PHOTO = 100;
     private PendingIntent pendingIntent;
     private AlarmManager manager;
+    UserProfile fragmentUserProfile;
     boolean doubleBackToExitPressedOnce = false;
 
     /**
@@ -130,7 +131,7 @@ public class  Activity_main_2 extends AppCompatActivity
         ImageView imageView = (ImageView)findViewById(R.id.profilePic);
         Bitmap bmp = null;
         bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());
-
+        fragmentUserProfile = new UserProfile();
 
         if(bmp!=null)
         {bmp = PhotoHelper.getResizedBitmap(bmp, 200, 200);
@@ -430,8 +431,11 @@ public class  Activity_main_2 extends AppCompatActivity
                             .show();
                 }
                 fragmentNumber = 3;
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, UserProfile.newInstance(position + 1))
+                        //.replace(R.id.container, UserProfile.newInstance(position + 1))
+                        .replace(R.id.container,fragmentUserProfile)
+
                         .commit();
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
@@ -595,13 +599,32 @@ public class  Activity_main_2 extends AppCompatActivity
 
         if(fragmentNumber!=1)
         {
-            fragmentNumber = 1;
             FragmentManager fragmentManager = getSupportFragmentManager();
+            if(fragmentNumber ==3)
+            {
+             if( fragmentUserProfile.contractAll())
+             {
+
+             }
+                else
+             {
+                 fragmentNumber = 1;
+
+//comment
+                 fragmentManager.beginTransaction()
+                         .replace(R.id.container, MainActivity.newInstance(1))
+
+                         .commit();
+             }
+            }
+            else
+            {  fragmentNumber = 1;
+
 //comment
         fragmentManager.beginTransaction()
                 .replace(R.id.container, MainActivity.newInstance(1))
 
-                .commit();}
+                .commit();}}
         else {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
