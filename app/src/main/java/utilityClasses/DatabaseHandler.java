@@ -2339,37 +2339,37 @@ db.close();
         String searchNameQuery = "";
         if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(locationString.equals("")))
          searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
-                " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%'";
+                " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if(((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(!locationString.equals("")))||
         ((nameString.equals(""))&&(diagnosisString.equals(""))&&(locationString.equals(""))))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
                     KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%'";
+                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(locationString.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
-                    " WHERE " + KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%'";
+                    " WHERE " + KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if((nameString.equals(""))&&(diagnosisString.equals(""))&&(!locationString.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
-                    " WHERE " +KEY_ADDRESS+ " LIKE '%" + locationString + "%'";
+                    " WHERE " +KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(locationString.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
-                    KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' ";
+                    KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(!locationString.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%'";
+                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         else if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(!locationString.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%'";
+                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(searchNameQuery,null);

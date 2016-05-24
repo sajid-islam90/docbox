@@ -10,7 +10,20 @@
         android:layout_height="match_parent"
         android:id="@+id/listViewMain"
         android:divider="@android:color/transparent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:visibility="visible" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="List Is Currently Empty \n Start By Adding Patients"
+        android:id="@+id/textView56"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:background="#50000000"
+        android:textColor="#ffffff"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

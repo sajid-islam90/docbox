@@ -439,10 +439,11 @@ adapterViewVisitCalendar.notifyDataSetChanged();
         listViewPatients.setVisibility(View.GONE);
     }
 
-    private void showListView(ArrayList<String> pids,String date){
+    private void showListView(ArrayList<String> pids,String date) {
 //        listViewPatients.setVisibility(View.VISIBLE);
 //        listViewPatients.requestFocus();
-        adapter_on_calendar_date_patients adapter = new adapter_on_calendar_date_patients(getActivity(),pids,date,!SwitchState);
+        if (pids.size() > 0)
+        { adapter_on_calendar_date_patients adapter = new adapter_on_calendar_date_patients(getActivity(), pids, date, !SwitchState);
         LayoutInflater li = LayoutInflater.from(getActivity());
         final View promptsView = li.inflate(R.layout.calender_patient_list, null);
 //        ListView listViewCalenderPatientList = (ListView)
@@ -462,7 +463,7 @@ adapterViewVisitCalendar.notifyDataSetChanged();
                 .setNegativeButton("Dismiss",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if(!SwitchState) {
+                                if (!SwitchState) {
                                     fragManager.beginTransaction()
                                             .replace(R.id.container, activity_view_patient_visits.newInstance(1, true))
                                             .commit();
@@ -482,8 +483,11 @@ adapterViewVisitCalendar.notifyDataSetChanged();
         alertDialog.show();
 
 
-
-
+    }
+        else
+        {
+            Toast.makeText(getActivity(),"No patients on this day",Toast.LENGTH_LONG).show();
+        }
 
         //listViewPatients.setAdapter(adapter);
     }

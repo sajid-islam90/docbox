@@ -99,7 +99,9 @@ public class MainActivity extends Fragment {
         if(numberOfPatients == 0)
         {
             RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
-            relativeLayout.setBackgroundResource(R.drawable.backgroud);
+            TextView textView = (TextView)rootView.findViewById(R.id.textView56);
+            textView.setVisibility(View.VISIBLE);
+           // relativeLayout.setBackgroundResource(R.drawable.backgroud);
         }
         return rootView;
     }
