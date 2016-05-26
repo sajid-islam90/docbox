@@ -2639,14 +2639,14 @@ if(telephonyManager.getDeviceId()!=null)
                 String syncStatus = cursor.getString(cursor.getColumnIndex(KEY_SYNC_STATUS));
 
 
-                if(Integer.parseInt(syncStatus)==5)
-                {
-                    if(!syncStatus.equals("3"))
-                        updateDocument(documentObj, "6");
-                } else {
-                    if(!syncStatus.equals("3"))
-                        updateDocument(documentObj,"1");
-                }
+//                if(Integer.parseInt(syncStatus)==5)
+//                {
+//                    if(!syncStatus.equals("3"))
+//                        updateDocument(documentObj, "6");
+//                } else {
+//                    if(!syncStatus.equals("3"))
+//                        updateDocument(documentObj,"1");
+//                }
               // updateDocument(documentObj,"1");
 
                // documentObj = utility.cursorToDocument(cursor);
@@ -2768,7 +2768,7 @@ if(telephonyManager.getDeviceId()!=null)
 
                 }
                 else {
-                    if((!tableName.contains("diagnosis"))&&(!tableName.contains("treatment"))) {
+                    if((!tableName.contains("diagnosis"))&&(!tableName.contains("treatment"))&&(!tableName.contains("media"))) {
                         updateTableSyncStatus(cursor.getString(cursor.getColumnIndex(KEY_FIELD_NAME)), cursor.getString(cursor.getColumnIndex(KEY_FIELD_VALUE)), tableName, pid);
                     }
                     else  if(tableName.contains("diagnosis"))
