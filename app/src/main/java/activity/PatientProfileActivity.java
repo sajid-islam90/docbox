@@ -34,9 +34,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
+
+import objects.Time;
 import utilityClasses.floatingactionbutton.FloatingActionButton;
 import com.loopj.android.http.RequestParams;
 
@@ -512,6 +515,7 @@ if(image.length==0) {
                                                 utility.bookAppointmentTodayLocally(patient.get_id(), PatientProfileActivity.this);
                                             else {
 
+Time time;
                                             list.add(String.valueOf(databaseHandler.getCustomerId()));
                                             list.add(String.valueOf(patient.get_first_aid_id()));
                                             list.add(appointmentDate[0]);
@@ -584,7 +588,47 @@ if(image.length==0) {
     }
 
     }
+    public void doWork(final Time time)
+    {
+        LayoutInflater li = LayoutInflater.from(PatientProfileActivity.this);
+        final View promptsView = li.inflate(R.layout.time_picker, null);
 
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                PatientProfileActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // get user input and set it to result
+                                // edit text
+                                final TimePicker timePicker = (TimePicker) promptsView.findViewById(R.id.timePicker);
+
+                                time.setHour(timePicker.getCurrentHour());
+                                time.setMinute(timePicker.getCurrentMinute());
+
+//                                utility.recreateActivityCompat(PatientProfileActivity.this);
+
+
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
+    }
     public void editpatient(View view)
     {
         Intent intent = getIntent();

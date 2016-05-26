@@ -470,7 +470,13 @@ public class utility {
         list.add(cursor.getString(cursor.getColumnIndex("contactNumber")));
         list.add(cursor.getString(cursor.getColumnIndex("height")));
         list.add(cursor.getString(cursor.getColumnIndex("weight")));
-        list.add("5");
+        String syncStatus = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_SYNC_STATUS));
+        if(syncStatus.equals("0")||syncStatus.equals("5"))
+        list.add("1");
+        else if(syncStatus.equals("3"))
+        {
+            list.add("3");
+        }
 
         byte[] a = cursor.getBlob(cursor.getColumnIndex("bitmapBLOB"));
 

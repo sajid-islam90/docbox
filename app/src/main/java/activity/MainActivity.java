@@ -101,7 +101,7 @@ public class MainActivity extends Fragment {
             RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
             TextView textView = (TextView)rootView.findViewById(R.id.textView56);
             textView.setVisibility(View.VISIBLE);
-           // relativeLayout.setBackgroundResource(R.drawable.backgroud);
+           //  relativeLayout.setBackgroundResource(R.drawable.backgroud);
         }
         return rootView;
     }

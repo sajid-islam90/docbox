@@ -1072,6 +1072,7 @@ return max;
         {
             ArrayList<Item> listOfItems = new ArrayList<>();
             listOfItems = getFollowUp(pid,c);
+            if(listOfItems.size()>0)
             dates.add("# "+ c +" date : "+getNotesDateFromVersion(c,pid)+ "\n  "+ fields[0]+" : "+listOfItems.get(0).getDiagnosis() );
             c++;
         }
