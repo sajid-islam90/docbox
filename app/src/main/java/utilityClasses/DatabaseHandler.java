@@ -37,7 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "patientManager";
@@ -123,6 +123,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SCORE = "score";
     private static final String KEY_SPECIALITY = "speciality";
     private static final String KEY_VERSION = "version";
+    private static final String DATABASE_ALTER_APPOINTMENT_TABLE = "ALTER TABLE "
+            + TABLE_APPOINTMENTS + " ADD COLUMN " + KEY_WEIGHT + " TEXT";
+    private static final String DATABASE_ALTER_APPOINTMENT_TABLE_2 = "ALTER TABLE "
+            + TABLE_APPOINTMENTS + " ADD COLUMN " + KEY_HEIGHT + " TEXT";
+    private static final String DATABASE_ALTER_PERSONAL_INFO_TABLE = "ALTER TABLE "
+            + TABLE_PERSONAL_INFO + " ADD COLUMN " + KEY_GENDER + " TEXT";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -240,9 +246,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
      String CREATE_PERSONAL_INFO_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PERSONAL_INFO + "("
                 + KEY_ID + " INTEGER ," + KEY_EMAIL + " TEXT,"+ KEY_PASSWORD + " TEXT,"+KEY_SPECIALITY + " TEXT,"+
-               KEY_NAME + " TEXT, " +KEY_DOB + " TEXT, " + KEY_DESIGNATION + " TEXT, " + KEY_ADDRESS + " TEXT, " + KEY_AWARDS + " TEXT, "
+               KEY_NAME + " TEXT, " +KEY_DOB + " TEXT, " +KEY_DESIGNATION + " TEXT, " + KEY_ADDRESS + " TEXT, " + KEY_AWARDS + " TEXT, "
               + KEY_EXPERIENCE+ " TEXT, " + KEY_CONSULT_FEE + " TEXT, "  + KEY_DOC_PATH +" TEXT, "+ KEY_LATITUDE +" TEXT , "
-              +KEY_LONGITUDE +" TEXT , "+ KEY_MAP_SNAPSHOT_PATH +" TEXT"+")";
+              +KEY_LONGITUDE +" TEXT , "+ KEY_MAP_SNAPSHOT_PATH +" TEXT, "+ KEY_GENDER + " TEXT " +")";
         db.execSQL(CREATE_PERSONAL_INFO_TABLE);
 
         String CREATE_APPOINTMENT_SETTINGS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_APPOINTMENT_SETTINGS + "("
@@ -254,7 +260,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_APPOINTMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_APPOINTMENTS + "("
                 + KEY_FIRST_AID_ID + " TEXT,"+KEY_ID + " TEXT,"+KEY_NAME + " TEXT,"+KEY_CONTACT + " TEXT,"+KEY_EMAIL + " TEXT,"
                 +KEY_GENDER + " TEXT,"+KEY_AGE + " TEXT,"+ KEY_DATE
-                + " DATETIME,"+KEY_START_TIME + " TEXT,"+KEY_END_TIME + " TEXT, "+KEY_SERIAL_NUMBER + " INTEGER"+
+                + " DATETIME,"+KEY_START_TIME + " TEXT,"+KEY_END_TIME + " TEXT, "+KEY_SERIAL_NUMBER + " INTEGER, "
+                + KEY_WEIGHT +" TEXT, "+KEY_HEIGHT+" TEXT"+
                 ", PRIMARY KEY ( "+KEY_FIRST_AID_ID+ " , "+KEY_DATE+" )"+
                 ")";
         db.execSQL(CREATE_APPOINTMENT_TABLE);
@@ -291,10 +298,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PATIENT);
+      if (DATABASE_VERSION ==2)
+      {
+          db.execSQL(DATABASE_ALTER_APPOINTMENT_TABLE);
+          db.execSQL(DATABASE_ALTER_APPOINTMENT_TABLE_2);
+          db.execSQL(DATABASE_ALTER_PERSONAL_INFO_TABLE);
+      }
+
 
         // Create tables again
-        onCreate(db);
+
     }
 
 
@@ -312,7 +325,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 firstAidPatientContact = AppointmentData.get(6),
                 firstAidPatientEmail = AppointmentData.get(7),
                 firstAidPatientAge = AppointmentData.get(8),firstAidPatientGender = AppointmentData.get(9),
-        serialNumber = AppointmentData.get(10);
+        serialNumber = AppointmentData.get(10),firstAidPatientHeight=AppointmentData.get(11),firstAidPatientWeight = AppointmentData.get(12);
       //  db.execSQL("delete from "+ TABLE_APPOINTMENTS +" WHERE "+KEY_DATE+" = '"+Date+"' ");
         values.put(KEY_ID, Pid);
         values.put(KEY_NAME,firstAidPatientName);
@@ -325,6 +338,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_AGE,firstAidPatientAge);
         values.put(KEY_GENDER,firstAidPatientGender);
         values.put(KEY_SERIAL_NUMBER,serialNumber);
+        values.put(KEY_WEIGHT,firstAidPatientWeight);
+        values.put(KEY_HEIGHT,firstAidPatientHeight);
         try {
             db.insert(TABLE_APPOINTMENTS, null, values);
         }
@@ -2307,8 +2322,17 @@ db.close();
                         new String[]{String.valueOf(patient.get_id())});
                 db.delete(TABLE_OTHER, KEY_ID + " = ?",
                         new String[]{String.valueOf(patient.get_id())});
+                db.delete(TABLE_FOLLOW_UP, KEY_ID + " = ?",
+                        new String[]{String.valueOf(patient.get_id())});
+                db.delete(TABLE_MEDIA_FOLLOW_UP, KEY_ID + " = ?",
+                        new String[]{String.valueOf(patient.get_id())});
+                db.delete(TABLE_OTHER_FOLLOW_UP, KEY_ID + " = ?",
+                        new String[]{String.valueOf(patient.get_id())});
+
 
                 db.delete(TABLE_TREATMENT, KEY_ID + " = ?",
+                        new String[]{String.valueOf(patient.get_id())});
+                db.delete(TABLE_DIAGNOSIS, KEY_ID + " = ?",
                         new String[]{String.valueOf(patient.get_id())});
 
                 // Adding contact to list
@@ -2749,21 +2773,12 @@ if(telephonyManager.getDeviceId()!=null)
                 if(tableName.contains("media"))
                 {
                     if (docPaths != null) {
-//                        if(tableName.contains(TABLE_MEDIA))
-//                        updateMedia(KEY_SYNC_STATUS, "0", cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)));
-//                        if(tableName.contains(TABLE_MEDIA_FOLLOW_UP))
-//                            updateMediaFollowUp(KEY_SYNC_STATUS, "0", cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)));
-//                        if((cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)).contains(".jpeg"))||
-//                        (cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)).contains(".png"))
-//                        )
-//                        uploadfile.uploadImage(context, cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)), pid);
-//                     //   else
-//                        {
+
                            docPaths.add(cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH)));
-//                        }
+
 
                     }
-                   /// FTPHelper.uploadFile(new File(cursor.getString(cursor.getColumnIndex(KEY_DOC_PATH))), String.valueOf(personalObj.get_customerId()));
+
                     list = utility.cursorToArrayListMedia(cursor, c);
 
                 }

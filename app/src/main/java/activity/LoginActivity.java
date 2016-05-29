@@ -136,7 +136,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> ,
 //        }
         SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
-        dbHandle.onCreate(myDataBase);
+       // dbHandle.onCreate(myDataBase);
 address =  getResources().getString(R.string.action_server_ip_address);
         setContentView(R.layout.activity_login);
 //        new Thread(new Runnable() {
@@ -1378,6 +1378,7 @@ public void checkOTP()
                 personalObj.set_password(mPassword);
                 personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition() + 1));
                 personalObj.set_name(mName.getText().toString());
+                personalObj.set_gender("");
                 RequestParams params = new RequestParams();
                 databaseHandler.addPersonalInfo(personalObj);
 

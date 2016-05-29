@@ -270,6 +270,8 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onBackPressed() {
 
+        Intent intent = new Intent(PatientProfileActivity.this,Activity_main_2.class);
+        startActivity(intent);
         finish();
         super.onBackPressed();
     }
@@ -636,7 +638,7 @@ Time time;
 
         SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        dbHandler.onCreate(myDataBase);
+       // dbHandler.onCreate(myDataBase);
         Patient patient = new Patient();
         patient = dbHandler.getPatientForProfile(id);
 

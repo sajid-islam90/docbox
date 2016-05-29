@@ -276,31 +276,60 @@
                                 android:layout_height="15dp"
                                 android:id="@+id/userProfileEditNameIcon"
                                 android:src="@drawable/ic_edit"
-                                android:layout_weight=".1" />
+                                android:layout_weight=".1"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp">
 
-                        <TextView
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Phone Number"
-                            android:id="@+id/textView33"
-                            android:textSize="12sp" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
 
-                        <TextView
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phone Number"
+                                android:id="@+id/textView33"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:id="@+id/userProfilePhoneNumber"
+                                android:editable="true"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:id="@+id/userProfilePhoneNumber"
-                            android:editable="true"
-                            android:textColor="@color/black" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:text="Gender"
+                                android:id="@+id/textView57"
+                                android:textSize="12sp" />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/spinner3"
+                                android:entries="@array/genderSpinner" />
+                        </LinearLayout>
 
                     </LinearLayout>
 

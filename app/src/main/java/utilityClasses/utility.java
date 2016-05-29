@@ -498,24 +498,9 @@ public class utility {
     {
         ArrayList<String> list = new ArrayList<String>();
         ArrayList<String>photoPath = new ArrayList<>();
-        for (int i = 0;i<cursor.getColumnCount()-1;i++) {
+        for (int i = 0;i<cursor.getColumnCount();i++) {
 
-            if(cursor.getColumnName(i).equals(DataBaseEnums.KEY_SPECIALITY))
-            {
-               if(cursor.getString(i).equals("Orthopedic Surgery")) { list.add("1");}
-                   if(cursor.getString(i).equals("Ophthalmics")){list.add("2");}
-                       if(cursor.getString(i).equals("Dentist")){list.add("3");}
-                           if(cursor.getString(i).equals("Cardiologist")){list.add("4");}
-                               if(cursor.getString(i).equals("General Practice")){list.add("5");}
-                                   if(cursor.getString(i).equals("Gynecology")){list.add("6");}
-                                       if(cursor.getString(i).equals("Neurology")){list.add("7");}
-                                           if(cursor.getString(i).equals("Pediatrics")){list.add("8");}
-                else
-                                           {
-                                               list.add(cursor.getString(i));
-                                           }
-            }
-            else if(cursor.getColumnName(i).equals(DataBaseEnums.KEY_DOC_PATH))
+            if(cursor.getColumnName(i).equals(DataBaseEnums.KEY_DOC_PATH))
             {
                 String path1 = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_DOC_PATH));
                 if((path1!=null)){
@@ -526,33 +511,37 @@ public class utility {
                 }
                 else
                 {
-list.add("");
+                    list.add("");
                     photoPath.add("");
                 }
 
-              // photoPath = new ArrayList<>();
+            }
+            else  if(cursor.getColumnName(i).equals(DataBaseEnums.KEY_MAP_SNAPSHOT_PATH)) {
+                String path = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_MAP_SNAPSHOT_PATH));
+                File nFile = new File(path);
 
-
+                list.add(nFile.getName());
             }
             else {
-                if(cursor.getString(i)==null)
+                if((cursor.getString(i)==null))
                     list.add("");
-                else
-                list.add(cursor.getString(i));
+                else {
+                    if (cursor.getString(i).equals(""))
+                    {
+
+                    }
+                    list.add(cursor.getString(i));
+                }
             }
         }
-        String path = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_MAP_SNAPSHOT_PATH));
-        Bitmap bitmap =BitmapFactory.decodeFile(path);
-        File nFile =new File(path);
 
-        list.add(nFile.getName());
       //  byte[] a = PhotoHelper.getBitmapAsByteArray(bitmap);
 
 //        String ab = Base64.encodeToString(a, Base64.DEFAULT);
 //        ab.replaceAll("\n","\\n");
 //        byte[] b = Base64.decode(ab, Base64.DEFAULT);
        // list.add(ab);
-        photoPath.add(path);
+      //  photoPath.add(path);
         //list.add(cursor.getString(cursor.getColumnIndex(D)));
         //FTPHelper.Dowork(photoPath,"",cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_ID)),c);
         return list;
@@ -696,6 +685,7 @@ list.add("");
         personalObj.set_speciality(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_SPECIALITY)));
         personalObj.set_experience(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_EXPERIENCE)));
         personalObj.set_fees(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_CONSULT_FEE)));
+        personalObj.set_gender(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_GENDER)));
 
 
         return  personalObj;
@@ -716,6 +706,7 @@ list.add("");
         values.put("experience", "Experience");
         values.put("consultFee", "ConsultFee");
         values.put("documentPath", personalObj.get_photoPath());
+        values.put(DataBaseEnums.KEY_GENDER,personalObj.get_gender());
 
 
 
@@ -1096,6 +1087,8 @@ catch(Exception e)
             appointment.add(String.valueOf(jsonObject.get("FirstaidPatientAge")));
             appointment.add(String.valueOf(jsonObject.get("FirstaidPatientGender")));
             appointment.add(String.valueOf(jsonObject.get("SerialNumber")));
+            appointment.add(String.valueOf(jsonObject.get("FirstaidPatientHeight")));
+            appointment.add(String.valueOf(jsonObject.get("FirstaidPatientWeight")));
             try {
                 databaseHandler.saveAppointments(appointment);
             }

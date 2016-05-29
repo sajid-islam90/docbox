@@ -122,7 +122,7 @@ public class documents extends ActionBarActivity {
     {
         SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        dbHandler.onCreate(myDataBase);
+       // dbHandler.onCreate(myDataBase);
 
         Patient patient = new Patient();
         patient = dbHandler.getPatientForProfile(id);

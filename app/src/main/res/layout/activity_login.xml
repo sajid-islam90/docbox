@@ -59,20 +59,35 @@
                 android:textColor="#ffffff"
                 android:layout_margin="5dp" />
 
-            <EditText
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:inputType="textCapWords|textPersonName"
-                android:ems="10"
-                android:id="@+id/name"
-                android:layout_below="@+id/textView48"
-                android:background="@drawable/rounded_edittext"
-                android:layout_margin="5dp"
-                android:padding="5dp"
-                android:textAlignment="center"
-                android:singleLine="true"
-                android:textSize="15dp"
-                android:gravity="center_vertical" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Dr."
+                    android:id="@+id/textView58"
+                    android:textColor="#ffffff"
+                    android:layout_margin="5dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:inputType="textCapWords|textPersonName"
+                    android:ems="10"
+                    android:id="@+id/name"
+                    android:layout_below="@+id/textView48"
+                    android:background="@drawable/rounded_edittext"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:textAlignment="center"
+                    android:singleLine="true"
+                    android:textSize="15dp"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

@@ -69,6 +69,16 @@ public class personal_obj {
     String _phone;
     String _fees;
 
+    public String get_gender() {
+        return _gender;
+    }
+
+    public void set_gender(String _gender) {
+        this._gender = _gender;
+    }
+
+    String _gender;
+
     public String get_experience() {
         return _experience;
     }

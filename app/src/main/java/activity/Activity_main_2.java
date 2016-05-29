@@ -586,6 +586,30 @@ public class  Activity_main_2 extends AppCompatActivity
                 fragmentNumber = 6;
                 addHelper();
             }
+            if(position == 6)
+            {
+               int DoctorId = databaseHandler.getCustomerId();
+
+                String hashString = prefs.getString(Activity_main_2.this.getString(R.string.hash_code), "");
+                ArrayList<String> hash = new ArrayList<>();
+                hash.add(hashString);
+                ArrayList<String> doctorId = new ArrayList<>();
+                doctorId.add(String.valueOf(DoctorId));
+                ArrayList<ArrayList<String>> personalData = new ArrayList<>();
+                personalData.add(doctorId);
+                personalData.add(hash);
+                String s2 ="";
+                StringWriter out1 = new StringWriter();
+                try {
+                    JSONValue.writeJSONString(personalData, out1);
+                    s2 = out1.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                final RequestParams requestParams = new RequestParams();
+                requestParams.put("doctorId", s2);
+                getVerificationStatus(requestParams);
+            }
     }
 //        else
 //        {
@@ -657,102 +681,59 @@ public class  Activity_main_2 extends AppCompatActivity
                 break;
         }
     }
-    public void hitApiForAppointment(String apiAddress, RequestParams params, AsyncHttpClient client, final Context context) {
-
-
-        final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+    public void getVerificationStatus(RequestParams params) {
+        final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        final String  address =  getResources().getString(R.string.action_server_ip_address);
+        String apiAddress = "http://" + address + "/getVerificationStatus.php";
+        final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
 
         try
         {
 
             client.post(apiAddress, params, new AsyncHttpResponseHandler() {
                 @Override
-                public void onSuccess(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes) {
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
 
                     try {
                         String str = new String(bytes, "UTF-8");
-                        JSONArray response;
-                        // JSONObject mainObject = new JSONObject(str);
-                        ArrayList<String> appointmentPID;
-
-                        response = (JSONArray) JSONValue.parse(str);
-                        if(response.size()>0)
-                            if(response.get(0).equals("account not verified"))
-                            {
-                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("showOptionMenu", false);
-                                editor.commit();
-
-                                Intent intent = new Intent(context, AccountVerificationActivity.class);
-                                context.startActivity(intent);
-                                return;
-                            }
-                            else {
-                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("showOptionMenu", true);
-                                editor.commit();
-
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                                String date = sdf.format(new Date());
-                                databaseHandler.deleteAppointments(date);
-                                //if()
-                                utility.saveAppointmentsTable(response, context);
-
-                                appointmentPID  =  databaseHandler.getAppointmentsForDate(date);
-                                for(int j = 0;j<appointmentPID.size();j++)
-                                {
-                                    Patient patient = databaseHandler.getPatient(Integer.parseInt(appointmentPID.get(j)));
-                                    if(patient==null)
-                                    {
-                                        patient = databaseHandler.getPatientFromFirstAidId(Integer.parseInt(appointmentPID.get(j)));
-                                        if(patient == null)
-                                        {
-                                            patient = databaseHandler.getFirstAidPatient(Integer.parseInt(appointmentPID.get(j)));
-                                            if(patient.get_bmp() == null)
-                                            {
-                                                patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo)));
-                                            }
-
-                                            databaseHandler.addPatient(patient);
-
-
-                                        }
-                                    }
-
-                                }
-
-
-
-
-                            }
+                        if(str.equals("0"))
+                        {
+                            fragmentNumber = 7;
+                            Intent intent = new Intent(Activity_main_2.this,AccountVerificationActivity.class);
+                            intent.putExtra("parent","main_activity");
+                            startActivity(intent);
+                        }
                         else
                         {
-                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putBoolean("showOptionMenu", true);
-                            editor.commit();
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                            String date = sdf.format(new Date());
-                            databaseHandler.deleteAppointments(date);
-
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(Activity_main_2.this,"Account Already Verified",Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
-                        pdia1.dismiss();
-                        Intent intent = new Intent(Activity_main_2.this,patients_today.class);
-                        startActivity(intent);
-                        finish();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
 
                 }
 
                 @Override
                 public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
-                    try { pdia1.dismiss();
-Toast.makeText(Activity_main_2.this,"Internet Error",Toast.LENGTH_SHORT).show();
-                        return;
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Activity_main_2.this,"Error Please check internet connection and try again",Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        // Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -762,13 +743,6 @@ Toast.makeText(Activity_main_2.this,"Internet Error",Toast.LENGTH_SHORT).show();
 
                 @Override
                 public void onFinish() {
-
-
-
-                    pdia1.dismiss();
-
-
-
                     // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
                     //((Activity) context).recreate();
 
@@ -781,8 +755,9 @@ Toast.makeText(Activity_main_2.this,"Internet Error",Toast.LENGTH_SHORT).show();
         {
             e.printStackTrace();
         }
-        // return customerId[0];
+
     }
+
 /*
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();

@@ -113,6 +113,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private List<Address> addresses;
     private AutoCompleteTextView autoCompView;
    private static EditText Name;
+    private static Spinner genderSpinner;
     TextView NameSolid,cityTextView,stateTextView;
     static String dateOfBirth="";
     Bitmap bitmap;
@@ -148,6 +149,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
         final View rootView = inflater.inflate(R.layout.activity_user_profile, container, false);
         getActivity().setTitle("Profile Settings");
         TextView DOB = (TextView)rootView.findViewById(R.id.ageTextBox);
+        genderSpinner = (Spinner)rootView.findViewById(R.id.spinner3);
         autoCompleteTextView = (AutoCompleteTextView)rootView.findViewById(R.id.textSearchedLocationUserProfile);
         autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -1111,6 +1113,7 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
          personalObj = databaseHandler.getPersonalInfo();
+
         ArrayList<String>addressElements = new ArrayList<>();
         if((personalObj.get_address().length()>1)&&(!personalObj.get_address().equals("Address")))
         addressElements = parseAddress(personalObj.get_address());
@@ -1291,6 +1294,8 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         try {
             DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_NAME, Name.getText().toString());
+            String gender = genderSpinner.getSelectedItem().toString();
+            databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_GENDER,genderSpinner.getSelectedItem().toString());
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY, personalObj.get_speciality());
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LATITUDE, String.valueOf(searchedLocation.latitude));
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LONGITUDE, String.valueOf(searchedLocation.longitude));

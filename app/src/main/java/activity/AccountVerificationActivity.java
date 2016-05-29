@@ -1,6 +1,7 @@
 package activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
@@ -45,9 +48,15 @@ EditText idProof;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int PICKFILE_RESULT_CODE = 2;
     String profilePicPath;
+    String parent ="";
+    RelativeLayout regnRelativeLayout;
+    RelativeLayout laterRelativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+
+        parent = intent.getStringExtra("parent");
         setContentView(R.layout.activity_account_verification);
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,8 +65,8 @@ EditText idProof;
         {
             e.printStackTrace();
         }
-        final RelativeLayout regnRelativeLayout = (RelativeLayout)findViewById(R.id.regnRelativeLayout);
-        final RelativeLayout laterRelativeLayout = (RelativeLayout)findViewById(R.id.laterRelativeLayout);
+        regnRelativeLayout = (RelativeLayout)findViewById(R.id.regnRelativeLayout);
+         laterRelativeLayout  = (RelativeLayout)findViewById(R.id.laterRelativeLayout);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AccountVerificationActivity.this);
         idProof = (EditText) findViewById(R.id.idProofEditText);
         final EditText editText = (EditText)findViewById(R.id.graduationRegistrationNumberEditText);
@@ -327,10 +336,93 @@ EditText idProof;
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(AccountVerificationActivity.this,Activity_main_2.class);
+        if(parent!=(null))
+        { if(parent.equals("main_activity"))
+            intent.putExtra("fragmentNumber",1);}
+        else
         intent.putExtra("fragmentNumber",2);
         startActivity(intent);
         finish();
         super.onBackPressed();
+    }
+    public void sync(RequestParams params, final Context context) {
+        final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AccountVerificationActivity.this);
+        final String graduationRegistrationNumber = prefs.getString("graduationRegistrationNumber", "");
+        String apiAddress = "www.docbox.co.in/sajid/getVerificationStatus.php";
+        final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+        try
+        {
+
+            client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+if(str.equals(0))
+{
+    if(!graduationRegistrationNumber.equals(""))
+    {regnRelativeLayout.setVisibility(View.GONE);
+    laterRelativeLayout.setVisibility(View.VISIBLE);}
+    else
+    {
+        regnRelativeLayout.setVisibility(View.VISIBLE);
+        laterRelativeLayout.setVisibility(View.GONE);
+    }
+}
+                        //System.out.print("a");
+
+
+                        if (context == null) {
+                            return;
+                        }
+                        // ((Activity) context).recreate();
+
+                        //Toast.makeText(context, "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+                }
+
+                @Override
+                public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        ((AppCompatActivity)(context)).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context,"Error Please check internet connection and try again",Toast.LENGTH_LONG);
+                            }
+                        });
+                        // Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFinish() {
+                    // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                    //((Activity) context).recreate();
+
+                }
+
+
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

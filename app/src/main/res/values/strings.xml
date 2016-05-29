@@ -56,6 +56,7 @@
     <string name="nav_drawer_item4">Today Schedule</string>
     <string name="nav_drawer_item5">Payment Options</string>
     <string name="nav_drawer_item6">Add Helper</string>
+    <string name="nav_drawer_item7">Account Verification</string>
 
     <string name="delete_button">"Delete Record</string>
     <string name="edit_button">"Edit Record</string>
@@ -105,6 +106,10 @@
     <string name="done">Done</string>
     <string name="title_activity_user_profile">UserProfile</string>
 
+    <string-array name="genderSpinner">
+        <item>Male</item>
+        <item>Female</item>
+        </string-array>
 
     <string-array name="specialitiesSurgery">
         <item>Orthopedic Surgery</item>

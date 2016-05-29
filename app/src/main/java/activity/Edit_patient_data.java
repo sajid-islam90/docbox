@@ -105,7 +105,7 @@ public class Edit_patient_data extends ActionBarActivity {
         storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id());
-        if(_gender!=null)
+        if((_gender!=null)||(!_gender.equals("")))
         { if(_gender.equals("Male") )
         {
             male.setChecked(true);
@@ -181,6 +181,15 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
         {
             if(edit_name.getText().toString().trim().equals(""))
                 Toast.makeText(this, "Please Add Name ", Toast.LENGTH_SHORT)
+                        .show();
+
+            return;
+
+        }
+        if (selectedGender <=0)
+        {
+
+                Toast.makeText(this, "Please Mention Gender ", Toast.LENGTH_SHORT)
                         .show();
 
             return;

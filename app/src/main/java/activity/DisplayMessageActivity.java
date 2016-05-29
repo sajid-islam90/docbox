@@ -251,11 +251,19 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
-
-        dbHandler.onCreate(myDataBase);
+//        SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
+//
+//        dbHandler.onCreate(myDataBase);
 
        long id = dbHandler.addPatient(newPatient);
+
+        if(!patientDiagnosis.equals(""))
+        {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c.getTime());
+            dbHandler.saveDiagnosis(String.valueOf(id),patientDiagnosis,formattedDate);
+        }
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), "Patient Manager/"+id);

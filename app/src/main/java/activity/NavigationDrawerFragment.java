@@ -144,6 +144,11 @@ public class NavigationDrawerFragment extends Fragment {
             item.setTitle(getString(R.string.nav_drawer_item6));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_add_helper));
         items.add(item);}
+
+        item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item7));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_verify));
+        items.add(item);
        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(getActivity(),items);
 //        mDrawerListView.setAdapter(drawerListAdapter);
        // mDrawerListView.bringToFront();
