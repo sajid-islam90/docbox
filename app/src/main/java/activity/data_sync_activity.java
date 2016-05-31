@@ -1,10 +1,16 @@
 package activity;
 
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.nsd.NsdServiceInfo;
+import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +27,7 @@ import android.widget.Toast;
 import com.elune.sajid.myapplication.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +45,20 @@ public class data_sync_activity extends AppCompatActivity {
     //Progress Dialog Object
     ProgressDialog prgDialog;
     static ProgressBar progressBar;
+    ArrayList<HashMap<String, String>> userList;
+    static NotificationCompat.Builder mBuilder;
+    static NotificationManager notifier;
    static TextView textViewFileNumber;
    static ArrayList<media_obj>  mediaObjsFollowUp = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(activity_data_sync_activity);
-
+        userList  =  controller.getAllSyncUsers();
         ActionBar actionBar = this.getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
+        notifier = (NotificationManager)
+                data_sync_activity.this.getSystemService(Context.NOTIFICATION_SERVICE);
         final RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.progressBarLayout);
         ArrayList<HashMap<String, String>> userList =  controller.getAllSyncUsers();
         Button button = (Button)findViewById(R.id.buttonSaveToCloud);
@@ -75,29 +86,31 @@ public class data_sync_activity extends AppCompatActivity {
 
         }
         //Initialize Progress Dialog properties
-
+        progressBar  =(ProgressBar) findViewById(R.id.progressBar);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncSQLiteMySQLDB();
+
+                new Synctask().execute();
+                //syncSQLiteMySQLDB();
 
 
-                mediaObjsFollowUp = controller.getMediaFollowUpTobeUploaded();
-                ArrayList<media_obj>  mediaObjsMedia = new ArrayList<>();
-                mediaObjsMedia = controller.getMediaTobeUploaded();
-                ArrayList<media_obj>  mediaObjsDocuments = new ArrayList<>();
-                mediaObjsDocuments = controller.getDocumentsTobeUploaded();
-                mediaObjsFollowUp.addAll(mediaObjsMedia);
-                mediaObjsFollowUp.addAll(mediaObjsDocuments);
-                //progressBar.setProgress(50);
-                if(mediaObjsFollowUp.size()>0)
-                {relativeLayout.setVisibility(View.VISIBLE);
-                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp, progressBar, textViewFileNumber);}
+//                mediaObjsFollowUp = controller.getMediaFollowUpTobeUploaded();
+//                ArrayList<media_obj>  mediaObjsMedia = new ArrayList<>();
+//                mediaObjsMedia = controller.getMediaTobeUploaded();
+//                ArrayList<media_obj>  mediaObjsDocuments = new ArrayList<>();
+//                mediaObjsDocuments = controller.getDocumentsTobeUploaded();
+//                mediaObjsFollowUp.addAll(mediaObjsMedia);
+//                mediaObjsFollowUp.addAll(mediaObjsDocuments);
+//                //progressBar.setProgress(50);
+//                if(mediaObjsFollowUp.size()>0)
+//                {relativeLayout.setVisibility(View.VISIBLE);
+//                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp, progressBar, textViewFileNumber);}
 
             }
         });
-        progressBar  =(ProgressBar) findViewById(R.id.progressBar);
+
         textViewFileNumber =(TextView)findViewById(R.id.textViewCurrentFileNumber);
 
         progressBar.setMax(100);
@@ -153,7 +166,7 @@ public class data_sync_activity extends AppCompatActivity {
 
     public void syncSQLiteMySQLDB(){
         //Create AsycHttpClient object
-        AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+        AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
         RequestParams params = new RequestParams();
         ArrayList<HashMap<String, String>> userList =  controller.getAllSyncUsers();
        // if(userList.size()!=0)
@@ -182,11 +195,10 @@ public class data_sync_activity extends AppCompatActivity {
 
             }
             else{
-                Toast.makeText(getApplicationContext(), "SQLite and Remote MySQL DBs are in Sync!", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "SQLite and Remote MySQL DBs are in Sync!", Toast.LENGTH_LONG).show();
             }
         }
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.saveSuccessfullLinearLayout);
-        linearLayout.setVisibility(View.VISIBLE);
+
 
         //else{
            // Toast.makeText(getApplicationContext(), "No data in SQLite DB, please do enter User name to perform Sync action", Toast.LENGTH_LONG).show();
@@ -202,6 +214,106 @@ public class data_sync_activity extends AppCompatActivity {
         }
 
         return hex.toString();
+    }
+
+    public class Synctask extends AsyncTask<Void, Void, Boolean> {
+
+
+        private  ProgressDialog progressDialog;
+
+        public Synctask() {
+
+            progressDialog = new ProgressDialog(data_sync_activity.this);
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+
+                        progressDialog.setMessage("Connecting please wait");
+                        mBuilder =
+                                new NotificationCompat.Builder(data_sync_activity.this)
+                                        .setSmallIcon(android.R.drawable.stat_sys_upload)
+                                        .setContentTitle("DocBox")
+
+
+                                        .setContentText("Patient Data Being saved to cloud");
+
+                        notifier.notify(1, mBuilder.build());
+
+                        // progressDialog.setCanceledOnTouchOutside(false);
+  // progressDialog.show();
+
+                    }
+                    catch (Exception e)
+                    {
+                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            try {
+                syncSQLiteMySQLDB();
+
+            }
+            catch (Exception e)
+            {
+e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+           // progressDialog.dismiss();
+            ((NotificationManager) data_sync_activity.this.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(1);
+            mBuilder =
+                    new NotificationCompat.Builder(data_sync_activity.this)
+                            .setSmallIcon(R.drawable.icon_notification)
+                            .setContentTitle("DocBox")
+
+                            .setContentText(userList.size()+" Patients' data saved to cloud");
+
+            notifier.notify(1, mBuilder.build());
+            TextView textView = (TextView)findViewById(R.id.saveSuccessfullTextView);
+            LinearLayout linearLayout = (LinearLayout)findViewById(R.id.saveSuccessfullLinearLayout);
+            final RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.progressBarLayout);
+            Button button = (Button)findViewById(R.id.buttonSaveToCloud);
+            linearLayout.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
+            textView.setText("Your Data Is Safe On Our Cloud Please Track The File Upload Progress In The Status Bar Above");
+
+            // linearLayout.setVisibility(View.VISIBLE);
+            button.setVisibility(View.GONE);
+
+            mediaObjsFollowUp = controller.getMediaFollowUpTobeUploaded();
+            ArrayList<media_obj>  mediaObjsMedia = new ArrayList<>();
+            mediaObjsMedia = controller.getMediaTobeUploaded();
+            ArrayList<media_obj>  mediaObjsDocuments = new ArrayList<>();
+            mediaObjsDocuments = controller.getDocumentsTobeUploaded();
+            mediaObjsFollowUp.addAll(mediaObjsMedia);
+            mediaObjsFollowUp.addAll(mediaObjsDocuments);
+            //progressBar.setProgress(50);
+            if(mediaObjsFollowUp.size()>0)
+            {relativeLayout.setVisibility(View.VISIBLE);
+                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp, progressBar, textViewFileNumber);}
+
+        }
+
+
+
     }
 
 }

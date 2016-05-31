@@ -259,17 +259,6 @@ public class MainActivity extends Fragment {
 
 
 
-
-    /** Called when the user clicks the Send button */
-   /* public void sendMessage(View view  ) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String string = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE,string);
-        startActivity(intent);
-        // Do something in response to button
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -361,18 +350,6 @@ public class MainActivity extends Fragment {
 
 
                 return true;
-//            case R.id.action_settings:
-//                Toast.makeText(getActivity(), "Settings selected", Toast.LENGTH_SHORT)
-//                        .show();
-//                pdia = new ProgressDialog(getActivity());
-//                pdia.setMessage("Restoring Data Please Wait");
-//                pdia.show();
-//                // while (! LoginActivity.testRestoreData.getStatus().equals(AsyncTask.Status.FINISHED));
-////                TestRestoreData testRestoreData = new TestRestoreData();
-////                testRestoreData.execute((Void) null);
-////             Intent intent1 = new Intent( getActivity(),Activity_Video_Capture.class);
-////                startActivity(intent1);
-//                return true;
 
             case R.id.action_sync:
                 if(!accountType.equals(getActivity().getString(R.string.account_type_helper))) {

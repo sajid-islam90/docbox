@@ -1548,6 +1548,7 @@ db.close();
             mediaObjs = utility.cursorToMediaUpload(cursor);
 
         }
+        db.close();
         return mediaObjs;
     }
     public ArrayList<media_obj> getMediaTobeUploaded()
@@ -1565,6 +1566,7 @@ db.close();
             mediaObjs = utility.cursorToMediaUpload(cursor);
 
         }
+        db.close();
         return mediaObjs;
     }
     public ArrayList<media_obj> getDocumentsTobeUploaded()
@@ -1582,6 +1584,7 @@ db.close();
             mediaObjs = utility.cursorToDocumentsUpload(cursor);
 
         }
+        db.close();
         return mediaObjs;
     }
 
@@ -1622,7 +1625,7 @@ db.close();
             mediaObjs = new media_obj[cursor.getCount()];
             mediaObjs = utility.cursorToMedia(cursor);
 
-        }
+        }  db.close();
         return mediaObjs;
     }
 
@@ -1672,10 +1675,11 @@ db.close();
         if(cursor.getCount()>0)
         {
             cursor.moveToLast();
+            db.close();
             return cursor.getInt(cursor.getColumnIndex(KEY_VERSION));
         }
-        else
-            return 0;
+        else{  db.close();
+            return 0;}
     }
 
    /* media_obj getSearchMedia(int id,ArrayList<Item> itemsArrayList)
@@ -1984,7 +1988,7 @@ db.close();
         args.put(field, value);
 
         db.update(TABLE_DOCUMENTS, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
-
+        db.close();
 
     }
 
@@ -2688,7 +2692,7 @@ if(telephonyManager.getDeviceId()!=null)
 
 
         }
-        database.close();
+       // database.close();
         ArrayList<String> hex = new ArrayList<>();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -2802,7 +2806,7 @@ if(telephonyManager.getDeviceId()!=null)
 
             } while (cursor.moveToNext());
         }
-        database.close();
+       // database.close();
         //uploadfile.uploadImage(context, "");
         if (docPaths.size()>0) {
            // uploadfile.uploadImage(context, docPaths, pid);

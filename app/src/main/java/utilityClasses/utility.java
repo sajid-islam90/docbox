@@ -24,6 +24,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
@@ -291,7 +292,7 @@ public class utility {
     public static void syncData(String apiAddress ,  RequestParams params, final Context context, final ProgressDialog progressDialog,
                                 final String pid, final int uploadFilesLength )
     {
-        final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+        final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
 
         final DatabaseHandler databaseHandler = new DatabaseHandler(context);
         client.post(apiAddress, params, new JsonHttpResponseHandler() {
@@ -360,7 +361,7 @@ public class utility {
 
                 paramsDocuments.put("documentsJSON", DocumentsJson);
                 paramsDiagnosis.put("diagnosisJSON", DiagnosisJson);
-                paramsDiagnosis.put("treatmentJSON", TreatmentJson);
+                paramsTreatment.put("treatmentJSON", TreatmentJson);
                 paramsNotes.put("NotesJSON", notesJson);
                 paramsFollowUp.put("FollowUpJSON", FollowUpJson);
                 paramsOther.put("OtherJSON", OtherJson);
@@ -369,15 +370,15 @@ public class utility {
                 paramsMediaFollowUp.put("MediaFollowUpJSON", MediaFollowUpJson);
                 // sync("http://docbox.co.in/sajid/insertDocuments.php", params, context);
                 String address = "docbox.co.in/sajid";//context.getResources().getString(R.string.action_server_ip_address);
-                sync("http://" + address + "/insertDocuments.php", paramsDocuments, context);
-                sync("http://" + address + "/insertDiagnosis.php", paramsDiagnosis, context);
-                sync("http://" + address + "/insertTreatment.php", paramsTreatment, context);
-                sync("http://" + address + "/insertNotes.php", paramsNotes, context);
-                sync("http://" + address + "/insertFollowUp.php", paramsFollowUp, context);
-                sync("http://" + address + "/insertOther.php", paramsOther, context);
-                sync("http://" + address + "/insertOtherFollowUp.php", paramsOtherFollowUp, context);
-                sync("http://" + address + "/insertMedia.php", paramsMedia, context);
-                sync("http://" + address + "/insertMediaFollowUp.php", paramsMediaFollowUp, context);
+                syncDataSync("http://" + address + "/insertDocuments.php", paramsDocuments, context);
+                syncDataSync("http://" + address + "/insertDiagnosis.php", paramsDiagnosis, context);
+                syncDataSync("http://" + address + "/insertTreatment.php", paramsTreatment, context);
+                syncDataSync("http://" + address + "/insertNotes.php", paramsNotes, context);
+                syncDataSync("http://" + address + "/insertFollowUp.php", paramsFollowUp, context);
+                syncDataSync("http://" + address + "/insertOther.php", paramsOther, context);
+                syncDataSync("http://" + address + "/insertOtherFollowUp.php", paramsOtherFollowUp, context);
+                syncDataSync("http://" + address + "/insertMedia.php", paramsMedia, context);
+                syncDataSync("http://" + address + "/insertMediaFollowUp.php", paramsMediaFollowUp, context);
                 //((Activity) context).recreate();
                 progressDialog.hide();
             }
@@ -450,6 +451,76 @@ public class utility {
 
         });
     }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void syncDataSync(String apiAddress, RequestParams params, final Context context) {
+        final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+
+        final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+        try
+        {
+
+            client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+
+
+                        //System.out.print("a");
+
+
+                        if (context == null) {
+                            return;
+                        }
+                        // ((Activity) context).recreate();
+
+                        //Toast.makeText(context, "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+                }
+
+                @Override
+                public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        ((AppCompatActivity)(context)).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context,"Error Please check internet connection and try again",Toast.LENGTH_LONG);
+                            }
+                        });
+                        // Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFinish() {
+                    // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                    //((Activity) context).recreate();
+
+                }
+
+
+            });
+        }
         catch (Exception e)
         {
             e.printStackTrace();
