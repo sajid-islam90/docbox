@@ -59,7 +59,8 @@ public class view_all_versions extends Fragment {
         intent.putExtra("parent",PatientProfileActivity.class.toString());
         intent.putExtra("id", pid);
         startActivity(intent);
-        getActivity().finish();}
+       // getActivity().finish();
+             }
         else
         {
             Toast.makeText(getActivity(), "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();

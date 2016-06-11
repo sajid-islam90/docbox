@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -125,6 +126,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
         setContentView(R.layout.activity_tabbed_activity_check);
         Intent intent = getIntent();
 
+
         pid = intent.getIntExtra("id", 0);
         version = intent.getIntExtra("version", 1);
         parent  =intent.getStringExtra("parent");
@@ -202,7 +204,7 @@ if(OtherObjsStatic.size()<3)
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Notes");
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+        actionBar.setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -236,23 +238,9 @@ if(OtherObjsStatic.size()<3)
         mViewPager.setCurrentItem(Tabselected);
     }
 
-    public  void showHistMedia(View view)
-    {
 
 
-    }
 
-    public void getLatestVersionTitle()
-    {
-        DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());
-       // notes_obj notesObj  = dbHandler.getLatestNote(pid);
-        Patient patient = dbHandler.getPatient(pid);
-//        setTitleColor(R.color.white);
-//       setTitle(patient.get_name()+" Notes");
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(patient.get_name()+" Notes");
-
-    }
 
 
 
@@ -277,129 +265,6 @@ if(OtherObjsStatic.size()<3)
         }
     }
 
-    private void dispatchTakeVideoIntent() throws IOException {
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-        //fileUri = PhotoHelper.createVideoFile(pid);
-        if (intent.resolveActivity(TabbedActivityCheck.this.getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File file = null;
-            try {
-                file = PhotoHelper.createVideoFile(pid, TabbedActivityCheck.this);
-                fileUri= Uri.fromFile(file);
-
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-
-            }
-        }
-        if (fileUri != null) {
-            // create a file to save the video
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // set the image file name
-
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); // set the video image quality to high
-
-            // start the Video Capture Intent
-            startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
-        }
-    }
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Intent intent =getIntent();
-
-
-        final DatabaseHandler dbHandler = new DatabaseHandler(TabbedActivityCheck.this);
-
-
-
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(TabbedActivityCheck.this.getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = PhotoHelper.createImageFileForNotes(pid,TabbedActivityCheck.this);
-
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra("output",
-                        Uri.fromFile(photoFile));
-                mediaObj.set_media_name(photoFile.getPath());
-                mediaObj.set_media_path(photoFile.getPath());
-
-
-
-
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
-
-
-            }
-        }
-    }
-   /* @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri videoUri = data.getData();
-            String path = videoUri.getPath();
-
-            DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
-            mediaObj.set_media_path(path);
-            mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
-
-            mediaObj.set_pid(pid);
-            mediaObj.set_section((int)CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE/100);
-            mediaObj.set_version( 1);
-            databaseHandler.addMedia(mediaObj);
-
-            Intent intent = getIntent();
-
-            finish();
-            startActivity(intent);
-        }
-
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
-            DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
-
-            mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
-            Bitmap bitmap;
-            bitmap = BitmapFactory.decodeFile(mediaObj.get_media_path());
-            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-
-            // save image into gallery
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, ostream);
-
-            try {
-                FileOutputStream fout = new FileOutputStream(new File(mediaObj.get_media_path()));
-                fout.write(ostream.toByteArray());
-                fout.close();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            mediaObj.set_pid(pid);
-            mediaObj.set_section(REQUEST_TAKE_PHOTO);
-            mediaObj.set_version(1);
-            databaseHandler.addMedia(mediaObj);
-
-            Intent intent = getIntent();
-
-           finish();
-            startActivity(intent);
-
-
-
-        }
-
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -418,7 +283,10 @@ if(OtherObjsStatic.size()<3)
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (id == android.R.id.home) {
+           finish();
+            return true;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_help) {
 if(relativeLayoutHelp.getVisibility()==View.GONE)
@@ -605,11 +473,11 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
 
 
             TextView textView10 =(TextView)rootView.findViewById(R.id.textView10);
-            LinearLayout textView6 =(LinearLayout)rootView.findViewById(R.id.linearLayoutOtherCustomNotesTitle);
-            LinearLayout textView7 =(LinearLayout)rootView.findViewById(R.id.linearLayoutMediaTitle);
-            final ListView listView = (ListView)rootView.findViewById(R.id.filedsList);
-            final RecyclerView listView2 = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
-            final RecyclerView listView3 = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
+            LinearLayout linearLayoutOtherCustomNotesTitle =(LinearLayout)rootView.findViewById(R.id.linearLayoutOtherCustomNotesTitle);
+            LinearLayout linearLayoutMediaTitle =(LinearLayout)rootView.findViewById(R.id.linearLayoutMediaTitle);
+            final ListView filedsList = (ListView)rootView.findViewById(R.id.filedsList);
+            final RecyclerView listViewOtherHistView = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
+            final RecyclerView listViewMedia = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
             final CardView cardView = (CardView)rootView.findViewById(R.id.view13);
 
             relativeLayoutHelp.setOnClickListener(new View.OnClickListener() {
@@ -653,29 +521,37 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 @Override
                 public void onClick(View v) {
 
-                        listView.setVisibility(View.VISIBLE);
-                        listView2.setVisibility(View.GONE);
-                    listView3.setVisibility(View.GONE);
+                        filedsList.setVisibility(View.VISIBLE);
+                        listViewOtherHistView.setVisibility(View.GONE);
+                    listViewMedia.setVisibility(View.GONE);
                    // expandView(cardView);
                 }
             });
-            textView6.setOnClickListener(new View.OnClickListener() {
+            linearLayoutOtherCustomNotesTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                        listView2.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
-                    listView3.setVisibility(View.GONE);
+                    if(listViewOtherHistView.getVisibility()==View.VISIBLE)
+                    {
+                        listViewOtherHistView.setVisibility(View.GONE);
+                    }
+                    else
+                        listViewOtherHistView.setVisibility(View.VISIBLE);
+                    filedsList.setVisibility(View.GONE);
+                    listViewMedia.setVisibility(View.GONE);
                     //CollapseView(cardView);
                 }
             });
-            textView7.setOnClickListener(new View.OnClickListener() {
+            linearLayoutMediaTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    listView3.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
-                    listView2.setVisibility(View.GONE);
+                    if(listViewMedia.getVisibility()==View.VISIBLE)
+                        listViewMedia.setVisibility(View.GONE);
+                    else
+                    listViewMedia.setVisibility(View.VISIBLE);
+                    filedsList.setVisibility(View.GONE);
+                    listViewOtherHistView.setVisibility(View.GONE);
                     //CollapseView(cardView);
                 }
             });
@@ -684,7 +560,7 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 @Override
                 public void onClick(View v) {
                     try {
-                        addVideo(v);
+                        addVideo();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -696,7 +572,7 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 public void onClick(View v) {
                     relativeLayoutHelp.setVisibility(View.GONE);
                     try {
-                        addVideo(v);
+                        addVideo();
                         floatingActionsMenuHelp.collapseImmediately();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -709,7 +585,7 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 public void onClick(View v) {
                     relativeLayoutHelp.setVisibility(View.GONE);
                     try {
-                        addPhoto(v);
+                        addPhoto();
                         floatingActionsMenuHelp.collapseImmediately();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -731,7 +607,7 @@ floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActio
                 @Override
                 public void onClick(View v) {
                     try {
-                        addPhoto(v);
+                        addPhoto();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -992,7 +868,7 @@ Tabselected = section;
         }
 
 
-        public void addVideo(View view) throws IOException {
+        public void addVideo() throws IOException {
 
             final CharSequence[] items = { "Take Video", "Choose from Library", "Cancel" };
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1019,7 +895,7 @@ Tabselected = section;
 
 
             }
-        public void addPhoto(View view) throws IOException {
+        public void addPhoto() throws IOException {
 
             final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1084,10 +960,41 @@ Tabselected = section;
 //                databaseHandler.updatePatient(patient);
                 databaseHandler.addMedia(mediaObj);
 
-                Intent intent = getActivity().getIntent();
+                final Intent intent = getActivity().getIntent();
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getActivity());
+
+                alert.setTitle("Alert!!");
+                alert.setMessage("Do you want to add another Video note?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                        //utility .recreateActivityCompat(getActivity());
+                        try {
+                            addVideo();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().finish();
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
                 Tabselected = section;
-                getActivity().finish();
-                startActivity(intent);
+
+//                getActivity().finish();
+//                startActivity(intent);
             }
 
             if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {
@@ -1125,10 +1032,41 @@ Tabselected = section;
 //                databaseHandler.updatePatient(patient);
                 databaseHandler.addMedia(mediaObj);
 
-                Intent intent = getActivity().getIntent();
+                final Intent intent = getActivity().getIntent();
                 Tabselected = section;
-                getActivity().finish();
-                startActivity(intent);
+
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getActivity());
+
+                alert.setTitle("Alert!!");
+                alert.setMessage("Do you want to add another Photo note?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                        //utility .recreateActivityCompat(getActivity());
+                        try {
+                            addPhoto();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                         getActivity().finish();
+                         startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+               // getActivity().finish();
+               // startActivity(intent);
 
 
 
@@ -1185,6 +1123,7 @@ Tabselected = section;
 
                     }
                     FileUtils.copyFile(new File(file_path), newFile);
+                    final Intent intent = getActivity().getIntent();
                     if((newFile.getName().contains(".jpeg"))||(newFile.getName().contains(".png"))
                             ||(newFile.getName().contains(".mp4")) ||(newFile.getName().contains(".jpg"))) {
                         mediaObj.set_media_path(newFile.getPath());
@@ -1195,17 +1134,58 @@ Tabselected = section;
                         {
                             mediaObj = PhotoHelper.addMissingBmp(mediaObj,CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
                         }
-                        else
-                        {
-                            mediaObj = PhotoHelper.addMissingBmp(mediaObj,REQUEST_TAKE_PHOTO);
+                        else {
+                            mediaObj = PhotoHelper.addMissingBmp(mediaObj, REQUEST_TAKE_PHOTO);
+
+
                         }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getActivity());
+
+                                alert.setTitle("Alert!!");
+                                alert.setMessage("Do you want to add another Report?");
+                                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                                        //utility .recreateActivityCompat(getActivity());
+                                        try {
+                                            addPhoto();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dialog.dismiss();
+
+                                    }
+                                });
+                                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        getActivity().finish();
+                                        startActivity(intent);
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                alert.show();
+
+                            }
+                        });
+
+
 //                        patient.set_last_seen_date(formattedDate);
 //                        databaseHandler.updatePatient(patient);
                         databaseHandler.addMedia(mediaObj);
-                        Intent intent = getActivity().getIntent();
+
                         Tabselected = section;
-                        getActivity().finish();
-                        startActivity(intent);
+
+//                        getActivity().finish();
+//                        startActivity(intent);
                     }
                 }
                 catch (IOException e)
@@ -1242,6 +1222,11 @@ Tabselected = section;
                 if (photoFile != null) {
                     takePictureIntent.putExtra("pid",pid);
                     takePictureIntent.putExtra("filePath",photoFile.getPath());
+                    takePictureIntent.putExtra("parentActivity","notes");
+                    Bundle args = getArguments();
+                    int section = args.getInt(ARG_SECTION_NUMBER);
+                    takePictureIntent.putExtra("section",String.valueOf(section));
+
 //                    takePictureIntent.putExtra("output",
 //                            Uri.fromFile(photoFile));
                     mediaObj.set_media_name(photoFile.getPath());

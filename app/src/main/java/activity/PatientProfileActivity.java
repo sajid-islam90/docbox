@@ -83,6 +83,8 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try
+        {
         super.onCreate(savedInstanceState);
         DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
         setContentView(R.layout.activity_patient_profile);
@@ -144,19 +146,19 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 helpLayout.setVisibility(View.GONE);
-                final CharSequence[] items = { "Add Clinical Notes", "Add A Report", "Cancel" };
+                final CharSequence[] items = { "Clinical Notes", "Reports", "Cancel" };
                 AlertDialog.Builder builder = new AlertDialog.Builder(PatientProfileActivity.this);
 
-                builder.setTitle("Add Info!");
+                builder.setTitle("Access Info!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        if (items[item].equals("Add Clinical Notes")) {
+                        if (items[item].equals("Clinical Notes")) {
                             if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
                                 showNotes();
                             else
                             Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
-                        } else if (items[item].equals("Add A Report")) {
+                        } else if (items[item].equals("Reports")) {
                             showDocuments();
                         } else if (items[item].equals("Cancel")) {
                             dialog.dismiss();
@@ -172,19 +174,19 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CharSequence[] items = { "Add Clinical Notes", "Add A Report", "Cancel" };
+                final CharSequence[] items = {"Clinical Notes", "Reports", "Cancel" };
                 AlertDialog.Builder builder = new AlertDialog.Builder(PatientProfileActivity.this);
 
-                builder.setTitle("Add Info!");
+                builder.setTitle("Access Info!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        if (items[item].equals("Add Clinical Notes")) {
+                        if (items[item].equals("Clinical Notes")) {
                             if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
                             showNotes();
                             else
                             Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
-                        } else if (items[item].equals("Add A Report")) {
+                        } else if (items[item].equals("Reports")) {
                             showDocuments();
                         } else if (items[item].equals("Cancel")) {
                             dialog.dismiss();
@@ -260,6 +262,11 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         });
         DetailOnPageChangeListener detailOnPageChangeListener = new DetailOnPageChangeListener();
         mViewPager.setOnPageChangeListener(detailOnPageChangeListener);
+    }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
    @Override
     protected void onResume()
@@ -646,7 +653,7 @@ Time time;
         intent1.putExtra("id",id);
 
         startActivity(intent1);
-finish();
+//finish();
 
 
     }

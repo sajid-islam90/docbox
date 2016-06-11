@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
@@ -99,6 +100,7 @@ public class NavigationDrawerFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View mView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_pic_layout);
 
         accountType  = prefs.getString(getActivity().getString(R.string.account_type), "");
         //mDrawerListView = (ListView) inflater.inflate( R.layout.fragment_navigation_drawer, container, false);
@@ -113,6 +115,22 @@ public class NavigationDrawerFragment extends Fragment {
                         selectItem(position);
                     }
                 }, 300);
+
+            }
+        });
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.closeDrawer(mView.findViewById(R.id.navigation_drawer));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectItem(2);
+                    }
+                }, 300);
+
+
+
 
             }
         });

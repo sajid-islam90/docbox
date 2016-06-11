@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="0"
-                    android:id="@+id/textViewFollowupNumberMedia"
+                    android:id="@+id/textViewNumberMedia"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"

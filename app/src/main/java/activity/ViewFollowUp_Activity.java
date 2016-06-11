@@ -47,12 +47,16 @@ public class ViewFollowUp_Activity extends AppCompatActivity {
         //final CardView cardView = (CardView)findViewById(R.id.view13);
         // listView2.setVisibility(View.GONE);
         //  listView3.setVisibility(View.GONE);
+        assert textView10 != null;
         textView10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                assert listView != null;
                 listView.setVisibility(View.VISIBLE);
+                assert listView2 != null;
                 listView2.setVisibility(View.GONE);
+                assert listView3 != null;
                 listView3.setVisibility(View.GONE);
                 // expandView(cardView);
             }
@@ -87,7 +91,9 @@ doWork();
         ArrayList<Item> FollowUpFields = databaseHandler.getFollowUp(pid, version);
         ListView listView1 = (ListView)findViewById(R.id.fieldsListFollowUpView);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
-        listView1.setAdapter(inputAgainstAFieldAdapter);
+        if (listView1 != null) {
+            listView1.setAdapter(inputAgainstAFieldAdapter);
+        }
         listView1.setItemsCanFocus(false);
         ArrayList<Item> field = new ArrayList<>();
         ArrayList<Item> media = new ArrayList<>();

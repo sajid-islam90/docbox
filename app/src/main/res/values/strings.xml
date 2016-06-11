@@ -14,6 +14,8 @@
     <string name="action_server_ip_address">docbox.co.in/sajid</string>
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
     <string name="hash_code">Hash</string>
+    <string name="subscription_valid_upto">subscriptionValidUpto</string>
+    <string name="subscription_valid_from">subscriptionValidFrom</string>
     <string name="account_type">AccountType</string>
     <string name="account_type_doctor">AccountTypeDoctor</string>
     <string name="account_type_helper">AccountTypeHelper</string>
@@ -95,9 +97,6 @@
     <string name="title_activity_title_">Doc Box</string>
 
 
-
-
-
     <string name="start_image_capture">Take a New Picture</string>
     <string name="capture_image">Snap it!</string>
     <string name="save_image">Save Picture</string>
@@ -109,7 +108,7 @@
     <string-array name="genderSpinner">
         <item>Male</item>
         <item>Female</item>
-        </string-array>
+    </string-array>
 
     <string-array name="specialitiesSurgery">
         <item>Orthopedic Surgery</item>
@@ -128,7 +127,7 @@
         <item>Surgical Oncology</item>
         <item>Endocrine Surgery</item>
 
-        </string-array>
+    </string-array>
     <string-array name="specialitiesMedicine">
         <item>General Medicine</item>
         <item>Neurology</item>
@@ -172,7 +171,7 @@
 
 
         <item>Internal Medicine</item>
-        <item>Neurology</item>
+
         <item>Medical Gastroenterology</item>
         <item>Nephrology</item>
         <item>Medical Endocrinology</item>
@@ -186,6 +185,7 @@
         <item>Respiratory Medicine</item>
         <item>Skin and VD</item>
         <item>Clinical Hematology</item>
+        <item>Psychiatry</item>
 
     </string-array>
     <string name="title_activity_generic_notes">genericNotesActivity</string>
@@ -198,11 +198,13 @@
     <string name="title_activity_appointment_settings_check">Appointment Settings</string>
     <string name="title_activity_account_verification">Account Verification</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_activity__video__capture">Activity_Video_Capture</string>
     <string name="title_activity_payment_activity">payment_activity</string>
     <string name="title_activity_payment">PaymentActivity</string>
     <string name="title_activity_patients_today">Appointments for Today</string>
+    <string name="title_activity_payment_option_not_available">Payment Options
+    </string>
 
 </resources>

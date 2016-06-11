@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.elune.sajid.myapplication" >
+    package="com.elune.sajid.myapplication">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -30,6 +30,7 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <supports-screens
         android:anyDensity="true"
@@ -38,9 +39,6 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
-    <uses-library android:name="com.google.android.maps" />
-    <uses-library android:name="com.google.android.maps" />
-
     <!-- <meta-data -->
     <!-- android:name="com.google.android.maps.v2.API_KEY" -->
     <!-- android:value="AIzaSyB6hI6Of7oCq1FYh46pE2Qip6trvqLg0gw" /> -->
@@ -48,7 +46,9 @@
         android:allowBackup="true"
         android:icon="@drawable/icon4"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat" >
+        android:theme="@style/Theme.AppCompat">
+        <uses-library android:name="com.google.android.maps" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE" />
@@ -60,22 +60,22 @@
             android:name="activity.Activity_main_2"
             android:label="@string/app_name"
             android:logo="@drawable/ic_1"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
-        </activity>
+            android:uiOptions="splitActionBarWhenNarrow" />
         <activity
             android:name="activity.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
             android:parentActivityName="activity.Activity_main_2"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.PatientProfileActivity"
             android:label="@string/title_activity_patient_profile"
             android:parentActivityName="activity.Activity_main_2"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.UI_OPTIONS"
                 android:value="splitActionBarWhenNarrow" />
@@ -84,100 +84,90 @@
             android:name="activity.Edit_patient_data"
             android:label="@string/title_activity_edit_patient_data"
             android:parentActivityName="activity.PatientProfileActivity"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.documents"
             android:label="@string/title_activity_documents"
             android:parentActivityName="activity.PatientProfileActivity"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.ClinicalNotesActivity"
             android:label="@string/title_activity_clinical_notes"
             android:parentActivityName="activity.PatientProfileActivity"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.AddClinicalNotesActivity"
             android:label="@string/title_activity_add_clinical_notes"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.TabbedActivityCheck"
             android:label="@string/title_activity_tabbed_activity_check"
+            android:parentActivityName="activity.PatientProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TabbedActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="redundant.UploadToServer"
-            android:label="Upload" >
-        </activity>
+            android:label="Upload"
+            android:screenOrientation="portrait" />
         <activity
             android:name="activity.TABBED_ACTIVITY_FUNCTIONALITY"
             android:label="@string/title_activity_tabbed__activity__functionality"
-            android:theme="@style/TabbedActivity" >
->
+            android:theme="@style/TabbedActivity">
+            >
         </activity>
         <activity
             android:name="activity.History_Activity"
             android:label="@string/title_activity_history_"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Treatment_Activity"
             android:label="@string/title_activity_treatment_"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Other_Notes_Activity"
             android:label="Others "
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.history_view"
             android:label="@string/title_activity_history_view"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Add_view_notes"
             android:label="@string/title_activity_add_view_notes"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.View_Media_notes_grid"
             android:label="@string/title_activity_view__media_notes_grid"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.view_notes_version"
-            android:label="@string/title_activity_view_notes_version" >
-        </activity>
+            android:label="@string/title_activity_view_notes_version" />
         <activity
             android:name="activity.LoginActivity"
             android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name="activity.data_sync_activity"
             android:label="@string/title_activity_data_sync_activity"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.view_all_versions"
             android:label="@string/title_activity_view_all_versions"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.CameraDemoActivity"
             android:label="Camera"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Title_Activity"
-            android:label="@string/title_activity_title_" >
+            android:label="@string/title_activity_title_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -187,70 +177,61 @@
         <activity
             android:name="activity.genericNotesActivity"
             android:label="@string/title_activity_generic_notes"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="activity.followUp"
             android:label="@string/title_activity_follow_up"
             android:screenOrientation="portrait"
             android:theme="@style/MainActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="activity.ViewFollowUp_Activity"
             android:label="@string/title_activity_view_follow_up_"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Appointments"
             android:label="@string/title_activity_appointments"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.appointment_settings"
             android:label="@string/title_activity_appointment_settings"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.dataRestoreActivity"
-            android:label="@string/title_activity_data_restore" >
-        </activity>
+            android:label="@string/title_activity_data_restore" />
         <activity
             android:name="activity.AppointmentSettingsCheck"
             android:label="@string/title_activity_appointment_settings_check"
-            android:theme="@style/MainActivity" >
-        </activity>
-
-        <service
-            android:name=".MyTestService"
-            android:exported="false" />
-
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.AccountVerificationActivity"
             android:label="@string/title_activity_account_verification"
             android:parentActivityName="activity.Activity_main_2"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
         <activity
             android:name="activity.Activity_Video_Capture"
             android:label="@string/title_activity_activity__video__capture"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".payment_activity"
-            android:label="@string/title_activity_payment_activity" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="activity.PaymentActivity"
-            android:label="@string/title_activity_payment" >
-        </activity>
+            android:label="@string/title_activity_payment" />
         <activity android:name="com.razorpay.CheckoutActivity" />
         <activity
             android:name="activity.patients_today"
             android:label="@string/title_activity_patients_today"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActivity" >
-        </activity>
+            android:theme="@style/MainActivity" />
+        <activity
+            android:name="activity.SubscriptionActivity"
+            android:theme="@style/MainActivity" />
+        <activity
+            android:name="activity.paymentOptionNotAvailableActivity"
+            android:label="@string/title_activity_payment_option_not_available"
+            android:theme="@style/MainActivity"></activity>
     </application>
 
 </manifest>

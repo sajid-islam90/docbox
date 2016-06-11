@@ -182,19 +182,36 @@ public class  Activity_main_2 extends AppCompatActivity
     }
 
 
-    public void addHelper()
-    {
+    public void addHelper() {
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+        alert.setTitle("Adding Helper");
+        alert.setMessage("1. Add email address of your helper here \n2. Then install DocBox in his android phone \n3. Register him as a Helper in DocBox" +
+                "\n4. Enter your registered Email address in the box provided \n5. Connect your phone with his through WiFi " +
+                "\n6. Let him add patients and appointments" +
+                " for the " +
+                "current day \n7. Save your precious time ");
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+
+
         LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
+
+
         final RequestParams params = new RequestParams();
         Resources res = Activity_main_2.this.getResources();
         final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
         final String address = res.getString(R.string.action_server_ip_address);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
-        boolean helper  = prefs.getBoolean("helperAdded", false);
-        if(!helper)
-        {
+        boolean helper = prefs.getBoolean("helperAdded", false);
+        if (!helper) {
             final View promptsView = li.inflate(R.layout.sms_text, null);
-            final TextView textView = (TextView)promptsView.findViewById(R.id.sms_Edit_Text);
+            final TextView textView = (TextView) promptsView.findViewById(R.id.sms_Edit_Text);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                     Activity_main_2.this);
 
@@ -225,7 +242,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
                                     // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
 
-                                    Thread thread = new Thread(){
+                                    Thread thread = new Thread() {
                                         @Override
                                         public void run() {
                                             try {
@@ -240,21 +257,18 @@ public class  Activity_main_2 extends AppCompatActivity
                                                             JSONParser parser = new JSONParser();
                                                             JSONObject object = (JSONObject) parser.parse(str);
                                                             String message = (String) object.get("message");
-                                                            if(message.equals("registered"))
-                                                            {
-                                                            runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    Toast.makeText(Activity_main_2.this,"Helper Added",Toast.LENGTH_LONG);
-                                                                }
-                                                            });
-                                                            }
-                                                            else
-                                                            {
+                                                            if (message.equals("registered")) {
                                                                 runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        Toast.makeText(Activity_main_2.this,"Error in adding helper",Toast.LENGTH_LONG);
+                                                                        Toast.makeText(Activity_main_2.this, "Helper Added", Toast.LENGTH_LONG);
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Toast.makeText(Activity_main_2.this, "Error in adding helper", Toast.LENGTH_LONG);
                                                                     }
                                                                 });
                                                             }
@@ -270,7 +284,7 @@ public class  Activity_main_2 extends AppCompatActivity
                                                             runOnUiThread(new Runnable() {
                                                                 @Override
                                                                 public void run() {
-                                                                    Toast.makeText(Activity_main_2.this,"Error in adding helper\nPlease the internet connection and try again",Toast.LENGTH_LONG);
+                                                                    Toast.makeText(Activity_main_2.this, "Error in adding helper\nPlease the internet connection and try again", Toast.LENGTH_LONG);
                                                                 }
                                                             });
 
@@ -301,7 +315,7 @@ public class  Activity_main_2 extends AppCompatActivity
                             })
                     .setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
+                                public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                 }
                             });
@@ -314,6 +328,20 @@ public class  Activity_main_2 extends AppCompatActivity
 
 
         }
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+
     }
 
 
@@ -470,9 +498,9 @@ public class  Activity_main_2 extends AppCompatActivity
             //wifi = connManager1.
             NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
-                message = "Create a WiFi hotspot network";
+                message = "Create a \n WiFi hotspot network";
             if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))) {
-                message = "Connect to a WiFi network";
+                message = "Connect \n to a WiFi network";
             }
 
             if ((!mWifi.isConnected()) && (!wifiEnable)) {
@@ -480,6 +508,7 @@ public class  Activity_main_2 extends AppCompatActivity
                 // Internet Connection is not present
                 new AlertDialog.Builder(Activity_main_2.this)
                         .setTitle("Not connected to any WiFi network")
+
                         .setMessage("Enable WiFi ")
                         .setPositiveButton(message, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -490,7 +519,7 @@ public class  Activity_main_2 extends AppCompatActivity
                                 }
                             }
                         })
-                        .setNegativeButton("Continue without connecting", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Continue \n without connecting", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
 
@@ -569,7 +598,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
             {
                 fragmentNumber = 5;
-                Intent intent = new Intent(Activity_main_2.this, PaymentActivity.class);
+                Intent intent = new Intent(Activity_main_2.this, paymentOptionNotAvailableActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();

@@ -4,12 +4,17 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +27,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
@@ -31,12 +37,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import objects.document_obj;
+import objects.media_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import utilityClasses.utility;
+
 public class CameraDemoActivity extends Activity implements SurfaceHolder.Callback,
         View.OnClickListener {
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private Camera camera;
     private Button flipCamera;
+
     private Button flashCameraButton;
     private Button captureImage;
     private int cameraId;
@@ -44,13 +57,15 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
     private int rotation;
     private int pid;
     private String filePath;
-
+    private String parentActivity = "";//1.0.9
+    File photoFile;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cameradema_activity);
+        DatabaseHandler databaseHandler = new DatabaseHandler(CameraDemoActivity.this);
         // camera surface view created
 
 
@@ -62,6 +77,29 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         Intent intent = getIntent();
         pid = intent.getIntExtra("pid", 0);
         filePath = intent.getStringExtra("filePath");
+        parentActivity = intent.getStringExtra("parentActivity");
+        if(parentActivity!=null)
+        try {
+            if(parentActivity.equals("documents")) {
+                photoFile = PhotoHelper.createImageFileForDocument(pid, CameraDemoActivity.this);
+
+                filePath = photoFile.getPath();
+//            doc_obj.set_doc_name(photoFile.getName());
+//            doc_obj.set_doc_path(filePath);
+//            doc_obj.set_id(pid);
+//            databaseHandler.addDocument(doc_obj);
+            }
+//            if(parentActivity.equals("notes"))
+//            {
+//
+//                photoFile = PhotoHelper.createImageFileForNotes(pid, CameraDemoActivity.this);
+//                filePath = photoFile.getPath();
+//
+//            }
+            // databaseHandler.addDocument(doc_obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         flipCamera.setOnClickListener(this);
@@ -146,7 +184,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
            /* int height = pictureSizes.get(pictureSizes.size()-2).height;
             int width = pictureSizes.get(pictureSizes.size()-2).width;*/
             param.setPictureSize(612,816);
-
+            param.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             camera.setParameters(param);
 
         } catch (Exception e) {
@@ -155,6 +193,12 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         if (camera != null) {
             try {
                 setUpCamera(camera);
+camera.setAutoFocusMoveCallback(new Camera.AutoFocusMoveCallback() {
+    @Override
+    public void onAutoFocusMoving(boolean start, Camera camera) {
+        Toast.makeText(CameraDemoActivity.this,"Autofocus",Toast.LENGTH_LONG).show();
+    }
+});
                 camera.setErrorCallback(new Camera.ErrorCallback() {
 
                     @Override
@@ -173,7 +217,12 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         }
         return result;
     }
-
+    private void setAutoFocusMoveCallback(Camera camera, Camera.AutoFocusMoveCallback cb)
+    {
+        System.out.println("setAutoFocusMoveCallback : Check  " + cb.toString());
+        //Camera.cancelAutoFocus();
+        camera.setAutoFocusMoveCallback(cb);
+    }
     private void releaseCamera() {
         try {
             if (camera != null) {
@@ -231,8 +280,9 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
         List<String> focusModes = params.getSupportedFlashModes();
         if (focusModes != null) {
             if (focusModes
-                    .contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                params.setFlashMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                    .contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
             }
         }
 
@@ -278,12 +328,36 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
     @Override
     public void onBackPressed() {
+        if(photoFile.exists())
+        photoFile.delete();
         finish();
         super.onBackPressed();
     }
 
     private void takeImage() {
-        camera.takePicture(null, null, new Camera.PictureCallback() {
+
+//        if (camera.getParameters().getFocusMode().equals(C)){
+//            camera.autoFocus(new Camera.AutoFocusCallback() {
+//                @Override
+//                public void onAutoFocus(boolean success, Camera camera) {
+//                    camera.takePicture(shutterCallback, rawCallback, jpegCallback);
+//                }
+//            });
+//        }else{
+//            camera.takePicture(shutterCallback, rawCallback, jpegCallback);
+//        }
+camera.autoFocus(new Camera.AutoFocusCallback() {
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+
+
+        camera.takePicture(new Camera.ShutterCallback() {
+            @Override
+            public void onShutter() {
+                AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+            }
+        }, null, new Camera.PictureCallback() {
 
             private File imageFile;
 
@@ -291,6 +365,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
             public void onPictureTaken(byte[] data, Camera camera) {
                 try {
                     // convert byte array into bitmap
+                    DatabaseHandler databaseHandler = new DatabaseHandler(CameraDemoActivity.this);
                     Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
                             data.length);
                     android.graphics.Matrix rotateMatrix = new android.graphics.Matrix();
@@ -318,7 +393,10 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
                     fout.close();
                     Camera.Parameters param = camera.getParameters();
                     param.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                    param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
                     camera.setParameters(param);
+                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                   // final MediaPlayer mp = MediaPlayer.create(this, alarmSound);
                     // ContentValues values = new ContentValues();
 
                    /* values.put(MediaStore.Images.Media.DATE_TAKEN,
@@ -329,8 +407,56 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
                   /*  CameraDemoActivity.this.getContentResolver().insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);*/
+                    if (parentActivity != null)
+                        try {
+                            if (parentActivity.equals("documents")) {  //photoFile = PhotoHelper.createImageFileForDocument(pid,CameraDemoActivity.this);
+                                document_obj doc_obj = new document_obj();
+                                // filePath = photoFile.getPath();
+                                doc_obj.set_doc_name(photoFile.getName());
+                                doc_obj.set_doc_path(filePath);
+                                doc_obj.set_id(pid);
+                                databaseHandler.addDocument(doc_obj);
+                                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(CameraDemoActivity.this);
 
-                    finish();
+                                alert.setTitle("Alert!!");
+                                alert.setMessage("Do you want to add another Report?");
+                                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(CameraDemoActivity.this, "photo again?", Toast.LENGTH_SHORT).show();
+                                        utility.recreateActivityCompat(CameraDemoActivity.this);
+                                        dialog.dismiss();
+
+                                    }
+                                });
+                                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                alert.show();
+
+
+                            } else {
+//                            media_obj mediaObj = new media_obj() ;
+//                            mediaObj.set_pid(pid);
+//                            mediaObj.set_media_path(filePath);
+//                            mediaObj.set_media_name(photoFile.getName());
+//                            mediaObj = PhotoHelper.addMissingBmp(mediaObj,1);
+                                finish();
+
+                            }
+
+                            // databaseHandler.addDocument(doc_obj);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -338,5 +464,8 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 
             }
         });
+
+    }
+});
     }
 }

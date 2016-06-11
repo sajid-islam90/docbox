@@ -33,6 +33,7 @@ import objects.Patient;
 
 public class Edit_patient_data extends ActionBarActivity {
     File storageDir;
+    File photoFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +52,32 @@ public class Edit_patient_data extends ActionBarActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntentForEdit() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(Edit_patient_data.this, CameraDemoActivity.class);
+
+        File storageDir =
+                new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+"profile_pictures");
+        if(!storageDir.exists())
+
+            storageDir.mkdir();
+        try {
+            photoFile = PhotoHelper.createImageFile(0);
+        }
+        catch (Exception e)
+        {
+
+        }
+        if (photoFile != null) {
+//            takePictureIntent.putExtra("output",
+//                    Uri.fromFile(photoFile));
+            takePictureIntent.putExtra("pid",0);
+            takePictureIntent.putExtra("filePath",photoFile.getPath());
+            takePictureIntent.putExtra("parentActivity","editPatient");
+
+        }
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -64,9 +89,11 @@ public class Edit_patient_data extends ActionBarActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+        if (requestCode == REQUEST_IMAGE_CAPTURE ) {
+
+            Bitmap imageBitmap = BitmapFactory.decodeFile(photoFile.getPath());
+
+            imageBitmap =PhotoHelper.getResizedBitmap(imageBitmap,150,150);
             ImageView mImageView = (ImageView) findViewById(R.id.edit_patient_picture_imageView);
             mImageView.setImageBitmap(imageBitmap);
             Button button = (Button) findViewById(R.id.edit_patient_take_photo_button);

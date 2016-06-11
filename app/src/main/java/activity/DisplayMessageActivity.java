@@ -72,7 +72,8 @@ public class DisplayMessageActivity extends ActionBarActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+       // Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(DisplayMessageActivity.this, CameraDemoActivity.class);
         File photoFile = null;
         File storageDir =
                 new File(Environment.getExternalStoragePublicDirectory(
@@ -88,8 +89,11 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
             }
         if (photoFile != null) {
-            takePictureIntent.putExtra("output",
-                    Uri.fromFile(photoFile));
+//            takePictureIntent.putExtra("output",
+//                    Uri.fromFile(photoFile));
+            takePictureIntent.putExtra("pid",0);
+            takePictureIntent.putExtra("filePath",photoFile.getPath());
+            takePictureIntent.putExtra("parentActivity","addPatient");
             newPatient.set_photoPath(photoFile.getPath());
         }
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -131,7 +135,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE ) {
            // Bundle extras = data.getExtras();
            // Bitmap imageBitmap = (Bitmap) extras.get("data");
             newPatient= PhotoHelper.addMissingBmp(newPatient);
@@ -344,7 +348,12 @@ public class DisplayMessageActivity extends ActionBarActivity {
         return true;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DisplayMessageActivity.this,Activity_main_2.class);
+        startActivity(intent);
+        super.onBackPressed();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -356,6 +365,11 @@ public class DisplayMessageActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
             this.savePatientData();
+            return true;
+        }
+        if (id == android.R.id.home) {
+            Intent intent = new Intent(DisplayMessageActivity.this,Activity_main_2.class);
+            startActivity(intent);
             return true;
         }
 

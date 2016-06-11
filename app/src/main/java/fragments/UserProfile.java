@@ -60,6 +60,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import activity.CameraDemoActivity;
 import utilityClasses.DatabaseHandler;
 import redundant.FileUtils;
 import com.elune.sajid.myapplication.R;
@@ -988,7 +989,8 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
     }
 
     public void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(getActivity(), CameraDemoActivity.class);
         Intent intent = getActivity().getIntent();
         //media_obj mediaObj = new media_obj();
 
@@ -1010,9 +1012,12 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                takePictureIntent.putExtra("output",
-                        Uri.fromFile(photoFile));
-                profilePicPath = photoFile.getPath();
+//                takePictureIntent.putExtra("output",
+//                        Uri.fromFile(photoFile));
+                takePictureIntent.putExtra("pid",0);
+                takePictureIntent.putExtra("filePath",photoFile.getPath());
+                takePictureIntent.putExtra("parentActivity","userprofile");
+               profilePicPath = photoFile.getPath();
                 /*mediaObj.set_media_name(photoFile.getPath());
                 mediaObj.set_media_path(photoFile.getPath());
 */
@@ -1044,20 +1049,21 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_TAKE_PHOTO ) {
 
+if(new File(profilePicPath).length()>0) {
+    databaseHandler.updatePersonalInfo("documentPath", profilePicPath);
 
-            databaseHandler.updatePersonalInfo("documentPath", profilePicPath);
-            try {
-                Bitmap bitmap;
-                bitmap =BitmapFactory.decodeFile(profilePicPath);
-                FileOutputStream out = new FileOutputStream(profilePicPath
-                );
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
+    try {
+        Bitmap bitmap;
+        bitmap = BitmapFactory.decodeFile(profilePicPath);
+        FileOutputStream out = new FileOutputStream(profilePicPath
+        );
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    }
+}
 
 
 
@@ -1091,7 +1097,7 @@ DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
                     storageDir.mkdir();
                 newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
                 FileUtils.copyFile(new File(file_path), newFile);
-                if((newFile.getName().contains(".jpeg"))||(newFile.getName().contains(".png")))
+                if((newFile.getName().contains(".jpeg"))||(newFile.getName().contains(".png"))||(newFile.getName().contains(".jpg")))
                 databaseHandler.updatePersonalInfo("documentPath", newFile.getPath());
             }
             catch (IOException e)

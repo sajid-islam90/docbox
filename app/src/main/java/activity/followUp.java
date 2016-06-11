@@ -65,6 +65,7 @@ public class followUp extends AppCompatActivity {
     private static final int TWO_TEXT_FIELDS = 1;
     private static final int ONE_PHOTO = 2;
     static final int PICKFILE_RESULT_CODE = 2;
+    TextView textView;
     private static Uri fileUri;
     private static String nextFollowUpDate ="";
     private static  ArrayList<other_obj> otherObj = new ArrayList<>();
@@ -72,7 +73,6 @@ public class followUp extends AppCompatActivity {
     media_obj mediaObj1 = new media_obj();
     private static ArrayList<Item> media = new ArrayList<>();
     private static ArrayList<Item> FollowUpFields = new ArrayList<Item>();
-    private static String formattedDate;
     recyclerAdapter RecyclerAdapter;
     recyclerAdapter RecyclerAdapterOtherNotes;
     ArrayList<Item> field;
@@ -88,85 +88,108 @@ public class followUp extends AppCompatActivity {
         version = intent.getIntExtra("version", 1);
         parent  =intent.getStringExtra("parent");
         setTitle("Follow Up # "+version);
-        TextView textView10 =(TextView)findViewById(R.id.textViewFollowupNotes);
-        TextView textView6 =(TextView)findViewById(R.id.textViewFollowupOther);
-        TextView textView7 =(TextView)findViewById(R.id.textViewFollowupMedia);
-        final ListView listView = (ListView)findViewById(R.id.filedsList);
-        final RecyclerView listView2 = (RecyclerView)findViewById(R.id.listViewOtherHistView);
-        final RecyclerView listView3 = (RecyclerView)findViewById(R.id.listViewMedia);
+        TextView textViewFollowupNotes =(TextView)findViewById(R.id.textViewFollowupNotes);
+        TextView textViewFollowupOther =(TextView)findViewById(R.id.textViewFollowupOther);
+        TextView textViewFollowupMedia =(TextView)findViewById(R.id.textViewFollowupMedia);
+         textView   = (TextView)findViewById(R.id.textViewNumberMedia);
+        final ListView filedsList = (ListView)findViewById(R.id.filedsList);
+        final RecyclerView listViewOtherHistView = (RecyclerView)findViewById(R.id.listViewOtherHistView);
+        final RecyclerView listViewMedia = (RecyclerView)findViewById(R.id.listViewMedia);
         final CardView cardView = (CardView)findViewById(R.id.view13);
         // listView2.setVisibility(View.GONE);
         //  listView3.setVisibility(View.GONE);
-        textView10.setOnClickListener(new View.OnClickListener() {
+        if (textViewFollowupNotes != null) {
+            textViewFollowupNotes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    filedsList.setVisibility(View.VISIBLE);
+                    listViewOtherHistView.setVisibility(View.GONE);
+                    listViewMedia.setVisibility(View.GONE);
+                    // expandView(cardView);
+                }
+            });
+        }
+        assert textViewFollowupOther != null;
+        textViewFollowupOther.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                listView.setVisibility(View.VISIBLE);
-                listView2.setVisibility(View.GONE);
-                listView3.setVisibility(View.GONE);
-                // expandView(cardView);
-            }
-        });
-        textView6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                listView2.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
-                listView3.setVisibility(View.GONE);
+if(listViewOtherHistView.getVisibility()==View.VISIBLE)
+{
+    listViewOtherHistView.setVisibility(View.GONE);
+}
+                else
+                listViewOtherHistView.setVisibility(View.VISIBLE);
+               // filedsList.setVisibility(View.GONE);
+                listViewMedia.setVisibility(View.GONE);
                 //CollapseView(cardView);
             }
         });
-        textView7.setOnClickListener(new View.OnClickListener() {
+        textViewFollowupMedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                listView3.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
-                listView2.setVisibility(View.GONE);
+if(listViewMedia.getVisibility()==View.VISIBLE)
+    listViewMedia.setVisibility(View.GONE);
+                else
+                listViewMedia.setVisibility(View.VISIBLE);
+                //filedsList.setVisibility(View.GONE);
+                listViewOtherHistView.setVisibility(View.GONE);
                 //CollapseView(cardView);
             }
         });
         final FloatingActionsMenu floatingActionsMenu =(FloatingActionsMenu)findViewById(R.id.viewFabButton);
         FloatingActionButton floatingActionButton1 = (FloatingActionButton)findViewById(R.id.view2);
-        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    addVideo(v);
-                    floatingActionsMenu.toggle();
+        if (floatingActionButton1 != null) {
+            floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        addVideo();
+                        floatingActionsMenu.toggle();
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-
-            }
-        });
+            });
+        }
         FloatingActionButton floatingActionButton2 = (FloatingActionButton)findViewById(R.id.view3);
-        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    addPhoto(v);
-                    floatingActionsMenu.toggle();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (floatingActionButton2 != null) {
+            floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        addPhoto();
+                        floatingActionsMenu.toggle();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-            }
-        });
+                }
+            });
+        }
 
         FloatingActionButton floatingActionButton3 = (FloatingActionButton)findViewById(R.id.view4);
-        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addHistField(v);floatingActionsMenu.toggle();
+        if (floatingActionButton3 != null) {
+            floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addHistField(v);floatingActionsMenu.toggle();
 
-            }
-        });
+                }
+            });
+        }
         doWork();
 
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+
     private EditText editText(String hint, final int i) {
         String viewId = String.valueOf(i);
         final EditText editText = new EditText(followUp.this);
@@ -200,7 +223,7 @@ public class followUp extends AppCompatActivity {
         String[] fields = resource.getStringArray(R.array.follow_up);
         Calendar c = Calendar.getInstance();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        formattedDate = df.format(c.getTime());
+        String formattedDate = df.format(c.getTime());
         if(FollowUpFields.size()!=fields.length){
         for(int i = 0;i<fields.length;i++) {
             Item item = new Item();
@@ -217,15 +240,19 @@ public class followUp extends AppCompatActivity {
             TextInputLayout textInputLayout = new TextInputLayout(followUp.this);
             textInputLayout.setId(Integer.parseInt((String.valueOf(i)+String.valueOf(i))));
 
-            linearLayoutList.addView(textInputLayout);
+            if (linearLayoutList != null) {
+                linearLayoutList.addView(textInputLayout);
+            }
             textInputLayout.addView(editText(FollowUpFields.get(i-1).getTitle(),i-1));
         }
         ListView listView1 = (ListView)findViewById(R.id.filedsList);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
        // listView1.setAdapter(inputAgainstAFieldAdapter);
-        listView1.setItemsCanFocus(true);
+        if (listView1 != null) {
+            listView1.setItemsCanFocus(true);
+        }
 
-         getOtherNotesToDisplay();
+        getOtherNotesToDisplay();
         displayAddedOtherFields(field);
 
 
@@ -254,7 +281,7 @@ public class followUp extends AppCompatActivity {
         }
         return media1;
     }
-    public void addVideo(View view) throws IOException {  final CharSequence[] items = { "Take Video", "Choose from Library", "Cancel" };
+    public void addVideo() throws IOException {  final CharSequence[] items = { "Take Video", "Choose from Library", "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(followUp.this);
         builder.setTitle("Add Video!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -276,7 +303,7 @@ public class followUp extends AppCompatActivity {
         builder.show();
 
     }
-    public void addPhoto(View view) throws IOException {
+    public void addPhoto() throws IOException {
 
 
         final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
@@ -331,6 +358,7 @@ public class followUp extends AppCompatActivity {
 //                        Uri.fromFile(photoFile));
                 takePictureIntent.putExtra("pid",pid);
                 takePictureIntent.putExtra("filePath",photoFile.getPath());
+                takePictureIntent.putExtra("parentActivity","followup");
                 mediaObj1.set_media_name(photoFile.getPath());
                 mediaObj1.set_media_path(photoFile.getPath());
 
@@ -424,6 +452,36 @@ public class followUp extends AppCompatActivity {
             item.setDiagnosis(mediaObj1.get_media_path());
             item.setPatient_id(mediaObj1.get_pid());
             media.add(item);
+            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(followUp.this);
+
+            alert.setTitle("Alert!!");
+            alert.setMessage("Do you want to add another Video note?");
+            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                    //utility .recreateActivityCompat(getActivity());
+                    try {
+                        addVideo();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.dismiss();
+
+                }
+            });
+            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+
+            alert.show();
             mediaObj1 = new media_obj();
 //            Intent intent = getIntent();
 //
@@ -474,6 +532,36 @@ public class followUp extends AppCompatActivity {
             item.setPatient_id(mediaObj1.get_pid());
 
             media.add(item);
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(followUp.this);
+
+                alert.setTitle("Alert!!");
+                alert.setMessage("Do you want to add another Photo note?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                        //utility .recreateActivityCompat(getActivity());
+                        try {
+                            addPhoto();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
 
             mediaObj1 = new media_obj();
 //            Intent intent = getIntent();
@@ -487,31 +575,33 @@ public class followUp extends AppCompatActivity {
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null)))
         {
             Uri uri = data.getData();
-            File file = null;
             String file_name = "";
             String file_path = "";
 
 
             if (uri.getScheme().compareTo("content")==0) {
                 Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                if (cursor.moveToFirst()) {
+                if (cursor != null && cursor.moveToFirst()) {
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
                     Uri filePathUri = Uri.parse(cursor.getString(column_index));
                     file_name = filePathUri.getLastPathSegment();
-                    file_path=filePathUri.getPath();
+                    file_path = filePathUri.getPath();
+                }
+                if (cursor != null) {
+                    cursor.close();
                 }
             }
 
 
             try
             {
-                File newFile = null;
+                File newFile;
 
                 File storageDir =
                         new File(Environment.getExternalStoragePublicDirectory(
                                 Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Notes");
                 if(!storageDir.exists())
-                    storageDir.mkdir();
+                     storageDir.mkdir();
                 newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
                 long size = newFile.length();
 
@@ -568,6 +658,36 @@ public class followUp extends AppCompatActivity {
                     item.setDiagnosis(mediaObj1.get_media_path());
                     item.setPatient_id(mediaObj1.get_pid());
                     media.add(item);
+                    android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(followUp.this);
+
+                    alert.setTitle("Alert!!");
+                    alert.setMessage("Do you want to add another note?");
+                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+                            //utility .recreateActivityCompat(getActivity());
+                            try {
+                                addPhoto();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.dismiss();
+
+                        }
+                    });
+                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    });
+
+                    alert.show();
                     mediaObj1 = new media_obj();
                    // mediaObj1 = new media_obj();
 
@@ -586,10 +706,19 @@ public class followUp extends AppCompatActivity {
 //        item.setPatient_id(mediaObj1.get_pid());
 //        ArrayList<Item> media1 = new ArrayList<>();
 //        media1= getMediaListLocal();
+
+
         RecyclerAdapter.updateReceiptsList(media);
 
 
     }
+
+    @Override
+    protected void onResume() {
+       // textView.setText(media.size());
+        super.onResume();
+    }
+
     public  void addHistField(View promptsView)
     {
         LayoutInflater li = LayoutInflater.from(followUp.this);
@@ -696,11 +825,15 @@ public class followUp extends AppCompatActivity {
     {
         RecyclerView listView = (RecyclerView)findViewById(R.id.listViewMedia);
         TextView textView = (TextView)findViewById(R.id.textViewFollowupNumberMedia);
-        textView.setText(String.valueOf(media.size()));
+        if (textView != null) {
+            textView.setText(String.valueOf(media.size()));
+        }
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(followUp.this, LinearLayoutManager.HORIZONTAL, false);
          RecyclerAdapter = new recyclerAdapter(this,followUp.this,media,ONE_PHOTO,pid,version);
-        listView.setLayoutManager(layoutManager);
+        if (listView != null) {
+            listView.setLayoutManager(layoutManager);
+        }
         listView.setAdapter(RecyclerAdapter);
 
 

@@ -916,10 +916,14 @@ alertDialog.dismiss();
                         JSONObject object =(JSONObject) parser.parse(str);
                         String hex = (String) object.get("HashCode");
                         customerId =  (String) object.get("CustomerId");
+                        String validUpto = (String) object.get("ValidUpto");
+                        String validFrom = (String) object.get("ValidFrom");
 
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putString(getString(R.string.hash_code), hex);
+                        editor.putString(getString(R.string.subscription_valid_upto), validUpto);
+                        editor.putString(getString(R.string.subscription_valid_from), validFrom);
                         editor.commit();
 
                         // ((Activity) context).recreate();
@@ -1407,12 +1411,16 @@ public void checkOTP()
                             JSONObject object = (JSONObject) parser.parse(str);
                             String hex = (String) object.get("HashCode");
                             String id = (String) object.get("CustomerId");
+                            String validUpto = (String) object.get("ValidUpto");
+                            String validFrom = (String) object.get("ValidFrom");
 
 
                             databaseHandler.updatePersonalInfo("id", id);
 
 
                             editor.putString(getString(R.string.hash_code), hex);
+                            editor.putString(getString(R.string.subscription_valid_upto), validUpto);
+                            editor.putString(getString(R.string.subscription_valid_from), validFrom);
                             editor.commit();
 
 

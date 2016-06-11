@@ -36,7 +36,6 @@
             android:id="@+id/view2"
             android:layout_gravity="right"
             android:clickable="true"
-            android:onClick="startDocCam"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />

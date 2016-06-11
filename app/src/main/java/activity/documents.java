@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -82,7 +83,13 @@ public class documents extends ActionBarActivity {
         displayDocuments(nameWithImage);
 
 
-
+        FloatingActionButton floatingActionButtonStartCam = (FloatingActionButton)findViewById(R.id.view2);
+        floatingActionButtonStartCam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDocCam();
+            }
+        });
 
     }
 
@@ -197,7 +204,7 @@ public class documents extends ActionBarActivity {
     }
 
 
-    public void startDocCam(View view)
+    public void startDocCam()
     {
 
         if (ContextCompat.checkSelfPermission(this,
@@ -289,6 +296,7 @@ public class documents extends ActionBarActivity {
 //                        Uri.fromFile(photoFile));
                 takePictureIntent.putExtra("pid",pid);
                 takePictureIntent.putExtra("filePath",photoFile.getPath());
+                takePictureIntent.putExtra("parentActivity","documents");
                 //final document_obj doc_obj = new document_obj();
                 doc_obj.set_doc_name(photoFile.getPath());
                 doc_obj.set_doc_path(photoFile.getPath());
@@ -307,7 +315,30 @@ public class documents extends ActionBarActivity {
     @Override
     protected void onResume()
     {
-
+//        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(documents.this);
+//
+//        alert.setTitle("Alert!!");
+//        alert.setMessage("Do you want to add another Report?");
+//        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Toast.makeText(documents.this, "photo again?", Toast.LENGTH_SHORT).show();
+//
+//                dialog.dismiss();
+//
+//            }
+//        });
+//        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        alert.show();
 
         super.onResume();
     }
@@ -324,50 +355,55 @@ public class documents extends ActionBarActivity {
         String formattedDate = df.format(c.getTime());
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {
 
-            Bitmap bitmap;
-           // File file1 = new File(photoFile)
-            bitmap =BitmapFactory.decodeFile(photoFile.getPath());
-            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+//            Bitmap bitmap;
+//           // File file1 = new File(photoFile)
+//            bitmap =BitmapFactory.decodeFile(photoFile.getPath());
+//            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+//
+//            // save image into gallery
+//            if(bitmap!=null)
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
+//            if(photoFile.length()<= 0)
+//            {
+//                photoFile.delete();
+//                utility.recreateActivityCompat(documents.this);
+//                return;
+//            }
 
-            // save image into gallery
-            if(bitmap!=null)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, ostream);
-            if(photoFile.length()<= 0)
-            {
-                photoFile.delete();
-                utility.recreateActivityCompat(documents.this);
-                return;
-            }
-
-            try {
-                FileOutputStream fout = new FileOutputStream(photoFile);
-                fout.write(ostream.toByteArray());
-                fout.close();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+//            try {
+//                FileOutputStream fout = new FileOutputStream(photoFile);
+//                fout.write(ostream.toByteArray());
+//                fout.close();
+//
+//            }
+//            catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
 
 
             //doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(Bitmap.createScaledBitmap(bitmap,120,120,false)));
 
             //doc_obj = PhotoHelper.addMissingBmp(doc_obj);
            // if(doc_obj.get_bmp()!=null) {
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-                String imageFileName = "IMG_" + timeStamp  ;
-                File file = new File(doc_obj.get_doc_path());
-                doc_obj.set_doc_name(photoFile.getName());
-                doc_obj.set_date(formattedDate);
+//                String imageFileName = "IMG_" + timeStamp  ;
+//                File file = new File(doc_obj.get_doc_path());
+//                doc_obj.set_doc_name(photoFile.getName());
+//                doc_obj.set_date(formattedDate);
 
                 patient.set_last_seen_date(formattedDate);
                 dbHandler.updatePatient(patient,0);
-                dbHandler.addDocument(doc_obj);
+               // dbHandler.addDocument(doc_obj);
 
           //  }
             getDocumentsList(pid);
             docAdapter.updateReceiptsList(nameWithImage);
+
+
+
+
             //utility.recreateActivityCompat(documents.this);
 
 
@@ -385,18 +421,143 @@ public class documents extends ActionBarActivity {
             try {
                  file = new File(uri.getPath());
                 String a = file.getAbsolutePath();
-                if((file.getName().contains(".txt"))||(file.getName().contains(".doc"))||
-                        (file.getName().contains(".pdf"))||(file.getName().contains(".jpeg"))||(file.getName().contains(".jpg"))
-                        ||(file.getName().contains(".png")))
+                if (uri.getScheme().compareTo("content")==0) {
+                    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                    if (cursor.moveToFirst()) {
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
+                        Uri filePathUri = Uri.parse(cursor.getString(column_index));
+                        file_name = filePathUri.getLastPathSegment();
+                        file_path=filePathUri.getPath();
+                    }
+                }
+                else{
+                    Uri filePathUri = Uri.fromFile(file);
+                    file_name = filePathUri.getLastPathSegment();
+                    file_path=filePathUri.getPath();
+                }
+                if((file_path.contains(".txt"))||(file_path.contains(".doc"))||
+                        (file_path.contains(".pdf"))||(file_path.contains(".jpeg"))||(file_path.contains(".jpg"))
+                        ||(file_path.contains(".png")))
                 {
 
+                    if(file_name.contains(".doc"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_doc)));
+                    }
+                    else if (file_name.contains(".pdf"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_pdf)));
+                    }
+                    else if (file_name.contains(".txt"))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_txt)));
+                    }
+                    else if ((file_name.contains(".jpg"))||(file_name.contains(".png")))
+                    {
+                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(file_path)));
+                    }
+                    try
+                    {
+
+                        File storageDir =
+                                new File(Environment.getExternalStoragePublicDirectory(
+                                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Documents");
+                        if(!storageDir.exists())
+                            storageDir.mkdir();
+
+
+                        newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
+                        if(accountType.equals(context.getString(R.string.account_type_helper))) {
+                            int docPid = dbHandler.checkDoctorHelperPatientMapping(patient.get_id());
+                            File storageDir1 =
+                                    new File(Environment.getExternalStoragePublicDirectory(
+                                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+docPid+"/Documents");
+
+                            String path = storageDir1.getPath()+"/"+newFile.getName();
+
+                            //  path.replaceAll("/" + String.valueOf(id) + "/", "/" + docPid + "/");
+                            dbHandler.mapDoctorHelperDocuments(path,newFile.getPath());
+                        }
+                        int file_size = Integer.parseInt(String.valueOf(newFile.length()/1024));
+                        if(file_size > 20480 )
+                        {
+                            Toast.makeText(documents.this, "File Too Large", Toast.LENGTH_SHORT).show();
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                            final File finalNewFile = newFile;
+                            builder.setMessage("File too large \nPlease choose a file less than 20 Mb")
+                                    .setCancelable(false)
+                                    .setTitle("ALERT")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            finalNewFile.delete();
+                                            //((Activity) followUp.this).recreate();
+                                            return;
+                                            //do things
+                                        }
+                                    });
+                            android.support.v7.app.AlertDialog alert = builder.create();
+                            alert.show();
+
+
+                        }
+                        FileUtils.copyFile(new File(file_path), newFile);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    doc_obj.set_doc_name(file_name);
+                    doc_obj.set_doc_path(newFile.getPath());
+                    doc_obj.set_id(pid);
+                    doc_obj.set_date(formattedDate);
+                    dbHandler.updatePatient(patient,0);
+                    dbHandler.addDocument(doc_obj);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(documents.this);
+
+                            alert.setTitle("Alert!!");
+                            alert.setMessage("Do you want to add another Report?");
+                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(documents.this, "photo again?", Toast.LENGTH_SHORT).show();
+                                    //utility .recreateActivityCompat(getActivity());
+                                    try {
+                                        startDocCam();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    dialog.dismiss();
+
+                                }
+                            });
+                            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    utility.recreateActivityCompat(documents.this);
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            alert.show();
+
+                        }
+                    });
+
+                    Toast.makeText(this,"File Name & PATH are:"+file_name+"\n"+file_path, Toast.LENGTH_LONG).show();
                 }
                 else
                 {
                    // Toast.makeText(documents.this,"Please Select from .jpg,.png,.txt,.doc,.pdf files",Toast.LENGTH_SHORT);
                     android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(this);
 
-                    builder1.setMessage("Please Select from .jpg,.pngfiles")
+                    builder1.setMessage("Please Select from .jpg,.png files")
                             .setCancelable(false)
                             .setTitle("ALERT")
                             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -417,95 +578,7 @@ public class documents extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-            if (uri.getScheme().compareTo("content")==0) {
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                if (cursor.moveToFirst()) {
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);//Instead of "MediaStore.Images.Media.DATA" can be used "_data"
-                    Uri filePathUri = Uri.parse(cursor.getString(column_index));
-                    file_name = filePathUri.getLastPathSegment();
-                     file_path=filePathUri.getPath();
-                }
-            }
-            else{
-                    Uri filePathUri = Uri.fromFile(file);
-                     file_name = filePathUri.getLastPathSegment();
-                     file_path=filePathUri.getPath();
-            }
-                    if(file_name.contains(".doc"))
-                    {
-                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_doc)));
-                    }
-                    else if (file_name.contains(".pdf"))
-                    {
-                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_pdf)));
-                    }
-                    else if (file_name.contains(".txt"))
-                    {
-                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_txt)));
-                    }
-                    else if ((file_name.contains(".jpg"))||(file_name.contains(".png")))
-                    {
-                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(file_path)));
-                    }
-            try
-            {
 
-                File storageDir =
-                        new File(Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Documents");
-                if(!storageDir.exists())
-                    storageDir.mkdir();
-
-
-                 newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
-                if(accountType.equals(context.getString(R.string.account_type_helper))) {
-                    int docPid = dbHandler.checkDoctorHelperPatientMapping(patient.get_id());
-                    File storageDir1 =
-                            new File(Environment.getExternalStoragePublicDirectory(
-                                    Environment.DIRECTORY_PICTURES), "Patient Manager/"+docPid+"/Documents");
-
-                    String path = storageDir1.getPath()+"/"+newFile.getName();
-
-                    //  path.replaceAll("/" + String.valueOf(id) + "/", "/" + docPid + "/");
-                    dbHandler.mapDoctorHelperDocuments(path,newFile.getPath());
-                }
-                int file_size = Integer.parseInt(String.valueOf(newFile.length()/1024));
-                if(file_size > 20480 )
-                {
-                    Toast.makeText(documents.this, "File Too Large", Toast.LENGTH_SHORT).show();
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                    final File finalNewFile = newFile;
-                    builder.setMessage("File too large \nPlease choose a file less than 20 Mb")
-                            .setCancelable(false)
-                            .setTitle("ALERT")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    finalNewFile.delete();
-                                    //((Activity) followUp.this).recreate();
-                                    return;
-                                    //do things
-                                }
-                            });
-                    android.support.v7.app.AlertDialog alert = builder.create();
-                    alert.show();
-
-
-                }
-                FileUtils.copyFile(new File(file_path), newFile);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-
-                    doc_obj.set_doc_name(file_name);
-                    doc_obj.set_doc_path(newFile.getPath());
-                    doc_obj.set_id(pid);
-                    doc_obj.set_date(formattedDate);
-                    dbHandler.updatePatient(patient,0);
-                    dbHandler.addDocument(doc_obj);
-                Toast.makeText(this,"File Name & PATH are:"+file_name+"\n"+file_path, Toast.LENGTH_LONG).show();
 
            // }
         }
