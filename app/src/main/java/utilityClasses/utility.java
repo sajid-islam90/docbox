@@ -1336,7 +1336,7 @@ return  map;
             mediaObj.set_media_path(String.valueOf(jsonObject.get("DocumentPath")));
             mediaObj.set_media_name(String.valueOf(jsonObject.get("DocumentName")));
             mediaObj.set_pid(Integer.parseInt(String.valueOf(jsonObject.get("PatientId"))));
-            mediaObj.set_section(0);
+            mediaObj.set_section(Integer.parseInt(String.valueOf(jsonObject.get("Section"))));
             mediaObj.set_version(1);
 
 

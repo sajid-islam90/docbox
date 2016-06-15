@@ -3,6 +3,7 @@ package activity;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -61,8 +63,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +84,8 @@ public class  Activity_main_2 extends AppCompatActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private static final int REQUEST_TAKE_PHOTO = 100;
+    static NotificationCompat.Builder mBuilder;
+    static NotificationManager notifier;
     private PendingIntent pendingIntent;
     private AlarmManager manager;
     UserProfile fragmentUserProfile;
@@ -105,15 +111,37 @@ public class  Activity_main_2 extends AppCompatActivity
 
         setContentView(R.layout.activity_main_2);
        // startService(new Intent(this, SyncService.class));
-
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(c.getTime());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
+        if (validUpto.contains(" "))
+        {
+            validUpto = validUpto.substring(0,validUpto.indexOf(" "));
+        }
+        try {
+            Date date = df.parse(validUpto);
+            Date today  = df.parse(formattedDate);
+            long diff = date.getTime() - today.getTime();
+            long seconds = diff / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
+            long days = hours / 24;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         boolean restoreFlag = prefs.getBoolean("restore", false);
        int fragmentNumberToShow =  getIntent().getIntExtra("fragmentNumber",1);
+        notifier = (NotificationManager)
+                Activity_main_2.this.getSystemService(Context.NOTIFICATION_SERVICE);
 //        Toolbar toolbar = (Toolbar)findViewById(R.id.main_activity_toolbar);
 //        setSupportActionBar(toolbar);
         if(restoreFlag){
             pdia = new ProgressDialog(Activity_main_2.this);
             pdia.setMessage("Restoring Data Please Wait");
+            pdia.setCancelable(false);
             pdia.show();
            // while (! LoginActivity.testRestoreData.getStatus().equals(AsyncTask.Status.FINISHED));
             TestRestoreData testRestoreData = new TestRestoreData();
@@ -598,7 +626,7 @@ public class  Activity_main_2 extends AppCompatActivity
 
             {
                 fragmentNumber = 5;
-                Intent intent = new Intent(Activity_main_2.this, paymentOptionNotAvailableActivity.class);
+                Intent intent = new Intent(Activity_main_2.this, SubscriptionActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
@@ -640,10 +668,24 @@ public class  Activity_main_2 extends AppCompatActivity
                 getVerificationStatus(requestParams);
             }
     }
-//        else
-//        {
+        else
+        {
+            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+            alert.setTitle("User Profile Settings Missing");
+            alert.setIcon(android.R.drawable.ic_dialog_alert);
+            alert.setMessage("Please save the user settings before continuing");
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            alert.show();
+
 //            Toast.makeText(Activity_main_2.this,"Please Save your user settings first to continue",Toast.LENGTH_LONG).show();
-//        }
+        }
        // mTitle = "My Other Thing";
     }
     @Override
@@ -754,7 +796,7 @@ public class  Activity_main_2 extends AppCompatActivity
                 @Override
                 public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
                     try {
-                        String str = new String(bytes, "UTF-8");
+//                        String str = new String(bytes, "UTF-8");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -947,6 +989,15 @@ public class  Activity_main_2 extends AppCompatActivity
 
         @Override
         protected void onPreExecute() {
+            mBuilder =
+                    new NotificationCompat.Builder(Activity_main_2.this)
+                            .setSmallIcon(android.R.drawable.stat_sys_download)
+                            .setContentTitle("DocBox")
+
+
+                            .setContentText("Patient Data Being saved to cloud");
+
+            notifier.notify(1, mBuilder.build());
             super.onPreExecute();
 
         }
@@ -980,6 +1031,14 @@ listMedia.addAll(listDocument);
         protected void onPostExecute(final Boolean success) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
             SharedPreferences.Editor editor = prefs.edit();
+            mBuilder =
+                    new NotificationCompat.Builder(Activity_main_2.this)
+                            .setSmallIcon(R.drawable.icon_notification)
+                            .setContentTitle("DocBox")
+
+                            .setContentText(" Patients' data saved to Phone");
+
+            notifier.notify(1, mBuilder.build());
             editor.putBoolean("restore", false);
             editor.commit();
                 pdia.dismiss();

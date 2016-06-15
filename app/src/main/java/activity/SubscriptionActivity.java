@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.elune.sajid.myapplication.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class SubscriptionActivity extends AppCompatActivity {
 
@@ -29,11 +31,41 @@ public class SubscriptionActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubscriptionActivity.this);
         TextView subsStartDate = (TextView)findViewById(R.id.textViewSubsStartDate);
         TextView subsEndDate = (TextView)findViewById((R.id.textViewsSubsEndDate));
-//        Calendar c = Calendar.getInstance();
-//        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-//        String formattedDate = df.format(c.getTime());
-        subsStartDate.setText(prefs.getString(getString(R.string.subscription_valid_from),""));
-        subsEndDate.setText(prefs.getString(getString(R.string.subscription_valid_upto),""));
+        TextView remainingDays = (TextView)findViewById((R.id.textViewRemainingDays));
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+       String formattedDate = df.format(c.getTime());
+String validFrom = prefs.getString(getString(R.string.subscription_valid_from),"");
+        if (validFrom.contains(" "))
+        {
+            validFrom = validFrom.substring(0,validFrom.indexOf(" "));
+        }
+        String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
+        if (validUpto.contains(" "))
+        {
+            validUpto = validUpto.substring(0,validUpto.indexOf(" "));
+        }
+        if (subsStartDate != null) {
+            subsStartDate.setText(validFrom);
+        }
+        if (subsEndDate != null) {
+            subsEndDate.setText(validUpto);
+        }
+        try {
+            Date date = df.parse(validUpto);
+            Date today  = df.parse(formattedDate);
+            long diff = date.getTime() - today.getTime();
+            long seconds = diff / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
+            long days = hours / 24;
+            if (remainingDays != null) {
+                remainingDays.setText(String.valueOf(days));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

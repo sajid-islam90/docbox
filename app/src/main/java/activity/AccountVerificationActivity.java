@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ import utilityClasses.utility;
 
 public class AccountVerificationActivity extends AppCompatActivity {
 EditText idProof;
+    ImageView idProofPhoto;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int PICKFILE_RESULT_CODE = 2;
     String profilePicPath;
@@ -70,6 +73,7 @@ EditText idProof;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AccountVerificationActivity.this);
         idProof = (EditText) findViewById(R.id.idProofEditText);
         final EditText editText = (EditText)findViewById(R.id.graduationRegistrationNumberEditText);
+        idProofPhoto = (ImageView)findViewById(R.id.imageView12) ;
         EditText editText1 = (EditText)findViewById(R.id.graduationRegistrationNumberEditText);
         EditText editText2 = (EditText)findViewById(R.id.grauationRegistrationYearEditText);
         EditText editText3 = (EditText)findViewById(R.id.grauationRegistrationYearEditText);
@@ -183,6 +187,7 @@ EditText idProof;
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra("filePath",photoFile.getPath());
+                takePictureIntent.putExtra("parentActivity","verification");
                 profilePicPath = photoFile.getPath();
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 
@@ -201,8 +206,11 @@ EditText idProof;
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c.getTime());
         if (requestCode == REQUEST_TAKE_PHOTO ) {
-            if(new File(profilePicPath).length()>0)
-            idProof.setText(profilePicPath);
+            if(new File(profilePicPath).length()>0) {
+                idProof.setText(profilePicPath);
+                idProofPhoto.setImageBitmap(BitmapFactory.decodeFile(profilePicPath));
+
+            }
         }
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null))) {
             Uri uri = data.getData();
@@ -224,14 +232,16 @@ EditText idProof;
                 String a = file.getAbsolutePath();
                 if ((file.getName().contains(".jpeg")) || (file.getName().contains(".jpg"))
                         || (file.getName().contains(".png"))) {
-                    if(new File(profilePicPath).exists())
-                    idProof.setText(file_path);
+                    if(file.exists()) {
+                        idProof.setText(file_path);
+                        idProofPhoto.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
+                    }
 
                 } else {
                     // Toast.makeText(documents.this,"Please Select from .jpg,.png,.txt,.doc,.pdf files",Toast.LENGTH_SHORT);
                     android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(this);
 
-                    builder1.setMessage("Please Select from .jpg,.png,.txt,.doc,.pdf files")
+                    builder1.setMessage("Please Select from .jpg,.png files")
                             .setCancelable(false)
                             .setTitle("ALERT")
                             .setIcon(android.R.drawable.ic_dialog_alert)

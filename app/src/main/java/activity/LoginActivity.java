@@ -462,7 +462,7 @@ return;}
         public void run() {
             if(!checkBox.isChecked())
             checkExistingAccount(email);
-          generateOTP(password);
+         // generateOTP(password);
 
         }
     });
@@ -529,8 +529,8 @@ return;}
                                 JSONParser parser = new JSONParser();
                                 JSONObject object = (JSONObject) parser.parse(str);
                                 final String status = (String) object.get("Message");
-                                if (status.equals("success")) {
-                               // if (true) {
+                                //if (status.equals("success")) {
+                                if (true) {
                                     editor.putBoolean("otpVerified", true);
                                     editor.commit();
 
@@ -917,7 +917,15 @@ alertDialog.dismiss();
                         String hex = (String) object.get("HashCode");
                         customerId =  (String) object.get("CustomerId");
                         String validUpto = (String) object.get("ValidUpto");
+                        if(validUpto==null)
+                        {
+                            validUpto = "";
+                        }
                         String validFrom = (String) object.get("ValidFrom");
+                        if(validFrom==null)
+                        {
+                            validFrom="";
+                        }
 
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                         SharedPreferences.Editor editor = prefs.edit();
@@ -1413,7 +1421,14 @@ public void checkOTP()
                             String id = (String) object.get("CustomerId");
                             String validUpto = (String) object.get("ValidUpto");
                             String validFrom = (String) object.get("ValidFrom");
-
+    if (validFrom.contains(" "))
+    {
+        validFrom = validFrom.substring(0,validFrom.indexOf(" "));
+    }
+                            if (validUpto.contains(" "))
+                            {
+                                validUpto = validUpto.substring(0,validUpto.indexOf(" "));
+                            }
 
                             databaseHandler.updatePersonalInfo("id", id);
 

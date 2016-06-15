@@ -203,6 +203,7 @@
     <string name="title_activity_activity__video__capture">Activity_Video_Capture</string>
     <string name="title_activity_payment_activity">payment_activity</string>
     <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_subscription">Subscription options</string>
     <string name="title_activity_patients_today">Appointments for Today</string>
     <string name="title_activity_payment_option_not_available">Payment Options
     </string>
