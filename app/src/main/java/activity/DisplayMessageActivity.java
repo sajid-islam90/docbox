@@ -227,7 +227,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
             bmp_image.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
             bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
             image = PhotoHelper.getBitmapAsByteArray(bitmap);
-            newPatient.set_bmp(image);
+            newPatient.set_bmp(new byte[0]);
         }
 
         patientName = edit_name.getText().toString();
@@ -259,7 +259,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
 //
 //        dbHandler.onCreate(myDataBase);
 
-       long id = dbHandler.addPatient(newPatient);
+       long id = dbHandler.addPatient(newPatient,DisplayMessageActivity.this);
 
         if(!patientDiagnosis.equals(""))
         {

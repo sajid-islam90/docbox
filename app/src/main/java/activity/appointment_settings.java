@@ -30,8 +30,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class appointment_settings extends AppCompatActivity {
-    static Time startTime = new Time();
-    static Time endTime = new Time();
+    static time startTime = new time();
+    static time endTime = new time();
     static String startAmPm;
     static MyAnalogClock startAnalogClock;
     static String endAmPm;
@@ -162,7 +162,7 @@ public class appointment_settings extends AppCompatActivity {
 
 
     }
-    public void doWork(final Time time)
+    public void doWork(final time time)
     {
         LayoutInflater li = LayoutInflater.from(appointment_settings.this);
         final View promptsView = li.inflate(R.layout.time_picker, null);
@@ -221,8 +221,8 @@ public class appointment_settings extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             saveAppointmentPreferences();
-            startTime = new Time();
-            endTime = new Time();
+            startTime = new time();
+            endTime = new time();
             Intent intent = new Intent(this,Activity_main_2.class);
            // startActivity(intent);
             finish();

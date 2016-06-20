@@ -1127,6 +1127,7 @@ Tabselected = section;
                     if((newFile.getName().contains(".jpeg"))||(newFile.getName().contains(".png"))
                             ||(newFile.getName().contains(".mp4")) ||(newFile.getName().contains(".jpg"))) {
                         mediaObj.set_media_path(newFile.getPath());
+                        mediaObj.set_media_name(newFile.getName());
                         mediaObj.set_pid(pid);
                         mediaObj.set_section(section);
                         mediaObj.set_version(1);

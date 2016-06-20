@@ -38,6 +38,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -559,7 +560,23 @@ public class utility {
         list.add("0");
         else
             list.add(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID)));
+        list.add(cursor.getString(cursor.getColumnIndex("email")));
+        list.add(cursor.getString(cursor.getColumnIndex("address")));
+        String lastVisitDate = cursor.getString(cursor.getColumnIndex("dateLastVisit"));
+        SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
+        String date = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date newDate = format.parse(lastVisitDate);
+            date = df.format(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar c = Calendar.getInstance();
 
+
+
+        list.add(date);
 
 
         return list;
@@ -1024,7 +1041,7 @@ return  arrayListIdPhotoPath;
                 storageDir.mkdir();
             }
 
-            databaseHandler.addPatient(patient);
+            databaseHandler.addPatient(patient,context);
             utility.addFieldsToPatient((int) patient.get_id(), context);
             databaseHandler.updatePatient(DataBaseEnums.KEY_SYNC_STATUS, "1", String.valueOf(patient.get_id()));
             databaseHandler.updatePatient(DataBaseEnums.KEY_CONTACT, String.valueOf(jsonObject.get("PhoneNumber"))

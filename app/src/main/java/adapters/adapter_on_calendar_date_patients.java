@@ -130,7 +130,7 @@ public class adapter_on_calendar_date_patients extends BaseAdapter {
             imageButtonAddNewFirstAidPatient.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    long pid = dbHandle.addPatient(finalPatient1);
+                    long pid = dbHandle.addPatient(finalPatient1,context);
                     utility.addFieldsToPatient((int) pid, context);
                     dbHandle.updatePatient(DataBaseEnums.KEY_FIRST_AID_ID, names.get(position), String.valueOf(pid));
                     dbHandle.updateAppointments(DataBaseEnums.KEY_ID, String.valueOf(pid), names.get(position));
@@ -179,7 +179,8 @@ public class adapter_on_calendar_date_patients extends BaseAdapter {
 
                 bmp = BitmapFactory.decodeResource(context.getResources(),R.drawable.add_new_photo);
                 roundedImage = new RoundImage(bmp);
-                imageView.setBackgroundResource(R.drawable.add_new_photo);
+                //imageView.setBackgroundResource(R.drawable.add_new_photo);
+                //imageView.setBackground(roundedImage);
             }
         imageView.setImageDrawable(roundedImage);
 

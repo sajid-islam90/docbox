@@ -94,6 +94,7 @@ public class  Activity_main_2 extends AppCompatActivity
     /**
      * Used to store the last screen title. For use in .
      */
+    long days;
     private String profilePicPath;
     private TextView mEmail;
     private TextView mName;
@@ -127,11 +128,12 @@ public class  Activity_main_2 extends AppCompatActivity
             long seconds = diff / 1000;
             long minutes = seconds / 60;
             long hours = minutes / 60;
-            long days = hours / 24;
+            days = hours / 24;
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         boolean restoreFlag = prefs.getBoolean("restore", false);
        int fragmentNumberToShow =  getIntent().getIntExtra("fragmentNumber",1);
         notifier = (NotificationManager)
@@ -158,7 +160,9 @@ public class  Activity_main_2 extends AppCompatActivity
         personal_obj personalObj =  dbHandle.getPersonalInfo();
         ImageView imageView = (ImageView)findViewById(R.id.profilePic);
         Bitmap bmp = null;
-        bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());
+        File file = new File(personalObj.get_photoPath());
+        if(file.exists())
+        {  bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());}
         fragmentUserProfile = new UserProfile();
 
         if(bmp!=null)
@@ -194,7 +198,39 @@ public class  Activity_main_2 extends AppCompatActivity
                 .commit();
         else
         {
-            if(fragmentNumberToShow == 2)
+
+            if(days<=0)
+            {
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+                alert.setTitle("Subscription End");
+                alert.setIcon(android.R.drawable.ic_dialog_alert);
+                alert.setMessage("Your DocBox Subscription has ended\nplease renew subscription before continuing");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
+
+                        {
+                            fragmentNumber = 5;
+                            Intent intent = new Intent(Activity_main_2.this, SubscriptionActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.container, MainActivity.newInstance(position + 1))
+//
+//                        .commit();
+                        }
+                        dialog.cancel();
+                    }
+                });
+
+                alert.show();
+            }
+            else
+
+            {  if(fragmentNumberToShow == 2)
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, activity_view_patient_visits.newInstance(2, true))
 
@@ -202,7 +238,7 @@ public class  Activity_main_2 extends AppCompatActivity
             else
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MainActivity.newInstance(1))
-                    .commit();
+                    .commit();}
 
         }
 
@@ -384,10 +420,37 @@ public class  Activity_main_2 extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(c.getTime());
+
+        String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
+        if (validUpto.contains(" "))
+        {
+            validUpto = validUpto.substring(0,validUpto.indexOf(" "));
+        }
+        try {
+            Date date = df.parse(validUpto);
+            Date today  = df.parse(formattedDate);
+            long diff = date.getTime() - today.getTime();
+            long seconds = diff / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
+            days = hours / 24;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         accountType = prefs.getString(Activity_main_2.this.getString(R.string.account_type), "");
         ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
         if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
-        {    String s1 = null;
+        {
+            if(days>0)
+            {
+
+
+
+            String s1 = null;
         ArrayList<String> CstmrId = new ArrayList<>();
         int customerId = databaseHandler.getCustomerId();
         CstmrId.add(String.valueOf(customerId));
@@ -666,6 +729,37 @@ public class  Activity_main_2 extends AppCompatActivity
                 final RequestParams requestParams = new RequestParams();
                 requestParams.put("doctorId", s2);
                 getVerificationStatus(requestParams);
+            }
+            }
+            else
+            {
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+                alert.setTitle("Subscription End");
+                alert.setIcon(android.R.drawable.ic_dialog_alert);
+                alert.setMessage("Your DocBox Subscription has ended\nplease renew subscription before continuing");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
+
+                        {
+                            fragmentNumber = 5;
+                            Intent intent = new Intent(Activity_main_2.this, SubscriptionActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.container, MainActivity.newInstance(position + 1))
+//
+//                        .commit();
+                        }
+                        dialog.cancel();
+                    }
+                });
+
+                alert.show();
+
             }
     }
         else

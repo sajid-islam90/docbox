@@ -3,7 +3,7 @@ package objects;
 /**
  * Created by sajid on 12/22/2015.
  */
-public class Time {
+public class time {
     int hour;
 
     public int getHour() {

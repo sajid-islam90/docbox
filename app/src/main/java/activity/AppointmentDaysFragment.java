@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import objects.DataBaseEnums;
-import objects.Time;
+import objects.time;
 
 
 /**
@@ -40,8 +40,8 @@ public class AppointmentDaysFragment extends Fragment {
     private static int[] availableDays = new int[] { 0, 0, 0, 0, 0, 0, 0};
     static String startAmPm;
     static String endAmPm;
-      static Time startTime = new Time();
-    static  Time endTime = new Time();
+      static time startTime = new time();
+    static time endTime = new time();
     private  TextView textAvailable, textStartTime, textEndTime, textStartAmPm, textEndAmPm;
     private static NumberPicker numberPicker;
     private   CheckBox checkBox;
@@ -135,7 +135,7 @@ public class AppointmentDaysFragment extends Fragment {
         return view;
     }
 
-    public void doWork(final Time time, final String flag)
+    public void doWork(final time time, final String flag)
     {
         LayoutInflater li = LayoutInflater.from(getActivity());
         final View promptsView = li.inflate(R.layout.time_picker, null);

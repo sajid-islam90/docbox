@@ -224,8 +224,10 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
         }
         Bitmap bitmap = null;
         Patient newPatient = new Patient();
+        assert bmp_image != null;
         if((bmp_image.getDrawable() != null)) {
             bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
+            if(bitmap!=null)
             image = PhotoHelper.getBitmapAsByteArray(bitmap);
             newPatient.set_bmp(image);
         }
@@ -234,10 +236,11 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
 
         else {
 
-            bmp_image.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
-            bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
-            image = PhotoHelper.getBitmapAsByteArray(bitmap);
             newPatient.set_bmp(image);
+//            bmp_image.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
+//            bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
+//            image = PhotoHelper.getBitmapAsByteArray(bitmap);
+//            newPatient.set_bmp(image);
         }
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");Calendar c = Calendar.getInstance();
 

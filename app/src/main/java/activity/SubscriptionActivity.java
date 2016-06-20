@@ -1,12 +1,15 @@
 package activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
@@ -16,6 +19,29 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SubscriptionActivity extends AppCompatActivity {
+    long days;
+
+    @Override
+    public void onBackPressed() {
+        if(days<=0) {
+            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(SubscriptionActivity.this);
+
+            alert.setTitle("Subscription End");
+            alert.setIcon(android.R.drawable.ic_dialog_alert);
+            alert.setMessage("Your DocBox Subscription has ended\nplease renew subscription before continuing");
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    dialog.cancel();
+                }
+            });
+
+            alert.show();
+            return;
+        }
+        super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +84,7 @@ String validFrom = prefs.getString(getString(R.string.subscription_valid_from),"
             long seconds = diff / 1000;
             long minutes = seconds / 60;
             long hours = minutes / 60;
-            long days = hours / 24;
+            days = hours / 24;
             if (remainingDays != null) {
                 remainingDays.setText(String.valueOf(days));
             }

@@ -39,7 +39,7 @@ import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
-import objects.Time;
+import objects.time;
 import utilityClasses.floatingactionbutton.FloatingActionButton;
 import com.loopj.android.http.RequestParams;
 
@@ -433,9 +433,9 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
 DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
         byte[] image = patient.get_bmp();
 if(image.length==0) {
-    patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo)));
-    databaseHandler.updatePatient(patient,0);
-    image = patient.get_bmp();
+    //patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo)));
+    //databaseHandler.updatePatient(patient,0);
+    image =PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo));
 }
         Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
         RoundImage roundedImage = new RoundImage( PhotoHelper.getResizedBitmap(bmpImage, 100, 100));
@@ -524,7 +524,7 @@ if(image.length==0) {
                                                 utility.bookAppointmentTodayLocally(patient.get_id(), PatientProfileActivity.this);
                                             else {
 
-Time time;
+time time;
                                             list.add(String.valueOf(databaseHandler.getCustomerId()));
                                             list.add(String.valueOf(patient.get_first_aid_id()));
                                             list.add(appointmentDate[0]);
@@ -597,7 +597,7 @@ Time time;
     }
 
     }
-    public void doWork(final Time time)
+    public void doWork(final time time)
     {
         LayoutInflater li = LayoutInflater.from(PatientProfileActivity.this);
         final View promptsView = li.inflate(R.layout.time_picker, null);

@@ -438,7 +438,7 @@ public class patients_today extends AppCompatActivity {
                 }
                 else
                 {
-                    pid =  databaseHandler.addPatient(patient);
+                    pid =  databaseHandler.addPatient(patient,patients_today.this);
                     patient.set_id(Integer.parseInt(String.valueOf(pid)));
                     databaseHandler.updatePatient(patient, 5);
                 }
@@ -456,7 +456,7 @@ public class patients_today extends AppCompatActivity {
                 else
 
                 {
-                    pid =  databaseHandler.addPatient(patient);
+                    pid =  databaseHandler.addPatient(patient,patients_today.this);
                     patient.set_id((int)pid);
                     databaseHandler.updatePatient(patient,1);
                     databaseHandler.mapDoctorHelperPatients((Integer.parseInt(patientData.get(1))), (int) pid);
@@ -887,7 +887,7 @@ public class patients_today extends AppCompatActivity {
                         patient = dbHandler.getFirstAidPatient(Integer.parseInt(appointmentPID.get(i)));
                         patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(patients_today.this.getResources(), R.drawable.default_photo)));
                         if(accountType.equals(patients_today.this.getString(R.string.account_type_doctor))) {
-                            long patientId = dbHandler.addPatient(patient);
+                            long patientId = dbHandler.addPatient(patient,patients_today.this);
                             utility.addFieldsToPatient((int) patientId, patients_today.this);
                             String patientJson = dbHandler.composeJSONfromSQLitePatient(String.valueOf(patientId), patients_today.this);
                             params.put("usersJSON", patientJson);
@@ -1024,7 +1024,7 @@ public class patients_today extends AppCompatActivity {
                                             {
                                                 patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo)));
                                             }
-                                            databaseHandler.addPatient(patient);
+                                            databaseHandler.addPatient(patient,patients_today.this);
                                         }
                                     }
 

@@ -91,7 +91,7 @@ if(itemsArrayList.get(position).getBmp()==null)
 
         patient = dbHandle.getPatient(itemsArrayList.get(position).getPatient_id());
         try {
-            patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_photo)));
+          //  patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_photo)));
 
            // dbHandle.updatePatient(patient,0);
             String a = (itemsArrayList.get(position).getDiagnosis());

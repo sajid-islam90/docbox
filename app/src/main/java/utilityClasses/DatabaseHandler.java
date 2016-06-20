@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
@@ -2029,7 +2030,7 @@ db.close();
     }
 
     //patient functions
-   public long  addPatient(Patient patient) {
+   public long  addPatient(Patient patient,Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
        Calendar c = Calendar.getInstance();
        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
@@ -2046,7 +2047,10 @@ db.close();
         if(patient.get_id()!=0)
         values.put(KEY_ID,patient.get_id());
 
-        values.put(KEY_BMP,patient.get_bmp());
+       if(!patient.get_bmp().equals(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_photo))))
+           values.put(KEY_BMP,patient.get_bmp());
+       else
+           values.put(KEY_BMP, new byte[0]);
         values.put(KEY_ADDRESS,patient.get_address());
 
        values.put(KEY_FIRST_AID_ID,patient.get_first_aid_id());
