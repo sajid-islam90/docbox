@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Days remaining "
+                android:text="Days remaining before service ends"
                 android:id="@+id/textView66" />
         </LinearLayout>
     </LinearLayout>
@@ -98,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayoutSubscriptionDates"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
@@ -113,9 +113,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medical Students click here for subscription Renewal"
+            android:text="Click here for subscription Renewal"
             android:id="@+id/textView62"
-            android:layout_above="@+id/button8"
+            android:layout_above="@+id/buttonRenewDoctorSubscription"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp" />
@@ -125,8 +125,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Renew Subscription"
-            android:id="@+id/button10"
-            android:layout_below="@+id/button8"
+            android:id="@+id/buttonRenewPGSubscription"
+            android:layout_below="@+id/buttonRenewDoctorSubscription"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
@@ -134,9 +134,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Clinical Doctors Please click here for subscription Renewal"
+            android:text="Click here for subscription Renewal"
             android:id="@+id/textView63"
-            android:layout_below="@+id/button8"
+            android:layout_below="@+id/buttonRenewDoctorSubscription"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp" />
@@ -144,7 +144,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button8"
+            android:id="@+id/buttonRenewDoctorSubscription"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

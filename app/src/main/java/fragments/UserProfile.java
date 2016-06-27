@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -115,7 +117,8 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private AutoCompleteTextView autoCompView;
    private static EditText Name;
     private static Spinner genderSpinner;
-    TextView NameSolid,cityTextView,stateTextView;
+    TextView NameSolid,cityTextView,stateTextView,doctorType;
+
     static String dateOfBirth="";
     Bitmap bitmap;
     private FragmentActivity myContext;
@@ -137,7 +140,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     LinearLayout linearLayoutExperienceFees;
     LinearLayout linearLayoutCollege;
     EditText addressEditText, feeEditText, experienceEditText;
-
+    TextView DOB;
     CardView cardViewMap;
     CardView cardViewCollege;
     CardView cardViewFeeExperience;
@@ -149,7 +152,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.activity_user_profile, container, false);
         getActivity().setTitle("Profile Settings");
-        TextView DOB = (TextView)rootView.findViewById(R.id.ageTextBox);
+         DOB   = (TextView)rootView.findViewById(R.id.ageTextBox);
         genderSpinner = (Spinner)rootView.findViewById(R.id.spinner3);
         autoCompleteTextView = (AutoCompleteTextView)rootView.findViewById(R.id.textSearchedLocationUserProfile);
         autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -165,6 +168,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
         final TextView personalDetailsTextView = (TextView)rootView.findViewById(R.id.personalDetailsTextView);
         final TextView experienceFeeTextView = (TextView)rootView.findViewById(R.id.experienceFeeTextView);
         final TextView collegeDetailsTextView = (TextView)rootView.findViewById(R.id.collegeDetailsTextView);
+        doctorType = (TextView)rootView.findViewById(R.id.textViewDoctorType);
         cityTextView = (TextView)rootView.findViewById(R.id.cityTextView);
         stateTextView =(TextView)rootView.findViewById(R.id.stateTextView);
         addressEditText =(EditText)rootView.findViewById(R.id.addressEditText);
@@ -503,13 +507,14 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
                                     databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY,personalObj.get_speciality());
                                     databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LATITUDE, String.valueOf(searchedLocation.latitude));
                                     databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LONGITUDE, String.valueOf(searchedLocation.longitude));
+                                    DOB.setText(dateOfBirth);
                                 }
 
 
-                                final FragmentManager fragManager = myContext.getSupportFragmentManager();
-                                fragManager.beginTransaction()
-                                        .replace(R.id.container, UserProfile.newInstance(1))
-                                        .commit();
+//                                final FragmentManager fragManager = myContext.getSupportFragmentManager();
+//                                fragManager.beginTransaction()
+//                                        .replace(R.id.container, UserProfile.newInstance(1))
+//                                        .commit();
                                // utility.recreateActivityCompat(getActivity());
 
 
@@ -1117,9 +1122,10 @@ if(new File(profilePicPath).length()>0) {
     public void setUserProfileData(View rootView)
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String docType = prefs.getString(getActivity().getString(R.string.account_type),"");
          personalObj = databaseHandler.getPersonalInfo();
-
+doctorType.setText(docType);
         ArrayList<String>addressElements = new ArrayList<>();
         if((personalObj.get_address().length()>1)&&(!personalObj.get_address().equals("Address")))
         addressElements = parseAddress(personalObj.get_address());
@@ -1136,6 +1142,13 @@ if(new File(profilePicPath).length()>0) {
             feeEditText.setText(personalObj.get_fees());
         }
         dateOfBirth = personalObj.get_dob();
+        if (personalObj.get_gender()!=null)
+        if (personalObj.get_gender().equals("Male"))
+        genderSpinner.setSelection(0);
+        else
+            genderSpinner.setSelection(1);
+        else
+        genderSpinner.setSelection(0);
         ImageView imageView = (ImageView)rootView.findViewById(R.id.userProfilePicture);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1305,6 +1318,7 @@ if(new File(profilePicPath).length()>0) {
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY, personalObj.get_speciality());
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LATITUDE, String.valueOf(searchedLocation.latitude));
             databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LONGITUDE, String.valueOf(searchedLocation.longitude));
+
             databaseHandler.updatePersonalInfo("dob", dateOfBirth);
             String address = addressEditText.getText().toString()
                     +","+ cityTextView.getText().toString()

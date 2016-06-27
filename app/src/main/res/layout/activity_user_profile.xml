@@ -59,7 +59,9 @@
                 android:src="@drawable/ic_action_resize"
                 android:layout_alignParentStart="false"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="true" />
 
             <TextView
         android:layout_width="fill_parent"
@@ -477,6 +479,27 @@
 
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="User Type "
+                                android:id="@+id/textView69"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:id="@+id/textViewDoctorType"
+                                android:textColor="#000000" />
+                        </LinearLayout>
+
 
                     </LinearLayout>
                 </RelativeLayout>
@@ -726,6 +749,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="false" />
 
 </RelativeLayout>

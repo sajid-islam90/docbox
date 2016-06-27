@@ -90,7 +90,8 @@
                 android:gravity="center"
                 android:layout_toEndOf="@+id/graduationRegistrationNumberEditText"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:layout_below="@+id/graduationRegnTitleTextView" />
+                android:layout_below="@+id/graduationRegnTitleTextView"
+                android:layout_toRightOf="@+id/graduationRegistrationNumberEditText" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -117,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Photo id proof"
+                android:text="Photo id proof(College Id card for PG students)"
                 android:id="@+id/textView65"
                 android:textStyle="bold" />
 

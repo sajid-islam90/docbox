@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Your one month FREE subscription is currently ACTIVE"
+        android:text="Payment option coming soon"
         android:id="@+id/textView64"
         android:layout_centerInParent="true"
         android:gravity="center"

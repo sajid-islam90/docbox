@@ -1,8 +1,10 @@
 package activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -17,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -31,7 +34,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,7 +122,16 @@ public class  Activity_main_2 extends AppCompatActivity
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(c.getTime());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        SharedPreferences.Editor editor = prefs.edit();
+        String allowDataCollect = prefs.getString("DataCollectFromOlderUser","");
+        if(allowDataCollect.equals(""))
+        {
+askDoctorType();
+            editor.putString("DataCollectFromOlderUser","doctorType");//doctorType--> practicing or student
+            editor.commit();
+        }
         String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
+//askDoctorType();
         if (validUpto.contains(" "))
         {
             validUpto = validUpto.substring(0,validUpto.indexOf(" "));
@@ -160,9 +175,13 @@ public class  Activity_main_2 extends AppCompatActivity
         personal_obj personalObj =  dbHandle.getPersonalInfo();
         ImageView imageView = (ImageView)findViewById(R.id.profilePic);
         Bitmap bmp = null;
-        File file = new File(personalObj.get_photoPath());
-        if(file.exists())
-        {  bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());}
+        File file = null;
+        if(personalObj.get_photoPath()!=null)
+            file  = new File(personalObj.get_photoPath());
+
+        if (file != null && file.exists()) {
+            bmp = BitmapFactory.decodeFile(personalObj.get_photoPath());
+        }
         fragmentUserProfile = new UserProfile();
 
         if(bmp!=null)
@@ -179,7 +198,7 @@ public class  Activity_main_2 extends AppCompatActivity
         }
         imageView.setImageDrawable(roundedImage);
         mName = (TextView)findViewById(R.id.drawer_name);
-        if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
+        if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
         mName.setText("Dr." + personalObj.get_name());
         else
             mName.setText("Mr." + personalObj.get_name());
@@ -199,8 +218,10 @@ public class  Activity_main_2 extends AppCompatActivity
         else
         {
 
-            if(days<=0)
+            if(days<=0)  //25-6-2016
+            //if(false)
             {
+
                 android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
 
                 alert.setTitle("Subscription End");
@@ -243,6 +264,116 @@ public class  Activity_main_2 extends AppCompatActivity
         }
 
 
+    }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void askDoctorType()
+    {
+        // Create custom dialog object
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        final SharedPreferences.Editor editor = prefs.edit();
+        final Dialog dialog1 = new Dialog(Activity_main_2.this);
+        // Include dialog.xml file
+        dialog1.setTitle("Please select your type of user");
+        dialog1.setContentView(R.layout.alert_select_doctortype);
+        // Set dialog title
+        dialog1.setTitle("Custom Dialog");
+        dialog1.setCancelable(false);
+
+        // set values for custom dialog components - text, image and button
+        final RadioButton doctor = (RadioButton) dialog1.findViewById(R.id.radioButton4);
+        final RadioButton student = (RadioButton) dialog1.findViewById(R.id.radioButton5);
+doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked)
+        {
+            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Activity_main_2.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("You will be registered as a Practicing doctor with all the permissions\n" +
+                    "* Check this option only if you are a Practicing doctor\n" )
+
+                    .setTitle("You will be registered as a Practicing Doctor ");
+
+// 3. Get the AlertDialog from create()
+            android.support.v7.app.AlertDialog dialog = builder.create();
+            dialog.show();
+
+            student.setChecked(false);
+        }
+    }
+});
+        student.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Activity_main_2.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("You will be registered as a STUDENT with the following permissions\n"+
+                            "* Check this option only if you are a student\n"+
+                            "1.Add/edit patients data.\n" +
+                            "2.Save data on cloud.\n" +
+                            "3.Not be able to take appointments")
+
+                            .setTitle("You will be registered as a Student ");
+// 3. Get the AlertDialog from create()
+                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    doctor.setChecked(false);
+                }
+            }
+        });
+        Button  button = (Button)dialog1.findViewById(R.id.button8);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String type;
+                if(doctor.isChecked())
+                {
+                    type = "doctor";
+                }
+                else
+                {
+                   type = "student";
+                }
+//                final android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+//
+//                alert.setTitle("Register user type");
+//                alert.setMessage("Are you sure you want to register as a "+type);
+//                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+                        if(doctor.isChecked())
+                        {
+                            editor.putString(Activity_main_2.this.getString(R.string.account_type), Activity_main_2.this.getString(R.string.account_type_doctor));
+                        }
+                        else
+                        {
+                            editor.putString(Activity_main_2.this.getString(R.string.account_type), Activity_main_2.this.getString(R.string.account_type_student));
+                        }
+//                        dialog1.dismiss();
+//                        dialog.dismiss();
+//                    }
+//                });
+//                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//               alert.create();
+
+                editor.commit();
+                dialog1.dismiss();
+
+
+            }
+        });
+
+        dialog1.show();
     }
 
 
@@ -445,7 +576,8 @@ public class  Activity_main_2 extends AppCompatActivity
         ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
         if (((latLong.get(0) != null) && (latLong.get(1) != null) && (!latLong.get(0).equals("")) && (!latLong.get(1).equals("")))||(accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper))))
         {
-            if(days>0)
+            if(days>0)  //25-6-2016
+               // if(true)
             {
 
 
@@ -688,9 +820,52 @@ public class  Activity_main_2 extends AppCompatActivity
             if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
 
             {
+                ConnectionDetector cd = new ConnectionDetector(getApplicationContext());
+                if (!cd.isNetworkAvailable()) {
+                    // Internet Connection is not present
+                    new AlertDialog.Builder(Activity_main_2.this)
+                            .setTitle("Internet ERROR !!!")
+                            .setMessage("No Internet Connection Found Please Connect To Internet To Change Profile Settings")
+                            .setPositiveButton("Take me to Mobile settings", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 0);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    // stop executing code by return
+                    return;
+                }
+
+                int DoctorId = databaseHandler.getCustomerId();
+
+                String hashString = prefs.getString(Activity_main_2.this.getString(R.string.hash_code), "");
+
+
+                String s2 ="";
+                String s3 ="";
+                StringWriter out1 = new StringWriter();
+                StringWriter out2 = new StringWriter();
+                try {
+                    JSONValue.writeJSONString(DoctorId, out1);
+                    JSONValue.writeJSONString(hashString, out2);
+                    s2 = out1.toString();
+                    s3 = out2.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                final RequestParams requestParams = new RequestParams();
+                requestParams.add("DoctorId", s2);
+                requestParams.add("token", s3);
+
+                getSubscription(requestParams);
                 fragmentNumber = 5;
-                Intent intent = new Intent(Activity_main_2.this, SubscriptionActivity.class);
-                startActivity(intent);
+
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
 //                fragmentManager.beginTransaction()
@@ -845,6 +1020,87 @@ public class  Activity_main_2 extends AppCompatActivity
                 mTitle = getString(R.string.title_section3);
                 break;
         }
+    }
+    public void getSubscription(RequestParams params) {
+        final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+        final String  address =  getResources().getString(R.string.action_server_ip_address);
+        String apiAddress = "http://" + address + "/fetchDoctorSubscriptionDetails.php";
+        final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
+
+        try
+        {
+
+            client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                    try {
+                        String str = new String(bytes, "UTF-8");
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        JSONParser parser = new JSONParser();
+                        JSONObject object = (JSONObject) parser.parse(str);
+
+                        String validUpto = (String) object.get("SubscriptionExpiryDate");
+                        String validFrom = (String) object.get("SubscriptionStartDate");
+                        if (validFrom.contains(" "))
+                        {
+                            validFrom = validFrom.substring(0,validFrom.indexOf(" "));
+                        }
+                        if (validUpto.contains(" "))
+                        {
+                            validUpto = validUpto.substring(0,validUpto.indexOf(" "));
+                        }
+
+                        editor.putString(getString(R.string.subscription_valid_upto), validUpto);
+                        editor.putString(getString(R.string.subscription_valid_from), validFrom);
+                        editor.commit();
+                        Intent intent = new Intent(Activity_main_2.this, SubscriptionActivity.class);
+                        startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //controller.updateSyncStatus(obj.get("id").toString(),obj.get("status").toString());
+
+                }
+
+                @Override
+                public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
+                    try {
+//                        String str = new String(bytes, "UTF-8");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Activity_main_2.this,"Error Please check internet connection and try again",Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        // Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFinish() {
+                    // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                    //((Activity) context).recreate();
+
+                }
+
+
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
     public void getVerificationStatus(RequestParams params) {
         final AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
@@ -1089,7 +1345,7 @@ public class  Activity_main_2 extends AppCompatActivity
                             .setContentTitle("DocBox")
 
 
-                            .setContentText("Patient Data Being saved to cloud");
+                            .setContentText("Patient Data Being saved from cloud");
 
             notifier.notify(1, mBuilder.build());
             super.onPreExecute();

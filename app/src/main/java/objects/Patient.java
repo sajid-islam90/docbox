@@ -29,15 +29,15 @@ public class Patient {
 
     String _opd_ipd;
 
-    public int get_first_aid_id() {
+    public long get_first_aid_id() {
         return _first_aid_id;
     }
 
-    public void set_first_aid_id(int _first_aid_id) {
+    public void set_first_aid_id(long _first_aid_id) {
         this._first_aid_id = _first_aid_id;
     }
 
-    int _first_aid_id;
+    long _first_aid_id;
     public String get_last_seen_date() {
         return _last_seen_date;
     }

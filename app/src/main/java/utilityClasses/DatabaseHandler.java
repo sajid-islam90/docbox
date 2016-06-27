@@ -69,6 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //  Table Columns names
     private static final String KEY_ID = "id";
+    private static final String KEY_ID_WEB = "idWeb";
     private static final String KEY_ID_PATIENT_DOCTOR = "idDoctor";
     private static final String KEY_ID_Patient_HELPER = "idHelper";
     private static final String KEY_FIRST_AID_ID = "firstAidPID";
@@ -139,7 +140,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
        String CREATE_PATIENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_PATIENT + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_DIAGNOSIS + " TEXT,"
+                + KEY_ID + " INTEGER PRIMARY KEY," +KEY_NAME + " TEXT," + KEY_DIAGNOSIS + " TEXT,"
                 + KEY_AGE + " TEXT,"+KEY_DATE_NEXT_FOLLOW_UP + " TEXT,"+KEY_DATE_LAST_VISIT + " TEXT,"+KEY_DATE + " TEXT," +KEY_CONTACT + " TEXT,"+KEY_EMAIL +
                " TEXT,"+KEY_ADDRESS + " TEXT,"+KEY_OCCUPATION + " TEXT,"  + KEY_GENDER + " TEXT,"+KEY_OPD_IPD + " TEXT," + KEY_WEIGHT + " TEXT, "+KEY_HEIGHT + " TEXT, " +
                KEY_BMP +" BLOB,"+KEY_PHOTO_PATH + " TEXT, "+KEY_FIRST_AID_ID + " TEXT, "  + KEY_SYNC_STATUS + " TEXT " +")";
@@ -305,6 +306,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
           db.execSQL(DATABASE_ALTER_APPOINTMENT_TABLE_2);
           db.execSQL(DATABASE_ALTER_PERSONAL_INFO_TABLE);
       }
+        if(DATABASE_VERSION<4)
+        {
+
+        }
 
 
         // Create tables again
@@ -2035,7 +2040,7 @@ db.close();
        Calendar c = Calendar.getInstance();
        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
        String formattedDate = df.format(c.getTime());
-
+       Long tsLong = System.currentTimeMillis()/1000;
         String a = patient.get_diagnosis();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, patient.get_name());
@@ -2068,6 +2073,8 @@ db.close();
 
         // Inserting Row
        long id = db.insert(TABLE_PATIENT, null, values);
+       updatePatient(KEY_ID, String.valueOf(tsLong),String.valueOf(id));
+       id= tsLong;
        File storageDir =
                new File(Environment.getExternalStoragePublicDirectory(
                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id);
@@ -2082,7 +2089,9 @@ db.close();
            storageDir1.mkdir();
         db.close(); // Closing database connection
        if(patient.get_first_aid_id()==0)
-       updatePatient(KEY_FIRST_AID_ID, String.valueOf(id+""+getCustomerId()),String.valueOf(id));
+       updatePatient(KEY_FIRST_AID_ID, String.valueOf(tsLong),String.valueOf(id));
+
+
        return id;
     }
 
@@ -2201,9 +2210,9 @@ db.close();
                 patient = utility.cursorToPatient(cursor);
                 if(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))!=null)
 
-                    patient.set_first_aid_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))));
+                    patient.set_first_aid_id(Long.parseLong(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))));
                     else
-                    patient.set_first_aid_id(Integer.parseInt(getCustomerId()+""+patient.get_id()));
+                    patient.set_first_aid_id(Long.parseLong(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_ID))));
                 updatePatient(KEY_FIRST_AID_ID, String.valueOf(patient.get_first_aid_id()),String.valueOf(patient.get_id()));
 
                 String s = cursor.getString(cursor.getColumnIndex(KEY_PHOTO_PATH));
@@ -2466,20 +2475,28 @@ db.close();
         Cursor cursor = database.rawQuery(Sql, null);
         ArrayList<ArrayList<String>> personalInfo = new ArrayList<ArrayList<String>>();
         ArrayList<String>list = new ArrayList<>();
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String accountType = prefs.getString(context.getString(R.string.account_type),"");
         HashMap<String, String> map = new HashMap<String, String>();
         if (cursor.moveToFirst())
         {
             list = utility.cursorToPersonalInfoArrayList(cursor);
             map.put( cursor.getString(0), cursor.getString(1));
         }
-
+        if(accountType.equals(context.getString(R.string.account_type_doctor)))
+        {
+            list.add("2");
+        }
+        else
+        {
+            list.add("1");
+        }
         database.close();
         list.add(city);
         personalInfo.add(list);
         String s1 = null;
         ArrayList<String> hex = new ArrayList<>();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         String hash = prefs.getString(context.getString(R.string.hash_code), "");
         hex.add(hash);
         personalInfo.add(hex);
@@ -2497,6 +2514,8 @@ db.close();
     public String composeJSONfromEmailPassword(Context context)
     {
         SQLiteDatabase database = this.getWritableDatabase();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String accountType = prefs.getString(context.getString(R.string.account_type),"");
         String Sql = "Select * FROM personalInfo" ;
         Cursor cursor = database.rawQuery(Sql, null);
         ArrayList<ArrayList<String>> personalInfo = new ArrayList<ArrayList<String>>();
@@ -2508,7 +2527,14 @@ db.close();
             list = utility.cursorToSimpleArraylist(cursor);
             map.put( cursor.getString(0), cursor.getString(1));
         }
-
+  if(accountType.equals(context.getString(R.string.account_type_doctor)))
+  {
+      list.add("2");
+  }
+        else
+  {
+      list.add("1");
+  }
         database.close();
         personalInfo.add(list);
         ArrayList<String>deviceId = new ArrayList<>();

@@ -47,6 +47,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,7 +110,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> ,
     String address ;
     LinearLayout linearLayoutAttachedDoctorEmail;
     LinearLayout linearLayoutSpeciality;
+    TextView textViewAccountType;
     CheckBox checkBox;
+    CheckBox checkBoxStudent;
+    CheckBox checkBoxPractitioner;
     String customerId;
     JSONArray response;
     ProgressDialog prgDialog;
@@ -152,7 +156,56 @@ address =  getResources().getString(R.string.action_server_ip_address);
         mPasswordView = (EditText) findViewById(R.id.password);
         mAttachedDoctorEmailView = (EditText) findViewById(R.id.editTextAttachedDoctorEmail);
         mName = (EditText) findViewById(R.id.name);
+        textViewAccountType = (TextView) findViewById(R.id.textView67);
         checkBox = (CheckBox)findViewById(R.id.checkBoxHelper);
+        checkBoxPractitioner = (CheckBox)findViewById(R.id.checkBoxPractitioner);
+        checkBoxStudent = (CheckBox)findViewById(R.id.checkBoxStudent);
+        checkBoxPractitioner.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("You will be registered as a Practicing doctor with all the permissions\n" )
+
+                            .setTitle("You will be registered as a Practicing Doctor ");
+
+// 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    textViewAccountType.setError(null);
+                    checkBoxStudent.setChecked(false);
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+        checkBoxStudent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("You will be registered as a STUDENT with the following permissions\n"+
+                            "1.Add/edit patients data.\n" +
+                            "2.Save data on cloud.\n" +
+                            "3.Not be able to take appointments")
+
+                            .setTitle("You will be registered as a Student ");
+
+// 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    textViewAccountType.setError(null);
+                    checkBoxPractitioner.setChecked(false);
+                    checkBox.setChecked(false);
+                }
+            }
+        });
         linearLayoutAttachedDoctorEmail = (LinearLayout)findViewById(R.id.linearLayoutAttachedDoctorEmail);
         linearLayoutSpeciality = (LinearLayout)findViewById(R.id.linearLayoutSpeciality);
         final TextView textView = (TextView)findViewById((R.id.textView17));
@@ -169,19 +222,33 @@ if(isChecked)
 {
 //    spinner.setVisibility(View.GONE);
 //    textView.setVisibility(View.GONE);
+    textViewAccountType.setError(null);
+    checkBoxStudent.setChecked(false);
+    checkBoxPractitioner.setChecked(false);
     linearLayoutSpeciality.setVisibility(View.GONE);
     linearLayoutAttachedDoctorEmail.setVisibility(View.VISIBLE);
+    // 1. Instantiate an AlertDialog.Builder with its constructor
+    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+    builder.setMessage("You will be registered as a Helper with following permissions\n1. You will only be able to add/edit patients,their reports and give appointments for the current date\n" +
+            "2. All changes made by you will be saved on cloud after approval from your doctor" )
+
+            .setTitle("You will be registered as a Helper ");
+
+// 3. Get the AlertDialog from create()
+    AlertDialog dialog = builder.create();
+    dialog.show();
+
 }
-                                                    else
+else
 {
 //    spinner.setVisibility(View.VISIBLE);
 //    textView.setVisibility(View.VISIBLE);
     linearLayoutSpeciality.setVisibility(View.VISIBLE);
     linearLayoutAttachedDoctorEmail.setVisibility(View.GONE);
-}
-
-                                                }
-                                            });
+}}
+        });
                 ArrayAdapter < CharSequence > adapter = ArrayAdapter.createFromResource(this,
                         R.array.specialities, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -435,6 +502,70 @@ System.out.print(response);
             focusView = mEmailView;
             cancel = true;
         }
+//        checkBoxPractitioner.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked)
+//                {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+//
+//// 2. Chain together various setter methods to set the dialog characteristics
+//                    builder.setMessage("You will be registered as a Practicing doctor with all the permissions\n" )
+//
+//                            .setTitle("You will be registered as a Practicing Doctor ");
+//
+//// 3. Get the AlertDialog from create()
+//                    AlertDialog dialog = builder.create();
+//                    dialog.show();
+//
+//                    textViewAccountType.setError(null);
+//                    checkBoxStudent.setChecked(false);
+//                    checkBox.setChecked(false);
+//                }
+//            }
+//        });
+//        checkBoxStudent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked)
+//                {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+//
+//// 2. Chain together various setter methods to set the dialog characteristics
+//                    builder.setMessage("You will be registered as a Practicing doctor with the following permissions\n"+
+//                    "1.Add/edit patients data.\n" +
+//                            "2.Save data on cloud.\n" +
+//                            "3.Not be able to take appointments")
+//
+//                            .setTitle("You will be registered as a Student ");
+//
+//// 3. Get the AlertDialog from create()
+//                    AlertDialog dialog = builder.create();
+//                    dialog.show();
+//                    textViewAccountType.setError(null);
+//                    checkBoxPractitioner.setChecked(false);
+//                    checkBox.setChecked(false);
+//                }
+//            }
+//        });
+//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked)
+//                {
+//                    textViewAccountType.setError(null);
+//                    checkBoxStudent.setChecked(false);
+//                    checkBoxPractitioner.setChecked(false);
+//                }
+//            }
+//        });
+        if((!checkBoxPractitioner.isChecked())&&(!checkBoxStudent.isChecked())&&(!checkBox.isChecked()))
+        {
+
+            textViewAccountType.setError(getString(R.string.error_field_required));
+            focusView = textViewAccountType;
+            cancel = true;
+        }
         if(checkBox.isChecked())
         if (TextUtils.isEmpty(attachedDoctorEmail)) {
             mAttachedDoctorEmailView.setError(getString(R.string.error_field_required));
@@ -462,7 +593,7 @@ return;}
         public void run() {
             if(!checkBox.isChecked())
             checkExistingAccount(email);
-         // generateOTP(password);
+            generateOTP(password);
 
         }
     });
@@ -529,8 +660,8 @@ return;}
                                 JSONParser parser = new JSONParser();
                                 JSONObject object = (JSONObject) parser.parse(str);
                                 final String status = (String) object.get("Message");
-                                //if (status.equals("success")) {
-                                if (true) {
+                                if (status.equals("success")) {
+                                //if (true) {
                                     editor.putBoolean("otpVerified", true);
                                     editor.commit();
 
@@ -567,7 +698,23 @@ return;}
                                                         allDataRestore(customerId);
                                                         DatabaseHandler databaseHandler = new DatabaseHandler(LoginActivity.this);
                                                         databaseHandler.addPersonalInfo(personalObj);
+                                                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                                                        SharedPreferences.Editor editor = prefs.edit();
 
+                                                        if(checkBox.isChecked()) {
+                                                            editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_helper));
+                                                            editor.putString("attachedDoctorEmail", mAttachedDoctorEmailView.getText().toString());
+
+                                                        }
+                                                        else if(checkBoxStudent.isChecked())
+                                                        {
+                                                            editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_student));
+                                                        }
+                                                        else
+
+                                                            editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+
+                                                        editor.commit();
                                                         // CREDENTIALS[0] = personalObj.get_email()+":"+personalObj.get_password();
                                                         mAuthTask = new UserLoginTask(email, password);
                                                         mAuthTask.execute((Void) null);
@@ -929,9 +1076,24 @@ alertDialog.dismiss();
 
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                         SharedPreferences.Editor editor = prefs.edit();
+                        String doctorType = (String) object.get("DoctorType");
+                         if(doctorType.equals("1")) {
+                             editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_student));
+
+                        }
+                        else
+                        {
+                            editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+                        }
+
+
+
+
+
                         editor.putString(getString(R.string.hash_code), hex);
                         editor.putString(getString(R.string.subscription_valid_upto), validUpto);
                         editor.putString(getString(R.string.subscription_valid_from), validFrom);
+                        editor.putString("DataCollectFromOlderUser","doctorType");
                         editor.commit();
 
                         // ((Activity) context).recreate();
@@ -1368,10 +1530,18 @@ public void checkOTP()
         {
 
             try {
+
                 String otp = "";
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor editor = prefs.edit();
                 otp = prefs.getString("otp", "0");
+                 if(checkBoxStudent.isChecked())
+                {
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_student));
+                }
+                else
+
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
 
                 final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
 
@@ -1436,6 +1606,7 @@ public void checkOTP()
                             editor.putString(getString(R.string.hash_code), hex);
                             editor.putString(getString(R.string.subscription_valid_upto), validUpto);
                             editor.putString(getString(R.string.subscription_valid_from), validFrom);
+                            editor.putString("DataCollectFromOlderUser","doctorType");//doctorType--> practicing or student
                             editor.commit();
 
 
@@ -1557,17 +1728,23 @@ if(mAttachedDoctorEmailView.getError()==null)
             if (success) {
                 Intent intent = new Intent();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                String doctorType = prefs.getString(LoginActivity.this.getString(R.string.account_type), "");
                 boolean restoreFlag = prefs.getBoolean("restore", false);
                 SharedPreferences.Editor editor = prefs.edit();
-
-                if(checkBox.isChecked()) {
+if(doctorType.equals(""))
+{
+                if (checkBox.isChecked()) {
                     editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_helper));
                     editor.putString("attachedDoctorEmail", mAttachedDoctorEmailView.getText().toString());
 
-                }
-                else
+                } else if (checkBoxStudent.isChecked()) {
 
-               editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_student));
+                } else
+
+                    editor.putString(LoginActivity.this.getString(R.string.account_type), LoginActivity.this.getString(R.string.account_type_doctor));
+            }
+
                 editor.commit();
                // boolean otpSuccessAuthFlag = prefs.getBoolean("otpSuccessAuth", true);
                 if((!restoreFlag)) {

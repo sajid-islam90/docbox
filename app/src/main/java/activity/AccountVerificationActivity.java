@@ -144,22 +144,24 @@ EditText idProof;
         });
 
         Button button = (Button)findViewById(R.id.submitButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (button != null) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                if(new File(idProof.getText().toString()).exists())
-                { if((!editText.getText().toString().equals(""))&&(!editText.getText().toString().equals("")))
+                    if(new File(idProof.getText().toString()).exists())
+                    { if((!editText.getText().toString().equals(""))&&(!editText.getText().toString().equals("")))
 
-                updateRegistrationNumber();
-                else
-                    Toast.makeText(AccountVerificationActivity.this,"Please provide a valid registration id issued by a Govt. Authority ",Toast.LENGTH_LONG).show();
+                    updateRegistrationNumber();
+                    else
+                        Toast.makeText(AccountVerificationActivity.this,"Please provide a valid registration id issued by a Govt. Authority ",Toast.LENGTH_LONG).show();
+                    }
+                    else
+                        Toast.makeText(AccountVerificationActivity.this,"Cannot process request without photo id proof ",Toast.LENGTH_LONG).show();
+
                 }
-                else
-                    Toast.makeText(AccountVerificationActivity.this,"Cannot process request without photo id proof ",Toast.LENGTH_LONG).show();
-
-            }
-        });
+            });
+        }
     }
 
 
@@ -303,8 +305,8 @@ EditText idProof;
         data1.add("2");//verification type 1: graduation 2: post graduation
         data1.add(editText1.getText().toString());
         data1.add(editText3.getText().toString());
-        data1.add("0");
-        data1.add(idProof.getText().toString());// verification status 0 : not verified 1: verified
+        data1.add("0");// verification status 0 : not verified 1: verified
+        data1.add(idProof.getText().toString());
 
         personalData.add(data);
         personalData.add(data1);

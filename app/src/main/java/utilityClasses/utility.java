@@ -164,7 +164,7 @@ public class utility {
         patient.set_email(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_EMAIL)));
         patient.set_next_follow_up_date(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_DATE_NEXT_FOLLOW_UP)));
         if(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))!=null)
-        patient.set_first_aid_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))));
+        patient.set_first_aid_id(Long.parseLong(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_FIRST_AID_ID))));
         else
             patient.set_first_aid_id(patient.get_id());
 
