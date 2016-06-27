@@ -154,7 +154,7 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals("Clinical Notes")) {
-                            if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
+                            if (!accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_helper)))
                                 showNotes();
                             else
                             Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
@@ -182,7 +182,7 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals("Clinical Notes")) {
-                            if (accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_doctor)))
+                            if (!accountType.equals(PatientProfileActivity.this.getString(R.string.account_type_helper)))
                             showNotes();
                             else
                             Toast.makeText(PatientProfileActivity.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();

@@ -50,7 +50,7 @@ public class view_all_versions extends Fragment {
     }
     public void startAddNotes()
     {
-        if (accountType.equals(getActivity().getString(R.string.account_type_doctor)))
+        if (!accountType.equals(getActivity().getString(R.string.account_type_helper)))
         {  DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         int version  =  databaseHandler.getMaxFollowupVersion(pid);
         Intent intent =  new Intent(getActivity(), followUp.class);

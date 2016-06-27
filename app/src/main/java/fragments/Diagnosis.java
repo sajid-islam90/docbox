@@ -102,7 +102,7 @@ public class Diagnosis extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (accountType.equals(getActivity().getString(R.string.account_type_doctor)))
+                if (!accountType.equals(getActivity().getString(R.string.account_type_helper)))
                 addDiagnosis();
                 else
                     Toast.makeText(getActivity(), "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
@@ -126,7 +126,7 @@ public class Diagnosis extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                if (accountType.equals(getActivity().getString(R.string.account_type_doctor)))
+                if (!accountType.equals(getActivity().getString(R.string.account_type_helper)))
 
 
                 if ((listDataChild.get(
