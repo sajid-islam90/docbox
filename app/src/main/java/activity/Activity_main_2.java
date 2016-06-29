@@ -123,13 +123,22 @@ public class  Activity_main_2 extends AppCompatActivity
         String formattedDate = df.format(c.getTime());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         SharedPreferences.Editor editor = prefs.edit();
+
         String allowDataCollect = prefs.getString("DataCollectFromOlderUser","");
         if(allowDataCollect.equals(""))
         {
 askDoctorType();
             editor.putString("DataCollectFromOlderUser","doctorType");//doctorType--> practicing or student
-            editor.commit();
+
+
         }
+//        editor.remove("SubscriptionExpiryDate");
+//        editor.remove("SubscriptionStartDate");
+//        editor.remove("DataCollectFromOlderUser");
+
+//editor.remove("DataCollectFromOlderUser");
+       // editor.putString(Activity_main_2.this.getString(R.string.account_type),Activity_main_2.this.getString(R.string.account_type_doctor));
+        editor.commit();
         String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
 //askDoctorType();
         if (validUpto.contains(" "))
@@ -878,8 +887,13 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
         }
             if(position == 5)
             {
-                fragmentNumber = 6;
-                addHelper();
+                if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
+                { fragmentNumber = 6;
+                addHelper();}
+                else
+                {
+                    position = 6;
+                }
             }
             if(position == 6)
             {
