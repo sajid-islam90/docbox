@@ -16,6 +16,7 @@ import utilityClasses.DatabaseHandler;
 import utilityClasses.PhotoHelper;
 import com.elune.sajid.myapplication.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import adapters.InputAgainstAFieldAdapter;
@@ -37,7 +38,8 @@ public class ViewFollowUp_Activity extends AppCompatActivity {
         Intent intent = getIntent();
         pid = intent.getIntExtra("id",0);
         version = intent.getIntExtra("version",0);
-        setTitle("Follow Up #"+version);
+        int number = intent.getIntExtra("number",1);
+        setTitle("Follow Up #"+number);
         TextView textView10 =(TextView)findViewById(R.id.textViewFollowUpNotesView);
         TextView textView6 =(TextView)findViewById(R.id.textViewFollowupOtherView);
         TextView textView7 =(TextView)findViewById(R.id.textViewFollowupMediaView);
@@ -88,7 +90,8 @@ doWork();
     public void doWork()
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(ViewFollowUp_Activity.this);
-        ArrayList<Item> FollowUpFields = databaseHandler.getFollowUp(pid, version);
+        int customerId = databaseHandler.getCustomerId();
+        ArrayList<Item> FollowUpFields = databaseHandler.getFollowUpUnixVersion(pid, version);
         ListView listView1 = (ListView)findViewById(R.id.fieldsListFollowUpView);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
         if (listView1 != null) {
@@ -122,11 +125,23 @@ doWork();
             if(mediaObjs[i].get_bmp()==null)
                     if(mediaObjs[i].get_media_path().contains(".mp4"))
                     {
+                        if(new File(mediaObjs[i].get_media_path()).exists())
                         mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 200);
+                        else
+                        {
+                            PhotoHelper.addMissingBmpFromFileName(mediaObjs[i], 200,customerId);
+                        }
+
+
                     }
                 else
                     {
+                        if(new File(mediaObjs[i].get_media_path()).exists())
                         mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 300);
+                        else
+                        {
+                            PhotoHelper.addMissingBmpFromFileName(mediaObjs[i], 300,customerId);
+                        }
                     }
 
                 item.setBmp(BitmapFactory.decodeByteArray(mediaObjs[i].get_bmp(), 0, mediaObjs[i].get_bmp().length));

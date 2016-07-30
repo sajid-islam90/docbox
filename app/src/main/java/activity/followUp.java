@@ -85,9 +85,10 @@ public class followUp extends AppCompatActivity {
         Intent intent = getIntent();
         media = new ArrayList<>();
         pid = intent.getIntExtra("id", 0);
-        version = intent.getIntExtra("version", 1);
+        version = (int) intent.getLongExtra("version", 1);
         parent  =intent.getStringExtra("parent");
-        setTitle("Follow Up # "+version);
+        int number =  intent.getIntExtra("number", 0);
+        setTitle("Follow Up # "+number);
         TextView textViewFollowupNotes =(TextView)findViewById(R.id.textViewFollowupNotes);
         TextView textViewFollowupOther =(TextView)findViewById(R.id.textViewFollowupOther);
         TextView textViewFollowupMedia =(TextView)findViewById(R.id.textViewFollowupMedia);
@@ -359,7 +360,7 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
                 takePictureIntent.putExtra("pid",pid);
                 takePictureIntent.putExtra("filePath",photoFile.getPath());
                 takePictureIntent.putExtra("parentActivity","followup");
-                mediaObj1.set_media_name(photoFile.getPath());
+                mediaObj1.set_media_name(photoFile.getName());
                 mediaObj1.set_media_path(photoFile.getPath());
 
 
@@ -393,6 +394,7 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
         if (fileUri != null) {
 
             intent.putExtra("videoPath", fileUri.getPath()) ;
+            mediaObj1.set_media_name(new File(fileUri.getPath()).getName());
             mediaObj1.set_media_path(fileUri.getPath());
             //startActivity(intent);
             // create a file to save the video
@@ -423,6 +425,7 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(followUp.this);
+        int customerId = databaseHandler.getCustomerId();
         Patient patient = databaseHandler.getPatient(pid);
         Item item = new Item();
 
@@ -490,11 +493,15 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
         }
 
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED) {
-
+            File photoFile = null;
             if (new File(mediaObj1.get_media_path()).exists())
             {
-                File photoFile = new File(mediaObj1.get_media_path());
+                 photoFile = new File(mediaObj1.get_media_path());
+            }
+            else
+            {
 
+            }
                 if(photoFile.length()<= 0)
                 {
                     photoFile.delete();
@@ -569,7 +576,7 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
 //            finish();
 //            startActivity(intent);
 
-        }
+
 
         }
         if ( (requestCode == PICKFILE_RESULT_CODE )&&((data !=null)&&(data.getData()!=null)))
@@ -636,7 +643,7 @@ if(listViewMedia.getVisibility()==View.VISIBLE)
                     mediaObj1.set_pid(pid);
                     mediaObj1.set_section(FOLLOW_UP_SECTION_CONST);
                     mediaObj1.set_version(version);
-
+mediaObj1.set_media_name(newFile.getName());
 
                     mediaObj1.set_media_path(newFile.getPath());
 

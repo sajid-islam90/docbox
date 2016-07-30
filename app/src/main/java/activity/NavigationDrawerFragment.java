@@ -157,6 +157,16 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
         items.add(item);
 
+        item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item9));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_feedback));
+        items.add(item);
+
+        item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item8));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_share));
+        items.add(item);
+
         if(accountType.equals(getActivity().getString(R.string.account_type_doctor)))
         {  item =new Item();
             item.setTitle(getString(R.string.nav_drawer_item6));
@@ -167,6 +177,8 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setTitle(getString(R.string.nav_drawer_item7));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_verify));
         items.add(item);
+
+
        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(getActivity(),items);
 //        mDrawerListView.setAdapter(drawerListAdapter);
        // mDrawerListView.bringToFront();

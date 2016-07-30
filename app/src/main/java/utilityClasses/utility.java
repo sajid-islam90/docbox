@@ -27,8 +27,10 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONObject;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -301,6 +303,50 @@ public class utility {
             public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
 
                 try {
+                    if (!response.isNull("webPatients"))
+                    {   Object jsonObject = response.get("webPatients");
+
+                    JSONParser parser = new JSONParser();
+                    Object obj = parser.parse(String.valueOf(jsonObject));
+                    JSONArray array = new JSONArray();
+                    array.add(obj);
+
+                    saveDataTable((JSONArray) array.get(0), context);
+                    String address = "docbox.co.in/sajid";
+                    DatabaseHandler databaseHandler = new DatabaseHandler(context);
+                    int DoctorId = databaseHandler.getCustomerId();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    String hashString = prefs.getString(context.getString(R.string.hash_code), "");
+                    String syncStatus = "1";
+ArrayList<String> data =new ArrayList<String>();
+                        data.add(String.valueOf(DoctorId));
+                        data.add(hashString);
+                        data.add(syncStatus);
+
+                    String s2 = "";
+                    String s3 = "";
+                    String s4 = "";
+                    StringWriter out1 = new StringWriter();
+                    StringWriter out2 = new StringWriter();
+                    StringWriter out3 = new StringWriter();
+                    try {
+                        JSONValue.writeJSONString(data, out1);
+                        JSONValue.writeJSONString(hashString, out2);
+                        JSONValue.writeJSONString(syncStatus, out3);
+                        s2 = out1.toString();
+                        s3 = out2.toString();
+                        s4 = out3.toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                        s2 = "["+s2+"]";
+                    final RequestParams requestParams = new RequestParams();
+                    requestParams.put("customerId", s2);
+
+//                    requestParams.put("token", hashString);
+//                    requestParams.put("syncStatus", syncStatus);
+                    syncDataSync("http://" + address + "/changeDoctorSyncStatuses.php", requestParams, context);
+
 
                     databaseHandler.updatePatient(DataBaseEnums.KEY_SYNC_STATUS, "1", pid);
                     databaseHandler.deletePatient();
@@ -308,15 +354,15 @@ public class utility {
                     if (context == null) {
                         return;
                     }
-                    if(uploadFilesLength==0){
+                    if (uploadFilesLength == 0) {
                         ((Activity) context).recreate();
                     }
 //
 //
 // ((Activity) context).recreate();
 //                   // progressDialog.hide();
-                  //  Toast.makeText(context, "All Patient Data", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
+                    //  Toast.makeText(context, "All Patient Data", Toast.LENGTH_LONG).show();
+                } } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -338,6 +384,7 @@ public class utility {
 
             @Override
             public void onFinish() {
+
 
                 databaseHandler.deletePatient();
                 String DocumentsJson = databaseHandler.composeJSONfromSQLiteDocuments(pid,context);
@@ -957,42 +1004,42 @@ public class utility {
         for (int k = 0;k<response.size();k++) {
 
             org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
+try {
+    if (jsonObject.size() == 1) {
 
-         if(jsonObject.size()==1) {
+        String table = String.valueOf(jsonObject.get("table"));
+        if (table.equals("documents")) {
+            saveDocumentsTable(response, context, k + 1);
+        } else if (table.equals("media")) {
+            saveMediaTable(response, context, k + 1);
+        } else if (table.equals("mediaFollowUp")) {
+            saveMediaFollowUpTable(response, context, k + 1);
+        } else if (table.equals("patient")) {
+            savePatientsTable(response, context, k + 1);
+        } else if (table.equals("notes")) {
+            saveNotesTable(response, context, k + 1);
+        } else if (table.equals("followUp")) {
+            saveFollowUpTable(response, context, k + 1);
+        } else if (table.equals("other")) {
+            saveOtherTable(response, context, k + 1);
+        } else if (table.equals("otherFollowUp")) {
+            saveOtherFollowUpTable(response, context, k + 1);
+        } else if (table.equals("personalinfo")) {
+            savePersonalInfoTable(response, context, k + 1);
+        } else if (table.equals("appointmentSettings")) {
+            saveAppointmentSettingsTable(response, context, k + 1);
+        }else if (table.equals("diagnosis")) {
+            saveDiagnosisTable(response, context, k + 1);
+        }else if (table.equals("treatment")) {
+            saveTreatmentTable(response, context, k + 1);
+        }
 
-             String table = String.valueOf(jsonObject.get("table"));
-             if(table.equals("documents")) {
-                 saveDocumentsTable(response, context, k + 1);
-             }
-             else if(table.equals("media")) {
-                 saveMediaTable(response, context, k + 1);
-             }
-             else if(table.equals("mediaFollowUp")) {
-                 saveMediaFollowUpTable(response, context, k + 1);
-             }
-             else if(table.equals("patient")) {
-                 savePatientsTable(response, context, k + 1);
-             }
-             else if(table.equals("notes")) {
-                 saveNotesTable(response, context, k + 1);
-             }
-             else if(table.equals("followUp")) {
-                 saveFollowUpTable(response, context, k + 1);
-             }
-             else if(table.equals("other")) {
-                 saveOtherTable(response, context, k + 1);
-             }
-             else if(table.equals("otherFollowUp")) {
-                 saveOtherFollowUpTable(response, context, k + 1);
-             }
-             else if(table.equals("personalinfo")) {
-                 savePersonalInfoTable(response, context, k + 1);
-             }
-             else if(table.equals("appointmentSettings")) {
-                 saveAppointmentSettingsTable(response, context, k + 1);
-             }
-
-         }
+    }
+}
+catch (Exception e)
+{
+    e.printStackTrace();
+}
 
 
         }
@@ -1032,6 +1079,14 @@ return  arrayListIdPhotoPath;
             patient.set_id(Integer.parseInt(String.valueOf(jsonObject.get("Patient Id"))));
             patient.set_gender(String.valueOf(jsonObject.get("Gender")));
             patient.set_age(String.valueOf(jsonObject.get("Age")));
+            patient.set_opd_ipd(String.valueOf(jsonObject.get("OpdIpdNumber")));
+            patient.set_address(String.valueOf(jsonObject.get("PostalAddress")));
+            patient.set_contact_number(String.valueOf(jsonObject.get("PhoneNumber")));
+            patient.set_height(String.valueOf(jsonObject.get("Height")));
+            patient.set_email(String.valueOf(jsonObject.get("EmailAddress")));
+            patient.set_last_seen_date(String.valueOf(jsonObject.get("LastVisitedDate")));
+            patient.set_first_aid_id(Long.parseLong(String.valueOf(jsonObject.get("FirstAidPatientId"))));
+            patient.set_weight(String.valueOf(jsonObject.get("Weight")));
             patient.set_bmp(image);
             File storageDir =
                     new File(Environment.getExternalStoragePublicDirectory(
@@ -1192,48 +1247,60 @@ catch(Exception e)
 
     public static  Map<String,String> saveDocumentsTable(JSONArray response,Context context,int index) {
 
-        DatabaseHandler databaseHandler = new DatabaseHandler(context);
-        Map<String,String> map = new HashMap<String,String>() {{
 
-        }};
-        ArrayList<String> idPath =new ArrayList<>();
-        for (int k = index;k<response.size();k++) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(context);
+            Map<String, String> map = new HashMap<String, String>() {{
+
+            }};
+        try {
+
+            ArrayList<String> idPath = new ArrayList<>();
+            for (int k = index; k < response.size(); k++) {
 
 
-            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
-            if(jsonObject.size()==1) {
+                org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
+                if (jsonObject.size() == 1) {
 
-                String table = String.valueOf(jsonObject.get("table"));
-                break;
+                    String table = String.valueOf(jsonObject.get("table"));
+                    break;
+                }
+
+
+                document_obj documentObj = new document_obj();
+
+                documentObj.set_doc_path(String.valueOf(jsonObject.get("DocumentPath")));
+                documentObj.set_doc_name(String.valueOf(jsonObject.get("DocumentName")));
+                documentObj.set_date(String.valueOf(jsonObject.get("Date")));
+                documentObj.set_id(Integer.parseInt(String.valueOf(jsonObject.get("PatientId"))));
+                map.put(String.valueOf(documentObj.get_id()), documentObj.get_doc_path());
+                // documentObj = PhotoHelper.addMissingBmp(documentObj);
+
+                Patient patient = databaseHandler.getPatient(Integer.parseInt(String.valueOf(jsonObject.get("PatientId"))));
+
+                File storageDir =
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "Patient Manager/" + patient.get_id() + "/Documents");
+                if (!storageDir.exists()) {
+
+                    storageDir.mkdir();
+                }
+
+                databaseHandler.addDocument(documentObj, Integer.parseInt(String.valueOf(jsonObject.get("SyncStatus"))));
+                if(Integer.parseInt(String.valueOf(jsonObject.get("SyncStatus")))!=5)
+                databaseHandler.updateDocument(documentObj, "1");
+                else
+                    databaseHandler.updateDocument(documentObj, "5");
+                // downloadFile(documentObj.get_id(),documentObj.get_doc_path(), String.valueOf(databaseHandler.getPersonalInfo().get_customerId()),context);
             }
 
 
-            document_obj documentObj = new document_obj();
-
-            documentObj.set_doc_path(String.valueOf(jsonObject.get("DocumentPath")));
-            documentObj.set_doc_name(String.valueOf(jsonObject.get("DocumentName")));
-            documentObj.set_date(String.valueOf(jsonObject.get("Date")));
-            documentObj.set_id(Integer.parseInt(String.valueOf(jsonObject.get("PatientId"))));
-            map.put(String.valueOf(documentObj.get_id()), documentObj.get_doc_path());
-           // documentObj = PhotoHelper.addMissingBmp(documentObj);
-
-            Patient patient = databaseHandler.getPatient(Integer.parseInt(String.valueOf(jsonObject.get("PatientId"))));
-
-            File storageDir =
-                    new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Documents");
-            if(!storageDir.exists()) {
-
-                storageDir.mkdir();
-            }
-
-            databaseHandler.addDocument(documentObj);
-            databaseHandler.updateDocument(documentObj, "1");
-           // downloadFile(documentObj.get_id(),documentObj.get_doc_path(), String.valueOf(databaseHandler.getPersonalInfo().get_customerId()),context);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
-return  map;
-
+        return map;
     }
     //i: patient id
     //s: file path
@@ -1324,6 +1391,11 @@ return  map;
                 storageDir.mkdir();
             }
             databaseHandler.addMediaFollowUp(mediaObj);
+            if(Integer.parseInt(String.valueOf(jsonObject.get("SyncStatus")))!=5)
+                databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS,"1", String.valueOf(mediaObj.get_media_path()));
+            else
+                databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS,"5", String.valueOf(mediaObj.get_media_path()));
+
 
             //databaseHandler.aM(documentObj);
             // downloadFile(documentObj.get_id(),documentObj.get_doc_path(), String.valueOf(databaseHandler.getPersonalInfo().get_customerId()),context);
@@ -1368,10 +1440,71 @@ return  map;
 
                 storageDir.mkdir();
             }
+
         databaseHandler.addMedia(mediaObj);
+            if(Integer.parseInt(String.valueOf(jsonObject.get("SyncStatus")))!=5)
+                databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1", String.valueOf(mediaObj.get_media_path()));
+            else
+                databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"5", String.valueOf(mediaObj.get_media_path()));
             //databaseHandler.aM(documentObj);
             // downloadFile(documentObj.get_id(),documentObj.get_doc_path(), String.valueOf(databaseHandler.getPersonalInfo().get_customerId()),context);
         }
+
+
+
+    }
+    public static void saveTreatmentTable(JSONArray response, Context context, int index) {
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(context);
+        ArrayList<Item> listOfItems = new ArrayList<>();
+
+        for (int k = index;k<response.size();k++) {
+
+            Item item = new Item();
+            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
+            if (jsonObject.size() == 1) {
+
+
+                break;
+            }
+            databaseHandler.saveTreatmentWithVersion(String.valueOf(jsonObject.get("PatientId")),String.valueOf(jsonObject.get("Treatment")),
+                    String.valueOf(jsonObject.get("Date")),String.valueOf(jsonObject.get("Version")));
+
+
+
+
+        }
+
+
+
+
+
+    }
+
+
+    public static void saveDiagnosisTable(JSONArray response, Context context, int index) {
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(context);
+        ArrayList<Item> listOfItems = new ArrayList<>();
+
+        for (int k = index;k<response.size();k++) {
+
+            Item item = new Item();
+            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
+            if (jsonObject.size() == 1) {
+
+
+                break;
+            }
+            databaseHandler.saveDiagnosisWithVersion(String.valueOf(jsonObject.get("PatientId")),String.valueOf(jsonObject.get("Diagnosis")),
+                    String.valueOf(jsonObject.get("Date")),String.valueOf(jsonObject.get("Version")));
+
+
+
+
+        }
+
+
 
 
 
@@ -1651,12 +1784,24 @@ databaseHandler.saveFollowUp(listOfItems);
             for (int i = 0; i < mediaObjs.length; i++) {
                 item = new Item();
                 // mediaObjs[i]=PhotoHelper.addMissingBmp(mediaObjs[i],CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
-                if(mediaObjs[i].get_media_path().contains(".mp4"))
+
+                if (new File(mediaObjs[i].get_media_path()).exists())
                 {
-                    mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 200);
+
+                    if (mediaObjs[i].get_media_path().contains(".mp4")) {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 200);
+                    } else {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 300);
+                    }
+            }
+                else
+                {
+                    if (mediaObjs[i].get_media_path().contains(".mp4")) {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 200);
+                    } else {
+                        mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i], 300);
+                    }
                 }
-                else{
-                mediaObjs[i] = PhotoHelper.addMissingBmp(mediaObjs[i],300);}
                 item.setBmp(BitmapFactory.decodeByteArray(mediaObjs[i].get_bmp(), 0, mediaObjs[i].get_bmp().length));
                 item.setDiagnosis(mediaObjs[i].get_media_path());
                 item.setPatient_id(mediaObjs[i].get_pid());

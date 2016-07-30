@@ -125,6 +125,8 @@ public class Contact_Fragment extends Fragment {
                                     data.add(textView.getText() + "\n-Sent From DocBox");
                                     // data.add("www.firstaid.com");
                                     data.add(patient.get_contact_number());
+                                    data.add(String.valueOf(dbHandler.getCustomerId()));
+                                    data.add(String.valueOf((patient.get_id())));
                                     String s1 = null;
 
                                     StringWriter out = new StringWriter();

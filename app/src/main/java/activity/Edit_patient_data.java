@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,18 +35,19 @@ import objects.Patient;
 public class Edit_patient_data extends ActionBarActivity {
     File storageDir;
     File photoFile = null;
+    int pid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_patient_data);
         Intent intent = getIntent();
-        int id = intent.getIntExtra("id", 0);
+         pid = intent.getIntExtra("id", 0);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
 
-        doWork(id);
+        doWork(pid);
 
     }
 
@@ -199,7 +201,8 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
         selectedGender = edit_gender.getCheckedRadioButtonId();
         RadioButton edit_gender_rb = (RadioButton)findViewById(selectedGender);
 
-
+        Patient patient = databaseHandler.getPatient(pid);
+        Log.e("edit patient", String.valueOf(patient.get_bmp().length));
 
 
         // Bundle extras = intent.getExtras();
@@ -222,9 +225,11 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
             return;
 
         }
+
         Bitmap bitmap = null;
         Patient newPatient = new Patient();
         assert bmp_image != null;
+        if(patient.get_bmp().length==0)
         if((bmp_image.getDrawable() != null)) {
             bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
             if(bitmap!=null)
@@ -235,13 +240,15 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
 
 
         else {
-
+            Log.e("edit patient","no dp putting default image");
             newPatient.set_bmp(image);
 //            bmp_image.setImageDrawable(getResources().getDrawable(R.drawable.default_photo));
 //            bitmap = ((BitmapDrawable) bmp_image.getDrawable()).getBitmap();
 //            image = PhotoHelper.getBitmapAsByteArray(bitmap);
 //            newPatient.set_bmp(image);
         }
+        else
+        newPatient.set_bmp(patient.get_bmp());
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");Calendar c = Calendar.getInstance();
 
         String formattedDate = df.format(c.getTime());
@@ -258,7 +265,7 @@ DatabaseHandler databaseHandler = new DatabaseHandler(Edit_patient_data.this);
         patientOccupation = edit_occupation.getText().toString();
         patientOpdIpd = edit_OpdIpd.getText().toString();
 
-        Patient patient = databaseHandler.getPatient(patientId);
+
         newPatient.set_weight(patientWeight);
         newPatient.set_diagnosis(patientDiagnosis);
         newPatient.set_gender(patientGender);

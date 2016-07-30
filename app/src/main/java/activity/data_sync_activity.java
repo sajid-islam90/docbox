@@ -4,8 +4,8 @@ package activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,16 +22,23 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import objects.DataBaseEnums;
+import objects.document_obj;
 import objects.media_obj;
 import objects.personal_obj;
 import utilityClasses.DatabaseHandler;
@@ -293,7 +300,6 @@ e.printStackTrace();
             Button button = (Button)findViewById(R.id.buttonSaveToCloud);
             linearLayout.setVisibility(View.VISIBLE);
             relativeLayout.setVisibility(View.GONE);
-            textView.setText("Your Data Is Safe On Our Cloud Please Track The File Upload Progress In The Status Bar Above");
 
             // linearLayout.setVisibility(View.VISIBLE);
             button.setVisibility(View.GONE);
@@ -305,6 +311,20 @@ e.printStackTrace();
             mediaObjsDocuments = controller.getDocumentsTobeUploaded();
             mediaObjsFollowUp.addAll(mediaObjsMedia);
             mediaObjsFollowUp.addAll(mediaObjsDocuments);
+            if ((textView != null)&&(mediaObjsFollowUp.size()>0)) {
+                textView.setText("Your Data Is Safe On Our Cloud Please Track The File Upload Progress In The Status Bar Above");
+            }
+            else
+            {
+                textView.setText("Your Data Is Safe On Our Cloud");
+            }
+            data_sync_activity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    new RestoreWebData().execute();
+                }
+            });
+
             //progressBar.setProgress(50);
             if(mediaObjsFollowUp.size()>0)
             {relativeLayout.setVisibility(View.VISIBLE);
@@ -312,6 +332,172 @@ e.printStackTrace();
 
         }
 
+
+
+
+    }
+
+
+    public class RestoreWebData extends AsyncTask<Void, Void, Boolean> {
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            mBuilder =
+                    new NotificationCompat.Builder(data_sync_activity.this)
+                            .setSmallIcon(android.R.drawable.stat_sys_download)
+                            .setContentTitle("DocBox")
+
+
+                            .setContentText("Patient data is being downloaded from cloud");
+
+            notifier.notify(1, mBuilder.build());
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(data_sync_activity.this);
+
+            List<document_obj> listDocument = databaseHandler.getAllDocumentsForDownload(5);
+            List<document_obj> listMediaFollowUp = databaseHandler.getAllMediaFollowUpForSyncStatus(5);
+            List<document_obj> listMedia = databaseHandler.getAllMediaForSyncsStatus(5);
+            listDocument.addAll(listMediaFollowUp);
+//            listMedia.addAll(listDocument);
+            listMedia.addAll(listMediaFollowUp);
+//            for (int i = 0; i < listDocument.size(); i++) {
+//                downloadFile(listDocument.get(i).get_id(), listDocument.get(i).get_doc_path());
+//            }
+
+            for (int i = 0; i < listMedia.size(); i++) {
+                File storageDir =
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "Patient Manager/"+listMedia.get(i).get_id()+"/Notes");
+                if(!storageDir.exists())
+                    storageDir.mkdir();
+                try {
+                    if(i%40 == 0)
+                        Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.e("download web items", storageDir.getPath()+"/"+listMedia.get(i).get_doc_name());
+                if(new File(listMedia.get(i).get_doc_path()).exists())
+                { downloadFile(listMedia.get(i).get_id(), listMedia.get(i).get_doc_path());
+                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());}
+                else
+                {
+
+                    downloadFile(listMedia.get(i).get_id(),storageDir.getPath()+"/"+listMedia.get(i).get_doc_name());
+                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_name());}
+            }
+
+
+            for (int i = 0; i < listDocument.size(); i++) {
+                File storageDir =
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "Patient Manager/"+listDocument.get(i).get_id()+"/Documents");
+                if(!storageDir.exists())
+                    storageDir.mkdir();
+                try {
+                    if(i%40 == 0)
+                        Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(new File(listDocument.get(i).get_doc_path()).exists())
+                { downloadFile(listDocument.get(i).get_id(), listDocument.get(i).get_doc_path());
+                    databaseHandler.updateDocument(DataBaseEnums.KEY_SYNC_STATUS,"1",listDocument.get(i).get_doc_path());
+                }
+                else
+                { downloadFile(listDocument.get(i).get_id(),storageDir.getPath()+"/"+listDocument.get(i).get_doc_name());
+                    databaseHandler.updateDocument(DataBaseEnums.KEY_SYNC_STATUS,"1",listDocument.get(i).get_doc_name());
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+//            SharedPreferences.Editor editor = prefs.edit();
+            mBuilder =
+                    new NotificationCompat.Builder(data_sync_activity.this)
+                            .setSmallIcon(R.drawable.icon_notification)
+                            .setContentTitle("DocBox")
+
+                            .setContentText(" Patients' data saved to Phone");
+
+            notifier.notify(1, mBuilder.build());
+//            editor.putBoolean("restore", false);
+//            editor.commit();
+//            pdia.dismiss();
+
+        }
+
+        //i: patient id
+        //s: file path
+        public void downloadFile(int i, String s) {
+            int totalSize = 0;
+            int downloadedSize = 0;
+            DatabaseHandler databaseHandler = new DatabaseHandler(data_sync_activity.this);
+            int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
+            File file1 = new File(s);
+            File file2 = file1.getParentFile();
+            s= file2.getPath();
+            String dwnload_file_path = "http://docbox.co.in/sajid/" + CustomerId + "/" + String.valueOf(i) + "/" + file1.getName();
+            try {
+                URL url = new URL(dwnload_file_path);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(true);
+
+                //connect
+                urlConnection.connect();
+
+                //set the path where we want to save the file
+                File SDCardRoot = Environment.getExternalStorageDirectory();
+                //create a new file, to save the downloaded file
+                File file = new File(file2, file1.getName());
+
+                FileOutputStream fileOutput = new FileOutputStream(file);
+
+                //Stream used for reading the data from the internet
+                InputStream inputStream = urlConnection.getInputStream();
+
+                //this is the total size of the file which we are downloading
+                totalSize = urlConnection.getContentLength();
+
+
+                //create a buffer...
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
+                    fileOutput.write(buffer, 0, bufferLength);
+                    downloadedSize += bufferLength;
+                    // update the progressbar //
+
+                }
+                //close the output stream when complete //
+                fileOutput.close();
+
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        public void doSomething() {
+
+        }
 
 
     }

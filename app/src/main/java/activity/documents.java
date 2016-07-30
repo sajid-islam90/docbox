@@ -1,6 +1,7 @@
 package activity;
 //DISPLAYS ALL THE DOCUMENTS OF A PARTICULAR PATIENT AND HAS BUTTONS FOR ADDING DOCUMENTS AND NOTES.
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,15 +13,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import utilityClasses.floatingactionbutton.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,15 +46,16 @@ import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
@@ -60,6 +65,8 @@ public class documents extends ActionBarActivity {
     static final int PICKFILE_RESULT_CODE = 2;
     static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     static document_obj doc_obj = new document_obj();
+    static NotificationCompat.Builder mBuilder;
+    static NotificationManager notifier;
     int pid ;
     String governingActivity;
     File photoFile;
@@ -155,13 +162,14 @@ public class documents extends ActionBarActivity {
             {
                 displayDocument.setTitle(documentList.get(i).get_doc_name());
                 displayDocument.setDiagnosis(documentList.get(i).get_doc_path());
+                doc_obj = documentList.get(i);
                 if((new File(documentList.get(i).get_doc_path()).exists()))
                 {
 
                     if((documentList.get(i).get_doc_path().contains(".jpeg"))||(documentList.get(i).get_doc_path().contains(".jpg"))||
                         (documentList.get(i).get_doc_path().contains(".png")))
                     {   if (documentList.get(i).get_bmp() == null) {
-                                 doc_obj = documentList.get(i);
+
                                  if(new File(documentList.get(i).get_doc_path()).exists())
                                     {   doc_obj = PhotoHelper.addMissingBmp(doc_obj);
                                         dbHandler.updateDocument(doc_obj,"0");}
@@ -188,7 +196,48 @@ public class documents extends ActionBarActivity {
 
                 nameWithImage.add(displayDocument);
                 displayDocument = new Item();
-            }}
+            }
+                else
+                {
+                    File storageDir =
+                            new File(Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES), "Patient Manager/" + patient.get_id() + "/Documents");
+
+                     if(documentList.get(i).get_doc_path().contains(".doc"))
+                    {
+                        documentList.get(i).set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources, R.drawable.ic_doc)));
+                        bmpImage = BitmapFactory.decodeResource(resources, R.drawable.ic_doc);
+                    }
+                    else if (documentList.get(i).get_doc_path().contains(".pdf"))
+                    {
+                        documentList.get(i).set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources, R.drawable.ic_pdf)));
+                        bmpImage = BitmapFactory.decodeResource(resources, R.drawable.ic_pdf);
+                    }
+                    else if (documentList.get(i).get_doc_path().contains(".txt"))
+                    {
+                        documentList.get(i).set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_txt)));
+                        bmpImage = BitmapFactory.decodeResource(resources, R.drawable.ic_txt);
+                    }
+                    else{
+                         bmpImage = BitmapFactory.decodeFile(storageDir.getPath()+"/"+doc_obj.get_doc_path());
+                         Log.i("documents", storageDir.getPath()+"/"+doc_obj.get_doc_path());
+                         if(bmpImage!=null)
+                         bmpImage = PhotoHelper.getResizedBitmap(bmpImage,150,150);
+
+                     }
+
+
+
+
+                    displayDocument.setBmp(bmpImage);
+                    displayDocument.setPatient_id(documentList.get(i).get_id());
+
+                    nameWithImage.add(displayDocument);
+                    displayDocument = new Item();
+                }
+
+
+            }
         }
         //displayDocuments(nameWithImage);
 
@@ -749,6 +798,139 @@ public class documents extends ActionBarActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+    public class RestoreWebData extends AsyncTask<Void, Void, Boolean> {
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            mBuilder =
+                    new NotificationCompat.Builder(documents.this)
+                            .setSmallIcon(android.R.drawable.stat_sys_download)
+                            .setContentTitle("DocBox")
+
+
+                            .setContentText("Patient data is being downloaded from cloud");
+
+            notifier.notify(1, mBuilder.build());
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(documents.this);
+
+            List<document_obj> listDocument = databaseHandler.getAllDocumentsForDownload(5);
+            List<document_obj> listMediaFollowUp = databaseHandler.getAllMediaFollowUpForSyncStatus(5);
+            List<document_obj> listMedia = databaseHandler.getAllMediaForSyncsStatus(5);
+            listMedia.addAll(listDocument);
+            listMedia.addAll(listMediaFollowUp);
+//            for (int i = 0; i < listDocument.size(); i++) {
+//                downloadFile(listDocument.get(i).get_id(), listDocument.get(i).get_doc_path());
+//            }
+            for (int i = 0; i < listMedia.size(); i++) {
+                File storageDir =
+                        new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES), "Patient Manager/"+listMedia.get(i).get_id()+"/Notes");
+                if(!storageDir.exists())
+                    storageDir.mkdir();
+                try {
+                    if(i%40 == 0)
+                        Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(new File(listMedia.get(i).get_doc_path()).exists())
+                    downloadFile(listMedia.get(i).get_id(), listMedia.get(i).get_doc_path());
+                else
+                    downloadFile(listMedia.get(i).get_id(),storageDir.getPath()+"/"+listMedia.get(i).get_doc_name());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+//            SharedPreferences.Editor editor = prefs.edit();
+            mBuilder =
+                    new NotificationCompat.Builder(documents.this)
+                            .setSmallIcon(R.drawable.icon_notification)
+                            .setContentTitle("DocBox")
+
+                            .setContentText(" Patients' data saved to Phone");
+
+            notifier.notify(1, mBuilder.build());
+//            editor.putBoolean("restore", false);
+//            editor.commit();
+//            pdia.dismiss();
+
+        }
+
+        //i: patient id
+        //s: file path
+        public void downloadFile(int i, String s) {
+            int totalSize = 0;
+            int downloadedSize = 0;
+            DatabaseHandler databaseHandler = new DatabaseHandler(documents.this);
+            int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
+            File file1 = new File(s);
+            File file2 = file1.getParentFile();
+            s= file2.getPath();
+            String dwnload_file_path = "http://docbox.co.in/sajid/" + CustomerId + "/" + String.valueOf(i) + "/" + file1.getName();
+            try {
+                URL url = new URL(dwnload_file_path);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(true);
+
+                //connect
+                urlConnection.connect();
+
+                //set the path where we want to save the file
+                File SDCardRoot = Environment.getExternalStorageDirectory();
+                //create a new file, to save the downloaded file
+                File file = new File(file2, file1.getName());
+
+                FileOutputStream fileOutput = new FileOutputStream(file);
+
+                //Stream used for reading the data from the internet
+                InputStream inputStream = urlConnection.getInputStream();
+
+                //this is the total size of the file which we are downloading
+                totalSize = urlConnection.getContentLength();
+
+
+                //create a buffer...
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
+                    fileOutput.write(buffer, 0, bufferLength);
+                    downloadedSize += bufferLength;
+                    // update the progressbar //
+
+                }
+                //close the output stream when complete //
+                fileOutput.close();
+
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        public void doSomething() {
+
+        }
+
+
     }
 
 

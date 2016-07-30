@@ -200,9 +200,15 @@ public class PhotoHelper {
     public static document_obj addMissingBmp(document_obj doc_obj)
     {
 
-
+        File storageDir =
+                new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/" + doc_obj.get_id() + "/Documents");
        // while (BitmapFactory.decodeFile(doc_obj.get_doc_path())==null);
-        Bitmap bmp = BitmapFactory.decodeFile(doc_obj.get_doc_path());
+        Bitmap bmp = null;
+        if(new File(doc_obj.get_doc_path()).exists())
+         bmp = BitmapFactory.decodeFile(doc_obj.get_doc_path());
+        else
+            bmp = BitmapFactory.decodeFile(storageDir.getPath()+"/"+doc_obj.get_doc_path());
         if(bmp!=null)
         bmp = getResizedBitmap(bmp,150,150);
         doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
@@ -218,15 +224,27 @@ public class PhotoHelper {
 
     }
     public static media_obj  addMissingBmp(media_obj mediaObj,int mode)
-    {
+    {File storageDir =
+            new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "Patient Manager/" + mediaObj.get_pid() + "/Notes");
        // Bitmap bmp = BitmapFactory.decodeFile(mediaObj.get_media_path())
         Bitmap bmp = null;
         if (mode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE ) {
+
+            if (new File(mediaObj.get_media_path()).exists())
              bmp = ThumbnailUtils.createVideoThumbnail(mediaObj.get_media_path(), MediaStore.Video.Thumbnails.MICRO_KIND);
+            else
+            {
+                bmp = ThumbnailUtils.createVideoThumbnail(storageDir+"/"+mediaObj.get_media_path(), MediaStore.Video.Thumbnails.MICRO_KIND);
+            }
+
         }
         else
         {
+            if (new File(mediaObj.get_media_path()).exists())
             bmp = BitmapFactory.decodeFile(mediaObj.get_media_path());
+            else
+                bmp = BitmapFactory.decodeFile(storageDir+"/"+mediaObj.get_media_path());
 
         }
         if(bmp!=null)
@@ -234,6 +252,33 @@ public class PhotoHelper {
         mediaObj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));}
         else
         mediaObj.set_bmp(new byte[0]);
+        return mediaObj;
+
+    }
+    public static media_obj  addMissingBmpFromFileName(media_obj mediaObj,int mode,int customerId)
+    {
+        // Bitmap bmp = BitmapFactory.decodeFile(mediaObj.get_media_path())
+        File storageDir =
+                new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+mediaObj.get_pid()+"/Notes");
+        if(!storageDir.exists())
+            storageDir.mkdir();
+        Bitmap bmp = null;
+        if (mode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE ) {
+
+            bmp = ThumbnailUtils.createVideoThumbnail(storageDir.getPath()+"/"+mediaObj.get_media_path(), MediaStore.Video.Thumbnails.MICRO_KIND);
+
+        }
+        else
+        {
+            bmp = BitmapFactory.decodeFile(storageDir.getPath()+"/"+mediaObj.get_media_path());
+
+        }
+        if(bmp!=null)
+        { bmp = getResizedBitmap(bmp,150,150);
+            mediaObj.set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));}
+        else
+            mediaObj.set_bmp(new byte[0]);
         return mediaObj;
 
     }

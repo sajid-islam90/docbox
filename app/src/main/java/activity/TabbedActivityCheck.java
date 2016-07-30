@@ -324,24 +324,24 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
 
         return super.onOptionsItemSelected(item);
     }
-    public void startAddNotes()
-    {
-        Intent curIntent = getIntent();
-        DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = df.format(c.getTime());
-        Patient patient = databaseHandler.getPatient(pid);
-        patient.set_last_seen_date(formattedDate);
-        databaseHandler.updatePatient(patient,0);
-        int version  =  databaseHandler.getMaxFollowupVersion(pid);
-        Intent intent =  new Intent(this, followUp.class);
-        int pid = curIntent.getIntExtra("id",0);
-        intent.putExtra("version",version+1);
-        intent.putExtra("parent",PatientProfileActivity.class.toString());
-        intent.putExtra("id",pid);
-        startActivity(intent);
-    }
+//    public void startAddNotes()
+//    {
+//        Intent curIntent = getIntent();
+//        DatabaseHandler databaseHandler = new DatabaseHandler(TabbedActivityCheck.this);
+//        Calendar c = Calendar.getInstance();
+//        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+//        String formattedDate = df.format(c.getTime());
+//        Patient patient = databaseHandler.getPatient(pid);
+//        patient.set_last_seen_date(formattedDate);
+//        databaseHandler.updatePatient(patient,0);
+//        int version  =  databaseHandler.getMaxFollowupVersion(pid);
+//        Intent intent =  new Intent(this, followUp.class);
+//        int pid = curIntent.getIntExtra("id",0);
+//        intent.putExtra("version",version+1);
+//        intent.putExtra("parent",PatientProfileActivity.class.toString());
+//        intent.putExtra("id",pid);
+//        startActivity(intent);
+//    }
 
 
     @Override

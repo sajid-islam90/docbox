@@ -196,7 +196,7 @@ public class CameraDemoActivity extends Activity implements SurfaceHolder.Callba
 camera.setAutoFocusMoveCallback(new Camera.AutoFocusMoveCallback() {
     @Override
     public void onAutoFocusMoving(boolean start, Camera camera) {
-        Toast.makeText(CameraDemoActivity.this,"Autofocus",Toast.LENGTH_LONG).show();
+       // Toast.makeText(CameraDemoActivity.this,"Autofocus",Toast.LENGTH_LONG).show();
     }
 });
                 camera.setErrorCallback(new Camera.ErrorCallback() {
@@ -231,6 +231,7 @@ camera.setAutoFocusMoveCallback(new Camera.AutoFocusMoveCallback() {
                 camera.stopPreview();
                 camera.release();
                 camera = null;
+                //ffff
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -424,7 +425,8 @@ camera.autoFocus(new Camera.AutoFocusCallback() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(CameraDemoActivity.this, "photo again?", Toast.LENGTH_SHORT).show();
+                                      //  Toast.makeText(CameraDemoActivity.this, "photo again?", Toast.LENGTH_SHORT).show();
+                                        releaseCamera();
                                         utility.recreateActivityCompat(CameraDemoActivity.this);
                                         dialog.dismiss();
 
@@ -448,6 +450,7 @@ camera.autoFocus(new Camera.AutoFocusCallback() {
 //                            mediaObj.set_media_path(filePath);
 //                            mediaObj.set_media_name(photoFile.getName());
 //                            mediaObj = PhotoHelper.addMissingBmp(mediaObj,1);
+                                releaseCamera();
                                 finish();
 
                             }

@@ -58,9 +58,11 @@
     <string name="nav_drawer_item2">My Appointments</string>
     <string name="nav_drawer_item3">Profile Settings</string>
     <string name="nav_drawer_item4">Today Schedule</string>
-    <string name="nav_drawer_item5">Payment Options</string>
+    <string name="nav_drawer_item5">Subscription</string>
     <string name="nav_drawer_item6">Add Helper</string>
     <string name="nav_drawer_item7">Account Verification</string>
+    <string name="nav_drawer_item8">Share</string>
+    <string name="nav_drawer_item9">Feedback</string>
 
     <string name="delete_button">"Delete Record</string>
     <string name="edit_button">"Edit Record</string>
@@ -73,7 +75,8 @@
     <string name="title_activity_clinical_notes">ClinicalNotesActivity</string>
     <string name="title_activity_add_clinical_notes">ClinicalNotes</string>
     <string name="title_activity_tabbed_activity_check">Clinical Notes</string>
-
+    <string name="terms_of_use"><u>Terms Of Use</u></string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="title_activity_tabbed__activity__functionality">TABBED_ACTIVITY_FUNCTIONALITY
     </string>
     <string name="title_activity_history_">History</string>

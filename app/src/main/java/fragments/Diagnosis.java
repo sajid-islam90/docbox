@@ -180,10 +180,11 @@ public class Diagnosis extends Fragment {
         for (int i = 1;i<=versions;i++)
         {
             diagnosis = databaseHandler.getDiagnosis(String.valueOf(pid),i);
+           long unixVersion =  databaseHandler.getDiagnosisUnixVersion(String.valueOf(pid),i);
             listDataHeader.add((String) diagnosis.get(DataBaseEnums.KEY_DIAGNOSIS));
             listDataHeaderDates.add((String) diagnosis.get(DataBaseEnums.KEY_DATE));
             List<List<String>>  treatmentData = new ArrayList<>();
-            treatmentData =databaseHandler.getTreatment(String.valueOf(pid),i);
+            treatmentData =databaseHandler.getTreatment(String.valueOf(pid), (int) unixVersion);
             List<String> treatment = treatmentData.get(0);
             List<String>treatmentDates = treatmentData.get(1);
             treatment.add("Click here to Add a Treatment");
@@ -268,6 +269,7 @@ public class Diagnosis extends Fragment {
     {
         LayoutInflater li = LayoutInflater.from(getActivity());
         final DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+        final long unixVersion =  databaseHandler.getDiagnosisUnixVersion(String.valueOf(pid),(groupPosition+1));
         Bundle args = getArguments();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
@@ -293,11 +295,11 @@ public class Diagnosis extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                // databaseHandler.saveDiagnosis(String.valueOf(pid),diagnosis.getText().toString(),date.getText().toString());
-                                databaseHandler.saveTreatment(String.valueOf(pid), treatment.getText().toString(), date.getText().toString(), groupPosition);
+                                databaseHandler.saveTreatment(String.valueOf(pid), treatment.getText().toString(), date.getText().toString(), (int) unixVersion);
                                 prepareListData();
                                 listAdapter.updateReceiptsList(listDataHeader,listDataChild,listDataHeaderDates, listDataChildDates);
                                 //listAdapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), "new treatment is added for diagnosis " + listDataHeader.get(groupPosition), Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(getActivity(), "new treatment is added for diagnosis " + listDataHeader.get((int) unixVersion), Toast.LENGTH_SHORT).show();
                             }
                         })
                 .setNegativeButton("Cancel",

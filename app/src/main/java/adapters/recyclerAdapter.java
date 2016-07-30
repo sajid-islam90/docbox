@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -139,10 +140,13 @@ TextView Field;
         @Override
         public void onClick(View v) {
             final DatabaseHandler dbHandle = new DatabaseHandler(context);
-
+            final File storageDir =
+                    new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES), "Patient Manager/" + pid + "/Notes");
 if(photoFlag == 2)
 {
-    if(itemsArrayList.get(position).getDiagnosis().contains(".jpg"))
+    if((itemsArrayList.get(position).getDiagnosis().contains(".jpg"))||(itemsArrayList.get(position).getDiagnosis().contains(".png"))
+        ||(itemsArrayList.get(position).getDiagnosis().contains(".PNG")))
     {
 
 
@@ -161,7 +165,12 @@ if(photoFlag == 2)
                 Uri intentUri;
                 if(item.getTitle().equals("open"))
                 {
+
+                    if(new File(itemsArrayList.get(position).getDiagnosis()).exists())
+
                     intentUri = Uri.fromFile(new File(itemsArrayList.get(position).getDiagnosis()));
+                    else
+                    intentUri = Uri.fromFile(new File(storageDir+"/"+itemsArrayList.get(position).getDiagnosis()));
 
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);

@@ -233,8 +233,10 @@
             android:name="activity.paymentOptionNotAvailableActivity"
             android:label="@string/title_activity_payment_option_not_available"
             android:theme="@style/MainActivity" />
-        <activity android:name="activity.PGSubscriptionActivity"
-            android:theme="@style/MainActivity"/>
+        <activity
+            android:name="activity.PGSubscriptionActivity"
+            android:theme="@style/MainActivity" />
+        <activity android:name="activity.PrivacyAndTermsView"></activity>
     </application>
 
 </manifest>

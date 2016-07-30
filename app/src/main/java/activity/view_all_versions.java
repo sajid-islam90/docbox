@@ -52,10 +52,12 @@ public class view_all_versions extends Fragment {
     {
         if (!accountType.equals(getActivity().getString(R.string.account_type_helper)))
         {  DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
-        int version  =  databaseHandler.getMaxFollowupVersion(pid);
+//        int version  =  databaseHandler.getMaxFollowupVersion(pid);
         Intent intent =  new Intent(getActivity(), followUp.class);
-
-        intent.putExtra("version",version+1);
+            final int version[] = databaseHandler.getMaxFollowupVersion(pid);
+            Long tsLong = System.currentTimeMillis()/1000;
+        intent.putExtra("version",tsLong);
+            intent.putExtra("number",version.length+1);
         intent.putExtra("parent",PatientProfileActivity.class.toString());
         intent.putExtra("id", pid);
         startActivity(intent);
@@ -119,6 +121,7 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         ArrayList<String> dates = databaseHandler.getAllNotesDates(pid,getActivity());
+        final int version[] = databaseHandler.getMaxFollowupVersion(pid);
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, dates);
         ListView listView = (ListView)rootView.findViewById(R.id.allVersionDates);
@@ -132,7 +135,8 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
                 intent = new Intent(getActivity(), ViewFollowUp_Activity.class);
                 intent.putExtra("id",pid);
-                intent.putExtra("version",position+1);
+                intent.putExtra("version",version[position]);
+                intent.putExtra("number",position+1);
                 intent.putExtra("parent",view_all_versions.class.toString());
                 startActivity(intent);
                 // String value = (String) adapter.getItemAtPosition(position);

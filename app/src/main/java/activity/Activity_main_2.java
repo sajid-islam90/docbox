@@ -49,13 +49,12 @@ import com.elune.sajid.myapplication.R;
 import utilityClasses.RoundImage;
 
 import fragments.UserProfile;
-import utilityClasses.utility;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
@@ -77,9 +76,9 @@ import java.util.Date;
 import java.util.List;
 
 
-import objects.Patient;
 import objects.document_obj;
 import objects.personal_obj;
+import utilityClasses.utility;
 
 
 public class  Activity_main_2 extends AppCompatActivity
@@ -217,6 +216,7 @@ askDoctorType();
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         ArrayList<String> latLong = dbHandle.getSavedLatitudeLongitude();
         if (((latLong.get(0) == null) || (latLong.get(1) == null) || (latLong.get(0).equals("")) || (latLong.get(1).equals("")))
@@ -885,17 +885,92 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             //mTitle = "My Calender";
         }
-            if(position == 5)
+
+                if(position == 5)
+                {
+                    LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
+                    final View promptsView = li.inflate(R.layout.sms_text, null);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                            Activity_main_2.this);
+                    final TextView textView = (TextView)promptsView.findViewById(R.id.sms_Edit_Text);
+                    // set prompts.xml to alertdialog builder
+                    alertDialogBuilder.setView(promptsView);
+
+                    alertDialogBuilder
+                            .setCancelable(false)
+                            .setTitle("Feedback")
+                            .setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                            String address = getResources().getString(R.string.action_server_ip_address);
+                                            ArrayList<String> data = new ArrayList<String>();
+                                            data.add(String.valueOf(databaseHandler.getCustomerId()));
+                                            data.add(String.valueOf(textView.getText()));
+                                            // data.add("www.firstaid.com");
+
+                                            String s1 = null;
+
+                                            StringWriter out = new StringWriter();
+                                            try {
+                                                JSONValue.writeJSONString(data, out);
+                                                s1 = out.toString();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            RequestParams params = new RequestParams();
+                                            params.put("data", s1);
+                                            utility.sync("http://" + address + "/saveDocboxFeedback.php", params, Activity_main_2.this);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(Activity_main_2.this,"Feedback sent \n Thank you for helping us make DocBox a better experience.",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+//                                    smsIntent.setType("vnd.android-dir/mms-sms");
+//                                    smsIntent.putExtra("address", patient.get_contact_number());
+//                                    smsIntent.putExtra("sms_body", textView.getText() + "\n-Sent From DocBox");
+//                                    PatientProfileActivity.this.startActivity(Intent.createChooser(smsIntent, "SMS:"));
+                                        }
+                                    })
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                    fragmentNumber = 6;
+                }
+
+                if(position == 6)
+                {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Make your day to day practice much easier by using DocBox and never loose any of your Patient's Data ever." +
+                            "With services (like online appointments,safe data storage on cloud,view ,edit and add new patient data without internet ) specially designed to enhance your daily practice"+
+                            " Download DocBox by clicking on this link: " + "https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication");
+                    sendIntent.setType("text/plain");
+                    startActivity(Intent.createChooser(sendIntent, "Share Using..."));
+                    fragmentNumber = 7;
+                }
+            if(position == 7)
             {
                 if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
-                { fragmentNumber = 6;
+                { fragmentNumber = 8;
                 addHelper();}
                 else
                 {
-                    position = 6;
+                    position = 8;
                 }
             }
-            if(position == 6)
+            if(position == 8)
             {
                int DoctorId = databaseHandler.getCustomerId();
 
@@ -919,6 +994,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 requestParams.put("doctorId", s2);
                 getVerificationStatus(requestParams);
             }
+
             }
             else
             {
@@ -1406,6 +1482,132 @@ listMedia.addAll(listDocument);
             editor.putBoolean("restore", false);
             editor.commit();
                 pdia.dismiss();
+
+        }
+
+        //i: patient id
+        //s: file path
+        public void downloadFile(int i, String s) {
+            int totalSize = 0;
+            int downloadedSize = 0;
+            DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
+            int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
+            File file1 = new File(s);
+            File file2 = file1.getParentFile();
+           // s= file2.getPath();
+            String dwnload_file_path = "http://docbox.co.in/sajid/" + CustomerId + "/" + String.valueOf(i) + "/" + file1.getName();
+            try {
+                URL url = new URL(dwnload_file_path);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(true);
+
+                //connect
+                urlConnection.connect();
+
+                //set the path where we want to save the file
+                File SDCardRoot = Environment.getExternalStorageDirectory();
+                //create a new file, to save the downloaded file
+                File file = new File(file2, file1.getName());
+
+                FileOutputStream fileOutput = new FileOutputStream(file);
+
+                //Stream used for reading the data from the internet
+                InputStream inputStream = urlConnection.getInputStream();
+
+                //this is the total size of the file which we are downloading
+                totalSize = urlConnection.getContentLength();
+
+
+                //create a buffer...
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
+                    fileOutput.write(buffer, 0, bufferLength);
+                    downloadedSize += bufferLength;
+                    // update the progressbar //
+
+                }
+                //close the output stream when complete //
+                fileOutput.close();
+
+
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        public void doSomething() {
+
+        }
+
+
+    }
+
+
+    public class RestoreWebData extends AsyncTask<Void, Void, Boolean> {
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            mBuilder =
+                    new NotificationCompat.Builder(Activity_main_2.this)
+                            .setSmallIcon(android.R.drawable.stat_sys_download)
+                            .setContentTitle("DocBox")
+
+
+                            .setContentText("Patient data is being downloaded from cloud");
+
+            notifier.notify(1, mBuilder.build());
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
+            List<document_obj> listDocument = databaseHandler.getAllDocumentsForDownload(5);
+            List<document_obj> listMediaFollowUp = databaseHandler.getAllMediaFollowUpForSyncStatus(5);
+            List<document_obj> listMedia = databaseHandler.getAllMediaForSyncsStatus(5);
+            listMedia.addAll(listDocument);
+            listMedia.addAll(listMediaFollowUp);
+//            for (int i = 0; i < listDocument.size(); i++) {
+//                downloadFile(listDocument.get(i).get_id(), listDocument.get(i).get_doc_path());
+//            }
+            for (int i = 0; i < listMedia.size(); i++) {
+                try {
+                    if(i%40 == 0)
+                        Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                downloadFile(listMedia.get(i).get_id(), listMedia.get(i).get_doc_path());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+//            SharedPreferences.Editor editor = prefs.edit();
+            mBuilder =
+                    new NotificationCompat.Builder(Activity_main_2.this)
+                            .setSmallIcon(R.drawable.icon_notification)
+                            .setContentTitle("DocBox")
+
+                            .setContentText(" Patients' data saved to Phone");
+
+            notifier.notify(1, mBuilder.build());
+//            editor.putBoolean("restore", false);
+//            editor.commit();
+            pdia.dismiss();
 
         }
 

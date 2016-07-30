@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,12 +92,30 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                 doc_obj[0] = dbHandle.getSearchDocument(pos,itemsArrayList);
                     final int pid = itemsArrayList.get(0).getPatient_id();
                     final String name = dbHandle.getPatient(pid).get_name();
+                    File storageDir =
+                            new File(Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES), "Patient Manager/" + pid + "/Documents");
                    /* String path = new File(doc_obj.get_doc_path()).getParent();
                     File folder = new File(path);
                     allFiles = folder.listFiles();*/
+                    final String filePath;
+                    final File file;
+                    if(new File(doc_obj[0].get_doc_path()).exists())
+                    {
+                        filePath = doc_obj[0].get_doc_path();
+                        file = new File(filePath);
+                    }
+                    else
+                    {
+                        filePath =  storageDir.getPath()+"/"+doc_obj[0].get_doc_path();
+                        file = new File(filePath);
+                    }
 
-                    final String filePath = doc_obj[0].get_doc_path();
-                    final File file = new File(filePath);
+                    Log.i("documents adapter", filePath);
+
+
+
+
 
                     final PopupMenu popup = new PopupMenu(activity_parent, arg0);
                     popup.getMenuInflater().inflate(R.menu.popup_image
@@ -111,7 +130,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                             Uri intentUri;
                             if (item.getTitle().equals("open")) {
 
-                               if(filePath.contains(".jpg")) {
+                               if((filePath.contains(".jpg"))||(filePath.contains(".png"))||(filePath.contains(".PNG"))) {
                                    File storageDir =
                                            new File(Environment.getExternalStoragePublicDirectory(
                                                    Environment.DIRECTORY_PICTURES), "Patient Manager/" + name + "/Documents");
@@ -424,7 +443,7 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
         private MediaScannerConnection mMs;
         private File mFile;
 
-        public SingleMediaScanner(Context context, File f) {
+        public  SingleMediaScanner(Context context, File f) {
             mFile = f;
             mMs = new MediaScannerConnection(context, this);
             mMs.connect();

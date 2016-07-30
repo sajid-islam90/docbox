@@ -700,18 +700,18 @@ time time;
 
         return super.onOptionsItemSelected(item);
     }
-    public void startAddNotes()
-    {
-        Intent curIntent = getIntent();
-        DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
-        int version  =  databaseHandler.getMaxFollowupVersion(id);
-        Intent intent =  new Intent(this, followUp.class);
-        int pid = curIntent.getIntExtra("id",0);
-        intent.putExtra("version",version+1);
-        intent.putExtra("parent",PatientProfileActivity.class.toString());
-        intent.putExtra("id",pid);
-        startActivity(intent);
-    }
+//    public void startAddNotes()
+//    {
+//        Intent curIntent = getIntent();
+//        DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
+//        int version  =  databaseHandler.getMaxFollowupVersion(id);
+//        Intent intent =  new Intent(this, followUp.class);
+//        int pid = curIntent.getIntExtra("id",0);
+//        intent.putExtra("version",version+1);
+//        intent.putExtra("parent",PatientProfileActivity.class.toString());
+//        intent.putExtra("id",pid);
+//        startActivity(intent);
+//    }
 
     public void callPatient(View view)
     {

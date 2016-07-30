@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.elune.sajid.myapplication.R;
@@ -607,9 +608,9 @@ return settings;
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_DIAGNOSIS +" WHERE "+KEY_ONLINE_DAYS+" = '"+onlineDays+"'");
         ContentValues values = new ContentValues();
-
+        Long tsLong = System.currentTimeMillis()/1000;
         values.put(KEY_ID, pid);
-        values.put(KEY_VERSION, version+1);
+        values.put(KEY_VERSION, version);
         values.put(KEY_TREATMENT, treatment);
         values.put(KEY_DATE, date);
         values.put(KEY_SYNC_STATUS, 0);
@@ -618,6 +619,27 @@ return settings;
         updatePatient(KEY_DATE_LAST_VISIT, date, pid);
         updatePatient(KEY_SYNC_STATUS, "0", pid);
     }
+
+
+    public  void saveTreatmentWithVersion(String pid,String treatment,String date,String version )
+    {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        //db.execSQL("delete from "+ TABLE_DIAGNOSIS +" WHERE "+KEY_ONLINE_DAYS+" = '"+onlineDays+"'");
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_ID, pid);
+        values.put(KEY_VERSION, version);
+        values.put(KEY_TREATMENT, treatment);
+        values.put(KEY_DATE, date);
+        values.put(KEY_SYNC_STATUS, 0);
+        long i = db.insert(TABLE_TREATMENT, null, values);
+        db.close();
+        updatePatient(KEY_DATE_LAST_VISIT, date, pid);
+        updatePatient(KEY_SYNC_STATUS, "1", pid);
+
+    }
     public List getTreatment(String pid,int version)
     {
         List<List<String>> treatmentData =   new ArrayList<List<String>>();
@@ -625,6 +647,7 @@ return settings;
         List<String>dates = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         String strSql = "SELECT * from "+TABLE_TREATMENT+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version;
+       // String strSql = "SELECT * from "+TABLE_TREATMENT+" WHERE "+KEY_ID+" = "+pid+" ORDER BY "+KEY_VERSION+" ASC";
         Cursor cursor = db.rawQuery(strSql, null);
         if(cursor.getCount()>0)
         {
@@ -632,6 +655,7 @@ return settings;
             do {
                 //treatment.put(cursor.getString(cursor.getColumnIndex(KEY_TREATMENT)), cursor.getString(cursor.getColumnIndex(KEY_DATE)));
                 //treatment.put(KEY_DATE, cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+
                 treatment.add(cursor.getString(cursor.getColumnIndex(KEY_TREATMENT)));
                 dates.add(cursor.getString(cursor.getColumnIndex(KEY_DATE)));
             }
@@ -649,12 +673,14 @@ return settings;
     //diagnosis and treatment functions
     public  void saveDiagnosis(String pid,String diagnosis,String date )
     {int version = getDiagnosisCurrentVersion(pid);
+
+        Long tsLong = System.currentTimeMillis()/1000;
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_DIAGNOSIS +" WHERE "+KEY_ONLINE_DAYS+" = '"+onlineDays+"'");
         ContentValues values = new ContentValues();
 
         values.put(KEY_ID, pid);
-        values.put(KEY_VERSION, version+1);
+        values.put(KEY_VERSION, tsLong);
         values.put(KEY_DIAGNOSIS, diagnosis);
         values.put(KEY_DATE, date);
         values.put(KEY_SYNC_STATUS, 0);
@@ -664,21 +690,58 @@ return settings;
         updatePatient(KEY_SYNC_STATUS, "0", pid);
 
     }
+    public  void saveDiagnosisWithVersion(String pid,String diagnosis,String date,String version )
+    {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        //db.execSQL("delete from "+ TABLE_DIAGNOSIS +" WHERE "+KEY_ONLINE_DAYS+" = '"+onlineDays+"'");
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_ID, pid);
+        values.put(KEY_VERSION, version);
+        values.put(KEY_DIAGNOSIS, diagnosis);
+        values.put(KEY_DATE, date);
+        values.put(KEY_SYNC_STATUS, 0);
+        long i = db.insert(TABLE_DIAGNOSIS, null, values);
+        db.close();
+        updatePatient(KEY_DATE_LAST_VISIT, date, pid);
+        updatePatient(KEY_SYNC_STATUS, "1", pid);
+
+    }
     public Map getDiagnosis(String pid,int version)
     {
         Map<String, Object> diagnosis = new HashMap<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String strSql = "SELECT * from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version;
+        String strSql = "SELECT * from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" ORDER BY "+KEY_VERSION+" ASC";
+       // String strSql = "SELECT * from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version+" ORDER BY "+KEY_VERSION+" ASC";
         Cursor cursor = db.rawQuery(strSql, null);
         if(cursor.getCount()>0)
         {
             cursor.moveToFirst();
-
+cursor.moveToPosition(version-1);
             diagnosis.put(KEY_DIAGNOSIS,cursor.getString(cursor.getColumnIndex(KEY_DIAGNOSIS)));
             diagnosis.put(KEY_DATE,cursor.getString(cursor.getColumnIndex(KEY_DATE)));
 
         }
         return diagnosis;
+    }
+    public long getDiagnosisUnixVersion(String pid,int version)
+    {
+        Map<String, Object> diagnosis = new HashMap<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        long unixVersion = 0;
+        String strSql = "SELECT * from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" ORDER BY "+KEY_VERSION+" ASC";
+        // String strSql = "SELECT * from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" AND "+KEY_VERSION+" = "+version+" ORDER BY "+KEY_VERSION+" ASC";
+        Cursor cursor = db.rawQuery(strSql, null);
+        if(cursor.getCount()>0)
+        {
+            cursor.moveToFirst();
+            cursor.moveToPosition(version-1);
+           unixVersion = Long.parseLong(cursor.getString(cursor.getColumnIndex(KEY_VERSION)));
+
+        }
+        return unixVersion;
     }
     public void updateTreatment(String field,String value,String version,String pid)
 
@@ -710,11 +773,11 @@ public int getDiagnosisCurrentVersion(String pid)
 {
     SQLiteDatabase db = this.getWritableDatabase();
     int version = 0;
-    String strSql = "SELECT "+KEY_VERSION+" from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid;
+    String strSql = "SELECT COUNT( "+KEY_VERSION +") from "+TABLE_DIAGNOSIS+" WHERE "+KEY_ID+" = "+pid+" ORDER BY "+KEY_VERSION+" ASC";
     Cursor cursor = db.rawQuery(strSql,null);
     if(cursor.getCount()>0)
     {   cursor.moveToLast();
-        version = cursor.getInt(cursor.getColumnIndex(KEY_VERSION));}
+        version = cursor.getInt(cursor.getColumnIndex("COUNT( "+KEY_VERSION +")"));}
 db.close();
     return version;
 }
@@ -814,7 +877,7 @@ db.close();
 
 
 
-    public ArrayList<Item> getFollowUp(int pid,int version) {
+    public ArrayList<Item> getFollowUpUnixVersion(int pid,int version) {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Item> listOfItems = new ArrayList<>();
         Item item;
@@ -824,6 +887,32 @@ db.close();
         Cursor cursor = db.rawQuery(StrSQL,null);
         if(cursor.getCount()!=0) {
             cursor.moveToFirst();
+
+            do {
+                item = new Item();
+                item.setTitle(cursor.getString(cursor.getColumnIndex(KEY_FIELD_NAME)));
+                item.setDiagnosis(cursor.getString(cursor.getColumnIndex(KEY_FIELD_VALUE)));
+                item.setDate(cursor.getString(cursor.getColumnIndex(KEY_DATE)));
+                item.setPatient_id(pid);
+                item.setSection(version);
+                listOfItems.add(item);
+            }
+            while (cursor.moveToNext());
+
+        }
+        return  listOfItems;
+    }
+    public ArrayList<Item> getFollowUp(int pid,int version) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Item> listOfItems = new ArrayList<>();
+        Item item;
+        String StrSQL = "SELECT * FROM "+TABLE_FOLLOW_UP+" WHERE "
+                +KEY_ID +" = '"+pid+"' AND "+KEY_VERSION+" =  '"+version+"'";
+        Cursor cursor = db.rawQuery(StrSQL,null);
+        if(cursor.getCount()!=0) {
+            cursor.moveToFirst();
+           // cursor.moveToPosition(serial-1);
 
             do {
                 item = new Item();
@@ -1084,19 +1173,34 @@ return max;
     {
         ArrayList<String> dates = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        int version = getMaxFollowupVersion(pid);
+        int version[] = getMaxFollowupVersion(pid);
         Resources resource = context.getResources();
         String[] fields = resource.getStringArray(R.array.follow_up);
         int c=1;
         String table = null;
-        while (c<=version)
-        {
-            ArrayList<Item> listOfItems = new ArrayList<>();
-            listOfItems = getFollowUp(pid,c);
-            if(listOfItems.size()>0)
-            dates.add("# "+ c +" date : "+getNotesDateFromVersion(c,pid)+ "\n  "+ fields[0]+" : "+listOfItems.get(0).getDiagnosis() );
-            c++;
-        }
+for(c=0;dates.size()<version.length;c++)
+{
+    ArrayList<Item> listOfItems = new ArrayList<>();
+    listOfItems = getFollowUp(pid,version[c]);
+//    Log.i("debug", String.valueOf(version.length));
+//    Log.i("debug", String.valueOf(dates.size()));
+    if(listOfItems.size()>0)
+        dates.add("# "+ (c+1) +" date : "+getNotesDateFromVersion(version[c],pid)+ "\n  "+ fields[0]+" : "+listOfItems.get(0).getDiagnosis() );
+    else
+    {
+        Log.i("empty followup version", String.valueOf(version[c]+" : "+c));
+    }
+}
+//        while (c<=version.length)
+//        {
+//            ArrayList<Item> listOfItems = new ArrayList<>();
+//            listOfItems = getFollowUp(pid,version[c-1]);
+//            Log.i("debug", String.valueOf(version.length));
+//            Log.i("debug", String.valueOf(dates.size()));
+//            if(listOfItems.size()>0)
+//            dates.add("# "+ c +" date : "+getNotesDateFromVersion(version[c-1],pid)+ "\n  "+ fields[0]+" : "+listOfItems.get(0).getDiagnosis() );
+//            c++;
+//        }
 
         return dates;
     }
@@ -1672,20 +1776,35 @@ db.close();
 
     }
 
-    public int getMaxFollowupVersion(int pid)
+    public int[] getMaxFollowupVersion(int pid)
 
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String strSQL = " SELECT "+KEY_VERSION+" FROM "+ TABLE_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid;
+        String strSQL = " SELECT DISTINCT "+KEY_VERSION+" FROM "+ TABLE_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid;
+
+        int i =0;
         Cursor cursor = db.rawQuery(strSQL, null);
+        int versions[] = new int[cursor.getCount()];
         if(cursor.getCount()>0)
         {
-            cursor.moveToLast();
+            cursor.moveToFirst();
+           do {
+              versions[i]=  cursor.getInt(cursor.getColumnIndex(KEY_VERSION));
+Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION))));
+               i++;
+
+
+            } while (cursor.moveToNext());
+            //cursor.moveToLast();
             db.close();
-            return cursor.getInt(cursor.getColumnIndex(KEY_VERSION));
+           // return cursor.getInt(cursor.getColumnIndex("COUNT( DISTINCT "+KEY_VERSION+")"));
         }
-        else{  db.close();
-            return 0;}
+        else {
+            db.close();
+            //return 0;}
+        }
+
+        return versions;
     }
 
    /* media_obj getSearchMedia(int id,ArrayList<Item> itemsArrayList)
@@ -1760,12 +1879,33 @@ db.close();
         values.put(KEY_DOC_PATH,document.get_doc_path());
         values.put(KEY_BMP,document.get_bmp());
         values.put(KEY_DATE,document.get_date());
+
         values.put(KEY_SYNC_STATUS,"0");
 
         // Inserting Row
         db.insert(TABLE_DOCUMENTS, null, values);
         updatePatient(KEY_SYNC_STATUS, "0", String.valueOf(document.get_id()));
         updatePatient(KEY_DATE_LAST_VISIT,document.get_date(), String.valueOf(document.get_id()));
+        db.close(); // Closing database connection
+
+
+    }
+    public void addDocument(document_obj document,int syncStatus)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID,document.get_id());
+        values.put(KEY_DOC_NAME,document.get_doc_name());
+        values.put(KEY_DOC_PATH,document.get_doc_path());
+        values.put(KEY_BMP,document.get_bmp());
+        values.put(KEY_DATE,document.get_date());
+
+        values.put(KEY_SYNC_STATUS,syncStatus);
+
+        // Inserting Row
+        db.insert(TABLE_DOCUMENTS, null, values);
+
+
         db.close(); // Closing database connection
 
 
@@ -1867,6 +2007,40 @@ db.close();
         db.close();
         return docList;
     }
+    public List<document_obj> getAllDocumentsForDownload(int syncStatus) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<document_obj> docList = new ArrayList<document_obj>();
+        int pos = 0;
+        String strSQL = "SELECT  * FROM " + TABLE_DOCUMENTS+" WHERE "+ KEY_SYNC_STATUS+" == '"+syncStatus+"'";
+        document_obj doc_obj = new document_obj();
+        Cursor cursor = db.rawQuery(strSQL,null);
+        int cur = cursor.getCount();
+        if (cur != 0) {
+            cursor.moveToFirst();
+
+            for(int i = 1;i<=cur;i++) {
+
+
+                String name = cursor.getString(cursor.getColumnIndex("documentName"));
+                String path = cursor.getString(cursor.getColumnIndex("documentPath"));
+                byte[] bmp = cursor.getBlob(cursor.getColumnIndex("bitmapBLOB"));
+                int id1 = Integer.parseInt(cursor.getString(0));
+                doc_obj = new document_obj(id1,
+                        name, path,bmp);
+                docList.add(doc_obj);
+                //break;
+
+                if(i !=cur)
+                    cursor.moveToNext();
+
+
+            }
+
+
+        }
+        db.close();
+        return docList;
+    }
     public List<document_obj> getAllDocuments() {
         SQLiteDatabase db = this.getReadableDatabase();
         List<document_obj> docList = new ArrayList<document_obj>();
@@ -1889,6 +2063,42 @@ db.close();
                             name, path,bmp);
                     docList.add(doc_obj);
                     //break;
+
+                if(i !=cur)
+                    cursor.moveToNext();
+
+
+            }
+
+
+        }
+        db.close();
+        return docList;
+    }
+
+
+    public List<document_obj> getAllMediaForSyncsStatus(int syncStatus) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<document_obj> docList = new ArrayList<document_obj>();
+        int pos = 0;
+        String strSQL = "SELECT  * FROM " + TABLE_MEDIA+" WHERE "+ KEY_SYNC_STATUS+" == '"+syncStatus+"'";
+        document_obj doc_obj = new document_obj();
+        Cursor cursor = db.rawQuery(strSQL,null);
+        int cur = cursor.getCount();
+        if (cur != 0) {
+            cursor.moveToFirst();
+
+            for(int i = 1;i<=cur;i++) {
+
+
+                String name = cursor.getString(cursor.getColumnIndex("documentName"));
+                String path = cursor.getString(cursor.getColumnIndex("documentPath"));
+                byte[] bmp = cursor.getBlob(cursor.getColumnIndex("bitmapBLOB"));
+                int id1 = Integer.parseInt(cursor.getString(0));
+                doc_obj = new document_obj(id1,
+                        name, path,bmp);
+                docList.add(doc_obj);
+                //break;
 
                 if(i !=cur)
                     cursor.moveToNext();
@@ -1935,6 +2145,43 @@ db.close();
         db.close();
         return docList;
     }
+
+    public List<document_obj> getAllMediaFollowUpForSyncStatus(int syncStatus) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<document_obj> docList = new ArrayList<document_obj>();
+        int pos = 0;
+        String strSQL = "SELECT  * FROM " + TABLE_MEDIA_FOLLOW_UP+" WHERE "+ KEY_SYNC_STATUS+" == '"+syncStatus+"'";
+        document_obj doc_obj = new document_obj();
+        Cursor cursor = db.rawQuery(strSQL,null);
+        int cur = cursor.getCount();
+        if (cur != 0) {
+            cursor.moveToFirst();
+
+            for(int i = 1;i<=cur;i++) {
+
+
+                String name = cursor.getString(cursor.getColumnIndex("documentName"));
+                String path = cursor.getString(cursor.getColumnIndex("documentPath"));
+                byte[] bmp = cursor.getBlob(cursor.getColumnIndex("bitmapBLOB"));
+                int id1 = Integer.parseInt(cursor.getString(0));
+                doc_obj = new document_obj(id1,
+                        name, path,bmp);
+                docList.add(doc_obj);
+                //break;
+
+                if(i !=cur)
+                    cursor.moveToNext();
+
+
+            }
+
+
+        }
+        db.close();
+        return docList;
+    }
+
+
     public List<document_obj> getAllMediaFollowUp() {
         SQLiteDatabase db = this.getReadableDatabase();
         List<document_obj> docList = new ArrayList<document_obj>();
@@ -2049,8 +2296,10 @@ db.close();
         values.put(KEY_HEIGHT, patient.get_height());
         values.put(KEY_WEIGHT, patient.get_weight());
         values.put(KEY_OPD_IPD, patient.get_opd_ipd());
-        if(patient.get_id()!=0)
-        values.put(KEY_ID,patient.get_id());
+        if(patient.get_id()!=0) {
+            values.put(KEY_ID, patient.get_id());
+            db.execSQL("delete from " + TABLE_PATIENT + " WHERE " + KEY_ID + " = '" + patient.get_id() + "'");
+        }
 
        if(!patient.get_bmp().equals(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_photo))))
            values.put(KEY_BMP,patient.get_bmp());
@@ -2069,12 +2318,16 @@ db.close();
 
          values.put(KEY_PHOTO_PATH,patient.get_photoPath());
          values.put(KEY_DATE_NEXT_FOLLOW_UP,patient.get_next_follow_up_date());
+       if(patient.get_id()!=0) {
 
+           db.execSQL("delete from " + TABLE_PATIENT + " WHERE " + KEY_ID + " = '" + patient.get_id() + "'");
+       }
 
         // Inserting Row
        long id = db.insert(TABLE_PATIENT, null, values);
-       updatePatient(KEY_ID, String.valueOf(tsLong),String.valueOf(id));
-       id= tsLong;
+       if(patient.get_id()==0)
+       {updatePatient(KEY_ID, String.valueOf(tsLong),String.valueOf(id));
+       id= tsLong;}
        File storageDir =
                new File(Environment.getExternalStoragePublicDirectory(
                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+id);
@@ -2443,7 +2696,7 @@ db.close();
     public ArrayList<HashMap<String, String>> getAllSyncUsers() {
         ArrayList<HashMap<String, String>> wordList;
         wordList = new ArrayList<HashMap<String, String>>();
-        String selectQuery = "SELECT  * FROM patient WHERE "+KEY_SYNC_STATUS +" != 1"  ;
+        String selectQuery = "SELECT  * FROM patient WHERE "+KEY_SYNC_STATUS +" != 1 AND " +KEY_SYNC_STATUS +" != 5 " ;
         String customerIdQuery = "SELECT id FROM personalInfo";
 
         SQLiteDatabase database = this.getWritableDatabase();

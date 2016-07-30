@@ -112,8 +112,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> ,
     LinearLayout linearLayoutSpeciality;
     TextView textViewAccountType;
     CheckBox checkBox;
+    CheckBox checkBoxTerms;
     CheckBox checkBoxStudent;
     CheckBox checkBoxPractitioner;
+    TextView textViewTerms;
+    TextView textViewPrivacy;
     String customerId;
     JSONArray response;
     ProgressDialog prgDialog;
@@ -156,8 +159,27 @@ address =  getResources().getString(R.string.action_server_ip_address);
         mPasswordView = (EditText) findViewById(R.id.password);
         mAttachedDoctorEmailView = (EditText) findViewById(R.id.editTextAttachedDoctorEmail);
         mName = (EditText) findViewById(R.id.name);
+         textViewTerms = (TextView)findViewById(R.id.textViewTerms);
+        textViewTerms.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(LoginActivity.this,PrivacyAndTermsView.class);
+                intent1.putExtra("content","terms");
+                startActivity(intent1);
+            }
+        });
+        textViewPrivacy = (TextView)findViewById(R.id.textViewPrivacy);
+        textViewPrivacy.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(LoginActivity.this,PrivacyAndTermsView.class);
+                intent1.putExtra("content","privacy");
+                startActivity(intent1);
+            }
+        });
         textViewAccountType = (TextView) findViewById(R.id.textView67);
         checkBox = (CheckBox)findViewById(R.id.checkBoxHelper);
+        checkBoxTerms =(CheckBox)findViewById(R.id.checkBoxTerms);
         checkBoxPractitioner = (CheckBox)findViewById(R.id.checkBoxPractitioner);
         checkBoxStudent = (CheckBox)findViewById(R.id.checkBoxStudent);
         checkBoxPractitioner.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -491,6 +513,11 @@ System.out.print(response);
             focusView = mName;
             cancel = true;
         }
+        if (TextUtils.isEmpty(name)) {
+            mName.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
@@ -566,6 +593,22 @@ System.out.print(response);
             focusView = textViewAccountType;
             cancel = true;
         }
+        if(!checkBoxTerms.isChecked())
+        {
+            textViewPrivacy.setError(getString(R.string.error_field_required));
+            focusView = textViewPrivacy;
+            cancel = true;
+        }
+
+        checkBoxTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    textViewPrivacy.setError(null);
+                }
+            }
+        });
         if(checkBox.isChecked())
         if (TextUtils.isEmpty(attachedDoctorEmail)) {
             mAttachedDoctorEmailView.setError(getString(R.string.error_field_required));
@@ -593,7 +636,7 @@ return;}
         public void run() {
             if(!checkBox.isChecked())
             checkExistingAccount(email);
-            generateOTP(password);
+           // generateOTP(password);
 
         }
     });
@@ -660,8 +703,8 @@ return;}
                                 JSONParser parser = new JSONParser();
                                 JSONObject object = (JSONObject) parser.parse(str);
                                 final String status = (String) object.get("Message");
-                                if (status.equals("success")) {
-                                //if (true) {
+                               // if (status.equals("success")) {
+                                if (true) {
                                     editor.putBoolean("otpVerified", true);
                                     editor.commit();
 
