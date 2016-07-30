@@ -69,14 +69,16 @@ public class data_sync_activity extends AppCompatActivity {
         final RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.progressBarLayout);
         ArrayList<HashMap<String, String>> userList =  controller.getAllSyncUsers();
         Button button = (Button)findViewById(R.id.buttonSaveToCloud);
+        button.setVisibility(View.VISIBLE);
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.saveSuccessfullLinearLayout);
         TextView textView = (TextView)findViewById(R.id.saveSuccessfullTextView);
+        textView.setText("Press button to sync your data");
         //
         if(userList.size()!=0){
             //Set the User Array list in ListView
             ListAdapter adapter = new SimpleAdapter( data_sync_activity.this,userList, R.layout.view_user_entry, new String[] { "userId","userName"}, new int[] {R.id.userId, R.id.customerId});
             ListView myList=(ListView)findViewById(R.id.synclist);
-            textView.setText("Press button to save your data on our Cloud to keep it safe");
+            textView.setText("Press button to sync your data");
             myList.setAdapter(adapter);
             button.setVisibility(View.VISIBLE);
 
@@ -84,10 +86,10 @@ public class data_sync_activity extends AppCompatActivity {
         }
         else
         {
-            relativeLayout.setVisibility(View.GONE);
+           // relativeLayout.setVisibility(View.GONE);
 
            // linearLayout.setVisibility(View.VISIBLE);
-            button.setVisibility(View.GONE);
+           // button.setVisibility(View.GONE);
 
 
 
@@ -205,6 +207,15 @@ public class data_sync_activity extends AppCompatActivity {
                // Toast.makeText(getApplicationContext(), "SQLite and Remote MySQL DBs are in Sync!", Toast.LENGTH_LONG).show();
             }
         }
+        if(userList.size()==0)
+        {
+            String jSon = controller.composeJSONfromSQLiteDummyPatient(data_sync_activity.this);
+            params.put("usersJSON", jSon);
+            String address = getResources().getString(R.string.action_server_ip_address);
+            //Toast.makeText(getApplicationContext(),    "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+            utility.syncData("http://" + address + "/insertPatient.php", params, data_sync_activity.this, prgDialog, String.valueOf(0), mediaObjsFollowUp.size());
+
+        }
 
 
         //else{
@@ -302,7 +313,7 @@ e.printStackTrace();
             relativeLayout.setVisibility(View.GONE);
 
             // linearLayout.setVisibility(View.VISIBLE);
-            button.setVisibility(View.GONE);
+           // button.setVisibility(View.GONE);
 
             mediaObjsFollowUp = controller.getMediaFollowUpTobeUploaded();
             ArrayList<media_obj>  mediaObjsMedia = new ArrayList<>();
@@ -312,11 +323,11 @@ e.printStackTrace();
             mediaObjsFollowUp.addAll(mediaObjsMedia);
             mediaObjsFollowUp.addAll(mediaObjsDocuments);
             if ((textView != null)&&(mediaObjsFollowUp.size()>0)) {
-                textView.setText("Your Data Is Safe On Our Cloud Please Track The File Upload Progress In The Status Bar Above");
+               // textView.setText("Your Data Is Safe On Our Cloud Please Track The File Upload Progress In The Status Bar Above");
             }
             else
             {
-                textView.setText("Your Data Is Safe On Our Cloud");
+               // textView.setText("Your Data Is Safe On Our Cloud");
             }
             data_sync_activity.this.runOnUiThread(new Runnable() {
                 @Override

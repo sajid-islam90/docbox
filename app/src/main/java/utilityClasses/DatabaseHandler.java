@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -2838,6 +2839,41 @@ if(telephonyManager.getDeviceId()!=null)
         try {
             JSONValue.writeJSONString(wordList, out);
             s1 = out.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        //Use GSON to serialize Array List to JSON
+        return s1;
+    }
+
+    public String composeJSONfromSQLiteDummyPatient(Context context){
+        ArrayList<ArrayList<String>> patientList;
+        patientList = new ArrayList<ArrayList<String>>();
+
+        SQLiteDatabase database = this.getWritableDatabase();
+int customerId = getCustomerId();
+                ArrayList<String> list =new ArrayList<String>(Arrays.asList(String.valueOf(customerId),"","","","","","","","","","","","","","",""));
+
+                patientList.add(list);
+
+        ArrayList<String> hex = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String hash = prefs.getString("Hash", "");
+        hex.add(hash);
+
+        patientList.add(hex);
+        String s1 = null;
+
+        StringWriter out = new StringWriter();
+
+        try {
+            JSONValue.writeJSONString(patientList, out);
+            s1 = out.toString();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
