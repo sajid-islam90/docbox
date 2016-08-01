@@ -240,7 +240,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
         patientEmail = edit_email.getText().toString();
         patientOccupation = edit_occupation.getText().toString();
         patientOPDIPD = edit_OPDIPD.getText().toString();
-
+        Long tsLong = System.currentTimeMillis()/1000;
         newPatient.set_weight(patientWeight);
         newPatient.set_diagnosis(patientDiagnosis);
         newPatient.set_gender(patientGender);
@@ -251,7 +251,8 @@ public class DisplayMessageActivity extends ActionBarActivity {
         newPatient.set_email(patientEmail);
         newPatient.set_ocupation(patientOccupation);
         newPatient.set_next_follow_up_date("");
-        newPatient.set_opd_ipd(patientOPDIPD);
+        newPatient.set_opd_ipd("PID"+tsLong);
+        newPatient.set_id(Integer.parseInt(String.valueOf(tsLong)));
 
 
         DatabaseHandler dbHandler = new DatabaseHandler(getApplicationContext());

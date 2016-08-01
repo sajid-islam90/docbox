@@ -136,7 +136,7 @@
             android:orientation="horizontal"
 
             android:layout_alignParentStart="false"
-            android:layout_below="@+id/view30">
+            android:layout_below="@+id/edit_patient_linear_layout2">
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -169,7 +169,7 @@
             android:layout_alignParentStart="false"
 
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/edit_patient_edit_gender" />
+            android:layout_below="@+id/view30" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -189,14 +189,15 @@
             android:layout_marginLeft="0dp"
             android:layout_marginStart="0dp"
             android:hint="Enter OPD/IPD Number"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/view26"
-            android:layout_below="@+id/view25">
+            android:layout_below="@+id/edit_patient_edit_gender">
 
         <EditText
             android:layout_width="fill_parent"

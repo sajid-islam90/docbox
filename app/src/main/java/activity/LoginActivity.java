@@ -636,7 +636,7 @@ return;}
         public void run() {
             if(!checkBox.isChecked())
             checkExistingAccount(email);
-           // generateOTP(password);
+            generateOTP(password);
 
         }
     });
@@ -703,8 +703,8 @@ return;}
                                 JSONParser parser = new JSONParser();
                                 JSONObject object = (JSONObject) parser.parse(str);
                                 final String status = (String) object.get("Message");
-                               // if (status.equals("success")) {
-                                if (true) {
+                                if (status.equals("success")) {
+                                //if (true) {
                                     editor.putBoolean("otpVerified", true);
                                     editor.commit();
 
