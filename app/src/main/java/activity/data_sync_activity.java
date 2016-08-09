@@ -397,14 +397,20 @@ e.printStackTrace();
                     e.printStackTrace();
                 }
                 Log.e("download web items", storageDir.getPath()+"/"+listMedia.get(i).get_doc_name());
+                databaseHandler.updateAllMediaFollowUp();
+                databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_name());
                 if(new File(listMedia.get(i).get_doc_path()).exists())
                 { downloadFile(listMedia.get(i).get_id(), listMedia.get(i).get_doc_path());
-                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());}
+                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());
+                    databaseHandler.updateDocument(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());
+                databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());}
                 else
                 {
 
                     downloadFile(listMedia.get(i).get_id(),storageDir.getPath()+"/"+listMedia.get(i).get_doc_name());
-                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_name());}
+                    databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_name());
+                    databaseHandler.updateDocument(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());
+                    databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS,"1",listMedia.get(i).get_doc_path());}
             }
 
 

@@ -59,7 +59,7 @@ public class DisplayMessageActivity extends ActionBarActivity {
         parentActivity = intent.getStringExtra("parent");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DisplayMessageActivity.this);
         accountType  = prefs.getString(DisplayMessageActivity.this.getString(R.string.account_type), "");
-        Button btn_AddPatient = (Button)findViewById(R.id.save_patient_button);
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 

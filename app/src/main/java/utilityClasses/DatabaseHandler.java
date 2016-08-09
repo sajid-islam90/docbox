@@ -1623,7 +1623,16 @@ db.close();
         ContentValues args = new ContentValues();
         args.put(columnName, columnValue);
 
-        db.update(TABLE_MEDIA_FOLLOW_UP, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
+        db.update(TABLE_MEDIA_FOLLOW_UP, args, KEY_DOC_NAME + "= '" + docPath + "'", null) ;
+
+    }
+    public void updateAllMediaFollowUp()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(KEY_SYNC_STATUS, 1);
+
+        db.update(TABLE_MEDIA_FOLLOW_UP, args, "1", null) ;
 
     }
     public media_obj[] getMediaFollowUp(int pid,int version)
