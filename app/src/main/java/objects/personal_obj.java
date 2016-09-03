@@ -64,6 +64,16 @@ public class personal_obj {
     }
 
     String _dob;
+
+    public String get_designation() {
+        return _designation;
+    }
+
+    public void set_designation(String _designation) {
+        this._designation = _designation;
+    }
+
+    String _designation;
     String _email;
     String _password;
     String _phone;

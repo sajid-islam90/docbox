@@ -31,7 +31,18 @@
             android:layout_below="@+id/userProfilePicture"
             android:textColor="@color/white" />
     </RelativeLayout>
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView6"
+        android:layout_below="@+id/photoEmailLayout">
 
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/photoEmailLayout"
+            >
     <android.support.v7.widget.CardView
         android:id="@+id/card_view_map"
         android:layout_gravity="center"
@@ -40,7 +51,6 @@
         android:layout_margin="5dp"
         card_view:cardCornerRadius="2dp"
         card_view:contentPadding="2dp"
-        android:layout_below="@+id/photoEmailLayout"
         android:visibility="visible">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -153,18 +163,7 @@
         </RelativeLayout>
 </android.support.v7.widget.CardView>
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView6"
-        android:layout_below="@+id/card_view_map">
 
-        <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/photoEmailLayout"
-            >
 
             <android.support.v7.widget.CardView
                 android:id="@+id/card_view"
@@ -175,7 +174,8 @@
                 card_view:cardCornerRadius="2dp"
                 card_view:contentPadding="5dp"
                 android:layout_weight="1"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_below="@+id/card_view_map">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -628,7 +628,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Qualification"
+                        android:text="Medical Degrees"
 
                         android:id="@+id/collegeDetailsTextView"
                         android:textSize="15sp"
@@ -654,7 +654,8 @@
                         <RelativeLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:visibility="gone">
 
                             <LinearLayout
                                 android:orientation="horizontal"
@@ -663,24 +664,25 @@
                                 android:id="@+id/graduatingCollageLinearLayout">
 
                                 <android.support.design.widget.TextInputLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/view18" >
 
                                 <EditText
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:inputType="textPersonName"
                                     android:ems="10"
-                                    android:id="@+id/editText"
-                                    android:hint="Graduating College" />
+                                    android:id="@+id/editTextDegrees"
+                                    android:hint="Mention Degrees (comma seperated)" />
                                 </android.support.design.widget.TextInputLayout>
 
                                 <android.support.design.widget.TextInputLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:id="@+id/view19"
-                                    android:layout_toRightOf="@+id/view18">
+                                    android:layout_toRightOf="@+id/view18"
+                                    android:visibility="visible">
 
                                 <EditText
                                     android:layout_width="wrap_content"
@@ -688,49 +690,26 @@
                                     android:inputType="number"
                                     android:ems="10"
                                     android:id="@+id/editText2"
-                                    android:hint="Batch" />
-                                </android.support.design.widget.TextInputLayout>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@+id/graduatingCollageLinearLayout">
-
-                                <android.support.design.widget.TextInputLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/view20"
-                                    android:layout_below="@+id/graduatingCollageLinearLayout">
-
-                                <EditText
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textPersonName"
-                                    android:ems="10"
-                                    android:id="@+id/editText3"
-                                    android:hint="Post Graduation College" />
+                                    android:hint="Batch"
+                                    android:visibility="gone" />
                                 </android.support.design.widget.TextInputLayout>
 
-                                <android.support.design.widget.TextInputLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/view21"
-                                    android:layout_toRightOf="@+id/view20"
-                                    android:layout_below="@+id/graduatingCollageLinearLayout">
-
-                                <EditText
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="number"
-                                    android:ems="10"
-                                    android:id="@+id/editText4"
-                                    android:hint="Batch" />
-                                </android.support.design.widget.TextInputLayout>
                             </LinearLayout>
 
                         </RelativeLayout>
+
+                        <ListView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/listViewDegrees"
+                            android:divider="#ffffff" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="+ Add a medical degree"
+                            android:id="@+id/textViewAddMedicalDegree" />
 
                     </LinearLayout>
 

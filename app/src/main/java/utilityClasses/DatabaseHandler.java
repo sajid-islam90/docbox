@@ -672,6 +672,20 @@ return settings;
 
 
     //diagnosis and treatment functions
+
+    public void deleteDiagnosis(String diagnosis)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+
+        db.delete(TABLE_DIAGNOSIS, KEY_DIAGNOSIS+ " = ?",
+                new String[] { String.valueOf(diagnosis) });
+        db.close();
+
+
+    }
     public  void saveDiagnosis(String pid,String diagnosis,String date )
     {int version = getDiagnosisCurrentVersion(pid);
 
@@ -1991,11 +2005,14 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         document_obj doc_obj = new document_obj();
         Cursor cursor = db.rawQuery(strSQL,null);
         int cur = cursor.getCount();
+        Log.e("documents", String.valueOf(cur));
         if (cur != 0) {
             cursor.moveToFirst();
 
             for(int i = 1;i<=cur;i++) {
-                pos = Integer.parseInt(cursor.getString(0));
+                try {
+                    pos = Integer.parseInt(cursor.getString(0));
+
                 if(pos == id) {
                     String name = cursor.getString(cursor.getColumnIndex("documentName"));
                     String path = cursor.getString(cursor.getColumnIndex("documentPath"));
@@ -2005,6 +2022,11 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
                             name, path,bmp);
                     docList.add(doc_obj);
                     //break;
+                }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
                 if(i !=cur)
                     cursor.moveToNext();

@@ -718,6 +718,9 @@ return;}
                                         personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition()));
                                         personalObj.set_name(mName.getText().toString());
                                         personalObj.set_customerId(customerid);
+                                        personalObj.set_designation("");
+                                        personalObj.set_fees("");
+                                        personalObj.set_experience("");
                                     }
 
                                     if (customerid == 0) {
@@ -1604,6 +1607,9 @@ public void checkOTP()
                 personalObj.set_speciality(String.valueOf(spinner.getSelectedItemPosition() + 1));
                 personalObj.set_name(mName.getText().toString());
                 personalObj.set_gender("");
+                personalObj.set_designation("");
+                personalObj.set_fees("");
+                personalObj.set_experience("");
                 RequestParams params = new RequestParams();
                 databaseHandler.addPersonalInfo(personalObj);
 

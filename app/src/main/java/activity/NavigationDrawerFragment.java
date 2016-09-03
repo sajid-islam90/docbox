@@ -140,18 +140,23 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setTitle(getString(R.string.nav_drawer_item1));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_home));
         items.add(item);
+
         item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item2));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_calender));
         items.add(item);
+
         item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item3));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_user_profile));
         items.add(item);
-        item =new Item();
-        item.setTitle(getString(R.string.nav_drawer_item4));
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_schedule));
-        items.add(item);
+
+            item = new Item();
+            item.setTitle(getString(R.string.nav_drawer_item4));
+            item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_schedule));
+            items.add(item);
+
+
         item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item5));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
@@ -167,11 +172,12 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_share));
         items.add(item);
 
-        if(accountType.equals(getActivity().getString(R.string.account_type_doctor)))
-        {  item =new Item();
+
+            item =new Item();
             item.setTitle(getString(R.string.nav_drawer_item6));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_add_helper));
-        items.add(item);}
+        items.add(item);
+
 
         item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item7));

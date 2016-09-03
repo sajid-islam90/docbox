@@ -110,12 +110,12 @@
                 android:layout_height="25dp"
                 android:id="@+id/patientProfileEditIcon"
                 android:src="@drawable/ic_action_edit"
-                android:onClick="editpatient"
                 android:layout_weight=".1"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="false"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:visibility="gone" />
 
             <ImageView
                 android:layout_width="25dp"
@@ -124,7 +124,8 @@
                 android:src="@drawable/ic_action_delete_profile"
                 android:layout_below="@+id/patientPic"
                 android:layout_alignRight="@+id/patientProfileEditIcon"
-                android:layout_alignEnd="@+id/patientProfileEditIcon" />
+                android:layout_alignEnd="@+id/patientProfileEditIcon"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -212,7 +213,8 @@
 
                 android:layout_below="@+id/patientProfileEditIcon"
                 android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentRight="true"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -353,7 +355,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#90000000"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/relativeLayoutHelp">
 
         <TextView

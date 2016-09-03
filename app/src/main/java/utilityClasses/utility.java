@@ -821,6 +821,7 @@ ArrayList<String> data =new ArrayList<String>();
         personalObj.set_experience(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_EXPERIENCE)));
         personalObj.set_fees(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_CONSULT_FEE)));
         personalObj.set_gender(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_GENDER)));
+        personalObj.set_designation(cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_DESIGNATION)));
 
 
         return  personalObj;

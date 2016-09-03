@@ -418,6 +418,9 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         TextView age = (TextView)findViewById(R.id.textViewAge);
         TextView OpdIpd = (TextView)findViewById(R.id.textViewOPDIPD);
         TextView weight = (TextView)findViewById(R.id.textViewWeight);
+        if(patient.get_weight().equals(""))
+            weight.setText( "- Kgs. ");
+        else
         weight.setText(patient.get_weight()+ " Kgs. ");
         textView.setText(patient.get_next_follow_up_date());
 
@@ -638,7 +641,7 @@ time time;
 
 
     }
-    public void editpatient(View view)
+    public void editpatient()
     {
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 0);
@@ -680,6 +683,15 @@ time time;
 
                 startActivity(intent1);
                 finish();
+                break;
+            case R.id.action_edit:
+                editpatient();
+                break;
+            case R.id.action_book_next_appointment:
+                doMoreWork();
+                break;
+            case R.id.action_delete:
+                deletePatientProfile();
                 break;
 //
             case R.id.action_help:

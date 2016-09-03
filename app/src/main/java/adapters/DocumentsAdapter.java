@@ -426,6 +426,8 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
         // 4. Set the text for textView
         String a = (itemsArrayList.get(position).getDiagnosis());
         labelView.setText(itemsArrayList.get(position).getTitle());
+
+        File imgFile = new  File("/sdcard/Images/test_image.jpg");
         imageView.setImageBitmap (itemsArrayList.get(position).getBmp());
         if((itemsArrayList.get(position).getDiagnosis().contains(".jpg"))||(itemsArrayList.get(position).getDiagnosis().contains(".txt"))||(itemsArrayList.get(position).getDiagnosis().contains(".pdf"))||(itemsArrayList.get(position).getDiagnosis().contains(".doc")))
         {

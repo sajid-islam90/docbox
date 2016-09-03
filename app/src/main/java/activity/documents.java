@@ -55,6 +55,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -158,7 +159,7 @@ public class documents extends ActionBarActivity {
         for (int i = 0 ; i < documentList.size();i++)
         {
 
-            if((documentList.get(i).get_doc_name()!=null)|| (documentList.get(i).get_doc_name()!=null))
+            if((documentList.get(i).get_doc_name()!=null)|| (documentList.get(i).get_doc_path()!=null))
             {
                 displayDocument.setTitle(documentList.get(i).get_doc_name());
                 displayDocument.setDiagnosis(documentList.get(i).get_doc_path());
@@ -167,13 +168,23 @@ public class documents extends ActionBarActivity {
                 {
 
                     if((documentList.get(i).get_doc_path().contains(".jpeg"))||(documentList.get(i).get_doc_path().contains(".jpg"))||
-                        (documentList.get(i).get_doc_path().contains(".png")))
-                    {   if (documentList.get(i).get_bmp() == null) {
+                        (documentList.get(i).get_doc_path().contains(".png"))||(documentList.get(i).get_doc_path().contains(".PNG")))
+                    {   if ((Arrays.equals(documentList.get(i).get_bmp(), new byte[0]))||(documentList.get(i).get_bmp()==null)) {
 
                                  if(new File(documentList.get(i).get_doc_path()).exists())
                                     {   doc_obj = PhotoHelper.addMissingBmp(doc_obj);
-                                        dbHandler.updateDocument(doc_obj,"0");}
-                             }}
+                                       // dbHandler.updateDocument()
+                                        Bitmap bmp = null;
+                                        bmp = BitmapFactory.decodeFile(doc_obj.get_doc_path());
+                                        if(bmp!=null)
+                                            bmp = PhotoHelper.getResizedBitmap(bmp,150,150);
+                                        documentList.get(i).set_bmp(PhotoHelper.getBitmapAsByteArray(bmp));
+
+                                    }
+                             }
+
+
+                    }
                    else if(documentList.get(i).get_doc_path().contains(".doc"))
                     {
                         documentList.get(i).set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources, R.drawable.ic_doc)));
@@ -219,8 +230,8 @@ public class documents extends ActionBarActivity {
                         bmpImage = BitmapFactory.decodeResource(resources, R.drawable.ic_txt);
                     }
                     else{
-                         bmpImage = BitmapFactory.decodeFile(storageDir.getPath()+"/"+doc_obj.get_doc_path());
-                         Log.i("documents", storageDir.getPath()+"/"+doc_obj.get_doc_path());
+                         bmpImage = BitmapFactory.decodeFile(storageDir.getPath()+"/"+doc_obj.get_doc_name());
+
                          if(bmpImage!=null)
                          bmpImage = PhotoHelper.getResizedBitmap(bmpImage,150,150);
 
@@ -484,11 +495,41 @@ public class documents extends ActionBarActivity {
                     file_name = filePathUri.getLastPathSegment();
                     file_path=filePathUri.getPath();
                 }
+
                 if((file_path.contains(".txt"))||(file_path.contains(".doc"))||
                         (file_path.contains(".pdf"))||(file_path.contains(".jpeg"))||(file_path.contains(".jpg"))
-                        ||(file_path.contains(".png")))
+                        ||(file_path.contains(".png"))||(file_path.contains(".PNG")))
                 {
+                    File storageDir =
+                            new File(Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Documents");
+                    if(!storageDir.exists())
+                        storageDir.mkdir();
+                    newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
+                    int file_size = Integer.parseInt(String.valueOf(newFile.length()/1024));
+                    FileUtils.copyFile(new File(file_path), newFile);
+                    if(file_size > 2048 )
+                    {
+                        Toast.makeText(documents.this, "File Too Large", Toast.LENGTH_SHORT).show();
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                        final File finalNewFile = newFile;
+                        builder.setMessage("File too large \nPlease choose a file less than 2 Mb")
+                                .setCancelable(false)
+                                .setTitle("ALERT")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        finalNewFile.delete();
+                                        //((Activity) followUp.this).recreate();
+                                        return;
+                                        //do things
+                                    }
+                                });
+                        android.support.v7.app.AlertDialog alert = builder.create();
+                        alert.show();
 
+
+                    }
                     if(file_name.contains(".doc"))
                     {
                         doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(resources,R.drawable.ic_doc)));
@@ -503,59 +544,23 @@ public class documents extends ActionBarActivity {
                     }
                     else if ((file_name.contains(".jpg"))||(file_name.contains(".png")))
                     {
-                        doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(file_path)));
+                       // doc_obj.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(newFile.getPath())));
+                        doc_obj.set_bmp(new byte[0]);
                     }
-                    try
-                    {
 
-                        File storageDir =
+
+                    if(accountType.equals(context.getString(R.string.account_type_helper))) {
+                        int docPid = dbHandler.checkDoctorHelperPatientMapping(patient.get_id());
+                        File storageDir1 =
                                 new File(Environment.getExternalStoragePublicDirectory(
-                                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+patient.get_id()+"/Documents");
-                        if(!storageDir.exists())
-                            storageDir.mkdir();
+                                        Environment.DIRECTORY_PICTURES), "Patient Manager/"+docPid+"/Documents");
 
+                        String path = storageDir1.getPath()+"/"+newFile.getName();
 
-                        newFile = new File(storageDir.getPath()+"/"+new File(file_path).getName());
-                        if(accountType.equals(context.getString(R.string.account_type_helper))) {
-                            int docPid = dbHandler.checkDoctorHelperPatientMapping(patient.get_id());
-                            File storageDir1 =
-                                    new File(Environment.getExternalStoragePublicDirectory(
-                                            Environment.DIRECTORY_PICTURES), "Patient Manager/"+docPid+"/Documents");
-
-                            String path = storageDir1.getPath()+"/"+newFile.getName();
-
-                            //  path.replaceAll("/" + String.valueOf(id) + "/", "/" + docPid + "/");
-                            dbHandler.mapDoctorHelperDocuments(path,newFile.getPath());
-                        }
-                        int file_size = Integer.parseInt(String.valueOf(newFile.length()/1024));
-                        if(file_size > 20480 )
-                        {
-                            Toast.makeText(documents.this, "File Too Large", Toast.LENGTH_SHORT).show();
-                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                            final File finalNewFile = newFile;
-                            builder.setMessage("File too large \nPlease choose a file less than 20 Mb")
-                                    .setCancelable(false)
-                                    .setTitle("ALERT")
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            finalNewFile.delete();
-                                            //((Activity) followUp.this).recreate();
-                                            return;
-                                            //do things
-                                        }
-                                    });
-                            android.support.v7.app.AlertDialog alert = builder.create();
-                            alert.show();
-
-
-                        }
-                        FileUtils.copyFile(new File(file_path), newFile);
+                        //  path.replaceAll("/" + String.valueOf(id) + "/", "/" + docPid + "/");
+                        dbHandler.mapDoctorHelperDocuments(path,newFile.getPath());
                     }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
+
 
                     doc_obj.set_doc_name(file_name);
                     doc_obj.set_doc_path(newFile.getPath());

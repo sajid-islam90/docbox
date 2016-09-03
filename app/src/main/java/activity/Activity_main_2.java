@@ -387,164 +387,207 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 
     public void addHelper() {
+        android.app.AlertDialog.Builder alert1 = new android.app.AlertDialog.Builder(Activity_main_2.this);
 
-        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
-
-        alert.setTitle("Adding Helper");
-        alert.setMessage("1. Add email address of your helper here \n2. Then install DocBox in his android phone \n3. Register him as a Helper in DocBox" +
-                "\n4. Enter your registered Email address in the box provided \n5. Connect your phone with his through WiFi " +
-                "\n6. Let him add patients and appointments" +
-                " for the " +
-                "current day \n7. Save your precious time ");
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
+        alert1.setTitle("Adding Helper");
+        alert1.setMessage("Choose the platform ");
+        alert1.setPositiveButton("Add helper for app", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+                alert.setTitle("Adding Helper");
+                alert.setMessage("1. Add email address of your helper here \n2. Then install DocBox in his android phone \n3. Register him as a Helper in DocBox" +
+                        "\n4. Enter your registered Email address in the box provided \n5. Connect your phone with his through WiFi " +
+                        "\n6. Let him add patients and appointments" +
+                        " for the " +
+                        "current day \n7. Save your precious time ");
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
 
 
 
-        LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
+                        LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
 
 
-        final RequestParams params = new RequestParams();
-        Resources res = Activity_main_2.this.getResources();
-        final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
-        final String address = res.getString(R.string.action_server_ip_address);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
-        boolean helper = prefs.getBoolean("helperAdded", false);
-        if (!helper) {
-            final View promptsView = li.inflate(R.layout.sms_text, null);
-            final TextView textView = (TextView) promptsView.findViewById(R.id.sms_Edit_Text);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                    Activity_main_2.this);
+                        final RequestParams params = new RequestParams();
+                        Resources res = Activity_main_2.this.getResources();
+                        final DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
+                        final String address = res.getString(R.string.action_server_ip_address);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+                        boolean helper = prefs.getBoolean("helperAdded", false);
+                        if (!helper) {
+                            final View promptsView = li.inflate(R.layout.sms_text, null);
+                            final TextView textView = (TextView) promptsView.findViewById(R.id.sms_Edit_Text);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                    Activity_main_2.this);
 
-            // set prompts.xml to alertdialog builder
-            alertDialogBuilder.setView(promptsView);
+                            // set prompts.xml to alertdialog builder
+                            alertDialogBuilder.setView(promptsView);
 
-            alertDialogBuilder
-                    .setCancelable(false)
-                    .setTitle("Enter Helper Email Address")
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                            alertDialogBuilder
+                                    .setCancelable(false)
+                                    .setTitle("Enter Helper Email Address")
+                                    .setPositiveButton("OK",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
 
-                                    String s1 = null;
-                                    ArrayList<String> personalInfo = new ArrayList<>();
-                                    personalInfo.add(String.valueOf(databaseHandler.getCustomerId()));
-                                    personalInfo.add(textView.getText().toString());
+                                                    String s1 = null;
+                                                    ArrayList<String> personalInfo = new ArrayList<>();
+                                                    personalInfo.add(String.valueOf(databaseHandler.getCustomerId()));
+                                                    personalInfo.add(textView.getText().toString());
 
-                                    StringWriter out = new StringWriter();
-                                    try {
-                                        JSONValue.writeJSONString(personalInfo, out);
-                                        s1 = out.toString();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String Json = s1;
-                                    params.put("emailPasswordJSON", Json);
+                                                    StringWriter out = new StringWriter();
+                                                    try {
+                                                        JSONValue.writeJSONString(personalInfo, out);
+                                                        s1 = out.toString();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    String Json = s1;
+                                                    params.put("emailPasswordJSON", Json);
 
-                                    // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
+                                                    // utility.syncData("http://docbox.co.in/sajid/register.php",params,getApplicationContext(),prgDialog,client);
 
-                                    Thread thread = new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
-                                                client.post("http://" + address + "/registerHelperByDoctor.php", params, new AsyncHttpResponseHandler() {
-                                                    // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
-                                                    @Override
-                                                    public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
-
-                                                        try {
-                                                            String str = new String(bytes, "UTF-8");
-                                                            JSONParser parser = new JSONParser();
-                                                            JSONObject object = (JSONObject) parser.parse(str);
-                                                            String message = (String) object.get("message");
-                                                            if (message.equals("registered")) {
-                                                                runOnUiThread(new Runnable() {
+                                                    Thread thread = new Thread() {
+                                                        @Override
+                                                        public void run() {
+                                                            try {
+                                                                AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+                                                                client.post("http://" + address + "/registerHelperByDoctor.php", params, new AsyncHttpResponseHandler() {
+                                                                    // client.post("http://docbox.co.in/sajid/register.php", params, new AsyncHttpResponseHandler() {
                                                                     @Override
-                                                                    public void run() {
-                                                                        Toast.makeText(Activity_main_2.this, "Helper Added", Toast.LENGTH_LONG);
+                                                                    public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
+
+                                                                        try {
+                                                                            String str = new String(bytes, "UTF-8");
+                                                                            JSONParser parser = new JSONParser();
+                                                                            JSONObject object = (JSONObject) parser.parse(str);
+                                                                            String message = (String) object.get("message");
+                                                                            if (message.equals("registered")) {
+                                                                                runOnUiThread(new Runnable() {
+                                                                                    @Override
+                                                                                    public void run() {
+                                                                                        Toast.makeText(Activity_main_2.this, "Helper Added", Toast.LENGTH_LONG);
+                                                                                    }
+                                                                                });
+                                                                            } else {
+                                                                                runOnUiThread(new Runnable() {
+                                                                                    @Override
+                                                                                    public void run() {
+                                                                                        Toast.makeText(Activity_main_2.this, "Error in adding helper", Toast.LENGTH_LONG);
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        } catch (Exception e) {
+                                                                            e.printStackTrace();
+                                                                        }
+
                                                                     }
-                                                                });
-                                                            } else {
-                                                                runOnUiThread(new Runnable() {
+
                                                                     @Override
-                                                                    public void run() {
-                                                                        Toast.makeText(Activity_main_2.this, "Error in adding helper", Toast.LENGTH_LONG);
+                                                                    public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
+                                                                        try {
+                                                                            runOnUiThread(new Runnable() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    Toast.makeText(Activity_main_2.this, "Error in adding helper\nPlease the internet connection and try again", Toast.LENGTH_LONG);
+                                                                                }
+                                                                            });
+
+                                                                        } catch (Exception e) {
+                                                                            e.printStackTrace();
+                                                                        }
+
+
                                                                     }
+
+                                                                    @Override
+                                                                    public void onFinish() {
+
+
+                                                                    }
+
+
                                                                 });
+
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
                                                             }
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
                                                         }
+                                                    };
+                                                    thread.start();
 
-                                                    }
+                                                }
+                                            })
+                                    .setNegativeButton("Cancel",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
 
-                                                    @Override
-                                                    public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
-                                                        try {
-                                                            runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    Toast.makeText(Activity_main_2.this, "Error in adding helper\nPlease the internet connection and try again", Toast.LENGTH_LONG);
-                                                                }
-                                                            });
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
 
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-
-
-                                                    }
-
-                                                    @Override
-                                                    public void onFinish() {
+                            // show it
+                            alertDialog.show();
 
 
-                                                    }
+                        }
+                    }
+                });
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-
-                                                });
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    };
-                                    thread.start();
-
-                                }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-            // create alert dialog
-            AlertDialog alertDialog = alertDialogBuilder.create();
-
-            // show it
-            alertDialog.show();
-
-
-        }
-            }
-        });
-        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 //                    getActivity().finish();
 //                    startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+
+                dialog.dismiss();
+            }
+        });
+        alert1.setNegativeButton("Add helper for website", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(Activity_main_2.this);
+
+                alert.setTitle("Adding Helper for website");
+                alert.setMessage("1. Go to HTTPS://www.docbox.co.in \n2. Log in using your registered E-mail and Mobile Number \n" +
+                        "3.Submit the OTP which is sent to the registered Mobile Number for a successful log in \n"+
+                        "4.Have access to the patient data,Print prescriptions,Discharge cards,Reports etc. "
+                        );
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
                 dialog.dismiss();
             }
         });
 
-        alert.show();
+        alert1.show();
+
 
     }
 
@@ -707,6 +750,8 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 
         } else if (position == 3) {
+            if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_student)))
+            {
             boolean wifiEnable = false;
             Object o = new Object();
             String message = "";
@@ -823,6 +868,11 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            startActivity(intent);
 
             //mTitle = "My Calender";
+        }
+            else
+            {
+                Toast.makeText(Activity_main_2.this,"This Option is available only for Practicing Doctors",Toast.LENGTH_LONG).show();
+            }
         }
 
         if (position == 4) {
@@ -954,20 +1004,24 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT, "Make your day to day practice much easier by using DocBox and never loose any of your Patient's Data ever." +
-                            "With services (like online appointments,safe data storage on cloud,view ,edit and add new patient data without internet ) specially designed to enhance your daily practice"+
-                            " Download DocBox by clicking on this link: " + "https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication");
+                            "With services (like online appointments,safe data storage on cloud,view ,edit and add new patient data without internet,Print Prescription, Print Discharge card of patients ) specially designed to enhance your daily practice.\n"+
+                            " Download DocBox for android by clicking on this link: " + "https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication \n and for iOS " +
+                            "https://itunes.apple.com/us/app/docbox-elune/id1147672610?ls=1&mt=8 \n Visit us at our website https://docbox.co.in");
                     sendIntent.setType("text/plain");
                     startActivity(Intent.createChooser(sendIntent, "Share Using..."));
                     fragmentNumber = 7;
+
                 }
             if(position == 7)
             {
                 if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
-                { fragmentNumber = 8;
-                addHelper();}
+               {
+                    fragmentNumber = 8;
+                addHelper();
+                }
                 else
                 {
-                    position = 8;
+               Toast.makeText(Activity_main_2.this,"This Option is available only for Practicing Doctors",Toast.LENGTH_LONG).show();
                 }
             }
             if(position == 8)

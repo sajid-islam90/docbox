@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     tools:context="activity.PatientProfileActivity">
+
+    <item android:id="@+id/action_edit" android:title="Edit"
+
+        app:showAsAction="never" />
+    <item android:id="@+id/action_book_next_appointment" android:title="Book appointment"
+
+        app:showAsAction="never" />
+    <item android:id="@+id/action_delete" android:title="Delete"
+
+        app:showAsAction="never" />
     <item android:id="@+id/action_help" android:title="Help"
         android:icon="@drawable/ic_action_info"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 </menu>

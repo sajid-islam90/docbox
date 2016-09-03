@@ -21,7 +21,7 @@ public class DataBaseEnums {
     public static final String TABLE_MEDIA_FOLLOW_UP = "mediaFollowUp";
     public static final String TABLE_HISTORY = "history";
     public static final String TABLE_HISTORY_HIST = "historyHist";
-
+    public static final String KEY_DESIGNATION = "designation";
     public static final String TABLE_DIAGNOSIS = "diagnosis";
     public static final String TABLE_EXAM = "exam";
     public static final String TABLE_EXAM_HIST = "examHist";

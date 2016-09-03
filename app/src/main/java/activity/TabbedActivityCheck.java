@@ -1147,12 +1147,12 @@ Tabselected = section;
                                 android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getActivity());
 
                                 alert.setTitle("Alert!!");
-                                alert.setMessage("Do you want to add another Report?");
+                                alert.setMessage("Do you want to add another Media?");
                                 alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getActivity(), "photo again?", Toast.LENGTH_SHORT).show();
+
                                         //utility .recreateActivityCompat(getActivity());
                                         try {
                                             addPhoto();

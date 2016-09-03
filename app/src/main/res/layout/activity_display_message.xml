@@ -50,9 +50,9 @@
             android:layout_marginTop="10dp" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:onClick="startCamera"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:id="@+id/imageView"
             android:contentDescription="@string/display_photo"
             android:layout_weight="0"
@@ -120,7 +120,7 @@
         android:orientation="horizontal"
         android:checkedButton="@+id/radio1"
         android:layout_alignParentStart="false"
-        android:layout_below="@+id/linear_layout">
+        android:layout_below="@+id/textInputLayoutOpdIpd">
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -254,7 +254,7 @@
             android:layout_marginStart="0dp"
             android:hint="Enter OPD/IPD Number"
             android:layout_marginTop="10dp"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </android.support.design.widget.TextInputLayout>
 </RelativeLayout>
 </ScrollView>

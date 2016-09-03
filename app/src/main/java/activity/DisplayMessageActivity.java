@@ -161,7 +161,13 @@ public class DisplayMessageActivity extends ActionBarActivity {
                     file_path=filePathUri.getPath();
 
                     ImageView mImageView = (ImageView) findViewById(R.id.imageView);
+                   // mImageView.setBackground(null);
                     mImageView.setImageBitmap(BitmapFactory.decodeFile(file_path));
+
+                   Bitmap bitmap =  PhotoHelper.getResizedBitmap(BitmapFactory.decodeFile(file_path),150,150);
+                  // = PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeFile(file_path));
+                    byte[] image  =  PhotoHelper.getBitmapAsByteArray(bitmap);
+                    newPatient.set_bmp(image);
                     Button button = (Button) findViewById(R.id.button);
                     button.setVisibility(View.GONE);
 

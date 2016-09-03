@@ -56,6 +56,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -63,10 +64,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import activity.CameraDemoActivity;
+import activity.PatientProfileActivity;
+import adapters.DegreeListAdapter;
 import utilityClasses.DatabaseHandler;
 import redundant.FileUtils;
+
 import com.elune.sajid.myapplication.R;
+
 import utilityClasses.util.GeocodingLocation;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -88,7 +94,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -115,11 +123,11 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private static Geocoder geocoder;
     private List<Address> addresses;
     private AutoCompleteTextView autoCompView;
-   private static EditText Name;
+    private static EditText Name;
     private static Spinner genderSpinner;
-    TextView NameSolid,cityTextView,stateTextView,doctorType;
-
-    static String dateOfBirth="";
+    TextView NameSolid, cityTextView, stateTextView, doctorType;
+    DegreeListAdapter degreeListAdapter;
+    static String dateOfBirth = "";
     Bitmap bitmap;
     private FragmentActivity myContext;
     String city;
@@ -127,10 +135,10 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private final String LOG_TAG = "Romi: Google Places";
     private final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private final String TYPE_AUTOCOMPLETE = "/autocomplete";
-    private final String API_KEY ="AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE"; //"AIzaSyBhivIm9hCGwEbVgEE95mHT6_aXahGmcPs";
+    private final String API_KEY = "AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE"; //"AIzaSyBhivIm9hCGwEbVgEE95mHT6_aXahGmcPs";
     private final String OUT_JSON = "/json";
     private static final int REQUEST_TAKE_PHOTO = 100;
-     ImageView imageView1;
+    ImageView imageView1;
     static final int PICKFILE_RESULT_CODE = 2;
     AutoCompleteTextView autoCompleteTextView;
     RelativeLayout relativeLayoutMap;
@@ -145,68 +153,109 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     CardView cardViewCollege;
     CardView cardViewFeeExperience;
     CardView cardViewPersonalInfo;
-
+    ListView listViewDegrees;
     ScrollView scrollView;
+    ArrayList<String> degrees;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.activity_user_profile, container, false);
         getActivity().setTitle("Profile Settings");
-         DOB   = (TextView)rootView.findViewById(R.id.ageTextBox);
-        genderSpinner = (Spinner)rootView.findViewById(R.id.spinner3);
-        autoCompleteTextView = (AutoCompleteTextView)rootView.findViewById(R.id.textSearchedLocationUserProfile);
+        DOB = (TextView) rootView.findViewById(R.id.ageTextBox);
+        genderSpinner = (Spinner) rootView.findViewById(R.id.spinner3);
+        autoCompleteTextView = (AutoCompleteTextView) rootView.findViewById(R.id.textSearchedLocationUserProfile);
         autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
-                   hideSoftKeyboard();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideSoftKeyboard();
                 }
                 return false;
             }
         });
-        relativeLayoutMap = (RelativeLayout)rootView.findViewById(R.id.location_map_relative_layout);
-        final TextView personalDetailsTextView = (TextView)rootView.findViewById(R.id.personalDetailsTextView);
-        final TextView experienceFeeTextView = (TextView)rootView.findViewById(R.id.experienceFeeTextView);
-        final TextView collegeDetailsTextView = (TextView)rootView.findViewById(R.id.collegeDetailsTextView);
-        doctorType = (TextView)rootView.findViewById(R.id.textViewDoctorType);
-        cityTextView = (TextView)rootView.findViewById(R.id.cityTextView);
-        stateTextView =(TextView)rootView.findViewById(R.id.stateTextView);
-        addressEditText =(EditText)rootView.findViewById(R.id.addressEditText);
-        feeEditText = (EditText)rootView.findViewById(R.id.feeEditText);
-        experienceEditText = (EditText)rootView.findViewById(R.id.experienceEditText);
-        imageView1 = (ImageView)rootView.findViewById(R.id.imageViewScrollDown) ;
-        scrollView =(ScrollView)rootView.findViewById(R.id.scrollView6);
-imageView1.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        scrollView.fullScroll(View.FOCUS_DOWN);
-    }
-});
-        cardViewCollege = (CardView)rootView.findViewById(R.id.card_view_college);
-        cardViewFeeExperience = (CardView)rootView.findViewById(R.id.card_view_fees_experience);
-         cardViewPersonalInfo =(CardView)rootView.findViewById(R.id.card_view);
-        linearLayoutMap = (LinearLayout)rootView.findViewById(R.id.linearLayoutMap);
-        linearLayoutNameAndDetails = (LinearLayout)rootView.findViewById(R.id.nameAndDetails);
-        linearLayoutExperienceFees = (LinearLayout)rootView.findViewById(R.id.feeExperienceLinearLayout);
-        relativeLayoutPhotoEmail = (RelativeLayout)rootView.findViewById(R.id.photoEmailLayout);
-        final ImageView imageViewPersonalDetailExpand = (ImageView)rootView.findViewById(R.id.imageViewPersonalDetailExpand);
-        final ImageView imageViewLocationExpand = (ImageView)rootView.findViewById(R.id.imageViewLocationExpand);
-        final ImageView imageViewMapFullscreen = (ImageView)rootView.findViewById(R.id.imageViewMapFullscreen);
-        final ImageView imageViewExperienceFeeExpand = (ImageView)rootView.findViewById(R.id.imageViewExperienceFeeExpand);
-        final ImageView imageViewCollegeExpand = (ImageView)rootView.findViewById(R.id.imageViewCollegeExpand);
+        listViewDegrees = (ListView)rootView.findViewById(R.id.listViewDegrees);
+        final android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getActivity());
+
+        alert.setTitle("Medical Degrees");
+        alert.setMessage("Add your medical degrees separated by comma eg.(M.B.B.S,M.S.Orthopedics,M.Ch Plastic and Reconstructive Surgery)");
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                    getActivity().finish();
+//                    startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        relativeLayoutMap = (RelativeLayout) rootView.findViewById(R.id.location_map_relative_layout);
+        final TextView personalDetailsTextView = (TextView) rootView.findViewById(R.id.personalDetailsTextView);
+        final TextView textViewAddMedicalDegree = (TextView) rootView.findViewById(R.id.textViewAddMedicalDegree);
+        textViewAddMedicalDegree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addMedicalDegree();
+            }
+        });
+        final EditText degreesEditTextView = (EditText) rootView.findViewById(R.id.editTextDegrees);
+        degreesEditTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                {
+                    alert.show();
+                }
+            }
+        });
+        degreesEditTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((degreesEditTextView.getText().toString().contains("Mention"))||
+                        (degreesEditTextView.getText().toString().equals("")))
+                {
+alert.show();
+                }
+            }
+        });
+        doctorType = (TextView) rootView.findViewById(R.id.textViewDoctorType);
+        cityTextView = (TextView) rootView.findViewById(R.id.cityTextView);
+        stateTextView = (TextView) rootView.findViewById(R.id.stateTextView);
+        addressEditText = (EditText) rootView.findViewById(R.id.addressEditText);
+        feeEditText = (EditText) rootView.findViewById(R.id.feeEditText);
+        experienceEditText = (EditText) rootView.findViewById(R.id.experienceEditText);
+        imageView1 = (ImageView) rootView.findViewById(R.id.imageViewScrollDown);
+        scrollView = (ScrollView) rootView.findViewById(R.id.scrollView6);
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+        cardViewCollege = (CardView) rootView.findViewById(R.id.card_view_college);
+        cardViewFeeExperience = (CardView) rootView.findViewById(R.id.card_view_fees_experience);
+        cardViewPersonalInfo = (CardView) rootView.findViewById(R.id.card_view);
+        linearLayoutMap = (LinearLayout) rootView.findViewById(R.id.linearLayoutMap);
+        linearLayoutNameAndDetails = (LinearLayout) rootView.findViewById(R.id.nameAndDetails);
+        linearLayoutExperienceFees = (LinearLayout) rootView.findViewById(R.id.feeExperienceLinearLayout);
+        relativeLayoutPhotoEmail = (RelativeLayout) rootView.findViewById(R.id.photoEmailLayout);
+        final ImageView imageViewPersonalDetailExpand = (ImageView) rootView.findViewById(R.id.imageViewPersonalDetailExpand);
+        final ImageView imageViewLocationExpand = (ImageView) rootView.findViewById(R.id.imageViewLocationExpand);
+        final ImageView imageViewMapFullscreen = (ImageView) rootView.findViewById(R.id.imageViewMapFullscreen);
+        final ImageView imageViewExperienceFeeExpand = (ImageView) rootView.findViewById(R.id.imageViewExperienceFeeExpand);
+        final ImageView imageViewCollegeExpand = (ImageView) rootView.findViewById(R.id.imageViewCollegeExpand);
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity) this.getActivity()).getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setTitle("Profile Settings");
         }
-        linearLayoutCollege =(LinearLayout)rootView.findViewById(R.id.collegeDetailsLinearLayout);
+        linearLayoutCollege = (LinearLayout) rootView.findViewById(R.id.collegeDetailsLinearLayout);
         imageViewPersonalDetailExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (linearLayoutNameAndDetails.getVisibility() == View.GONE) {
                     //makeMapAppear();
 
-                   // imageViewPersonalDetailExpand.setImageResource(R.drawable.ic_action_contract);
+                    // imageViewPersonalDetailExpand.setImageResource(R.drawable.ic_action_contract);
 
                     // imageView.setVisibility(View.GONE);
                     //imageView1.setVisibility(View.VISIBLE);
@@ -232,17 +281,15 @@ imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(linearLayoutCollege.getVisibility()==View.GONE) {
+                if (linearLayoutCollege.getVisibility() == View.GONE) {
                     //makeMapAppear();
-                   // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_contract);
+                    // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_contract);
                     expandCollegeDetailSegment();
                     imageView1.setVisibility(View.GONE);
                     // personalDetailsTextView.setTextSize(12);
 
-                }
-                else
-                {
-                   // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_expand);
+                } else {
+                    // imageViewCollegeExpand.setImageResource(R.drawable.ic_action_expand);
                     collapseCollegeDetailSegment();
                     imageView1.setVisibility(View.VISIBLE);
                     // personalDetailsTextView.setTextSize(15);
@@ -256,16 +303,14 @@ imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(linearLayoutExperienceFees.getVisibility()==View.GONE) {
+                if (linearLayoutExperienceFees.getVisibility() == View.GONE) {
                     //makeMapAppear();
-                   // imageViewExperienceFeeExpand.setImageResource(R.drawable.ic_action_contract);
+                    // imageViewExperienceFeeExpand.setImageResource(R.drawable.ic_action_contract);
                     expandExperienceFeeSegment();
                     imageView1.setVisibility(View.GONE);
                     // personalDetailsTextView.setTextSize(12);
 
-                }
-                else
-                {
+                } else {
                     //imageViewExperienceFeeExpand.setImageResource(R.drawable.ic_action_expand);
                     collapseExperienceFeeSegment();
                     imageView1.setVisibility(View.VISIBLE);
@@ -275,27 +320,26 @@ imageView1.setOnClickListener(new View.OnClickListener() {
 
             }
         });
-        cardViewMap = (CardView)rootView.findViewById(R.id.card_view_map);
+        cardViewMap = (CardView) rootView.findViewById(R.id.card_view_map);
         imageViewMapFullscreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
-    //expandView(linearLayoutMap);
-    expandView(cardViewMap);//expandView(linearLayoutMap);
-}
-                else {
-   // CollapseView(linearLayoutMap);
-    CollapseView(cardViewMap);
-}
+                if (relativeLayoutPhotoEmail.getVisibility() == View.VISIBLE) {
+                    //expandView(linearLayoutMap);
+                    expandView(cardViewMap);//expandView(linearLayoutMap);
+                } else {
+                    // CollapseView(linearLayoutMap);
+                    CollapseView(cardViewMap);
+                }
             }
         });
 
-        final TextView addLocation = (TextView)rootView.findViewById(R.id.enterLocationTextView);
+        final TextView addLocation = (TextView) rootView.findViewById(R.id.enterLocationTextView);
         imageViewLocationExpand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(linearLayoutMap.getVisibility()==View.GONE) {
+                if (linearLayoutMap.getVisibility() == View.GONE) {
                     //makeMapAppear();
                     expandMapSegment();
                     imageView1.setVisibility(View.GONE);
@@ -304,28 +348,27 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 
                     addLocation.setText("Clinic/Hospital Location");
                     //addLocation.setTextSize(12);
-                   // personalDetailsTextView.setTextSize(15);
-                }
-                else {
-                   // makeMapDisAppear();
+                    // personalDetailsTextView.setTextSize(15);
+                } else {
+                    // makeMapDisAppear();
                     collapseMapSegment();
                     imageView1.setVisibility(View.VISIBLE);
-                   // imageViewLocationExpand.setImageResource(R.drawable.ic_action_expand);
+                    // imageViewLocationExpand.setImageResource(R.drawable.ic_action_expand);
                     addLocation.setText("Clinic/Hospital Location");
-                   // addLocation.setTextSize(15);
+                    // addLocation.setTextSize(15);
                     //personalDetailsTextView.setTextSize(12);
                 }
 
             }
         });
-        Name = (EditText)rootView.findViewById(R.id.userProfileName);
-        NameSolid = (TextView)rootView.findViewById(R.id.userProfileNameSolid);
-        mMap =null;
+        Name = (EditText) rootView.findViewById(R.id.userProfileName);
+        NameSolid = (TextView) rootView.findViewById(R.id.userProfileNameSolid);
+        mMap = null;
 
         setHasOptionsMenu(true);
-       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
-        ImageView imageView = (ImageView)rootView.findViewById(R.id.userProfileEditNameIcon);
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.userProfileEditNameIcon);
 //        if((dateOfBirth!="")||(dateOfBirth!=null))
 //        DOB.setText(dateOfBirth);
 //        else
@@ -351,7 +394,8 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 
         setUpMapIfNeeded();
         setUserProfileData(rootView);
-        autoCompView = (AutoCompleteTextView)rootView.findViewById(R.id.textSearchedLocationUserProfile);
+        setDegreeData(rootView);
+        autoCompView = (AutoCompleteTextView) rootView.findViewById(R.id.textSearchedLocationUserProfile);
 
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(getActivity(), R.layout.locationautocompletetextitem));
         autoCompView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -367,9 +411,8 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
     }
 
 
-
     public void hideSoftKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
@@ -378,9 +421,9 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         //set Visible
         linearLayoutMap.setVisibility(View.VISIBLE);
         autoCompleteTextView.setVisibility(View.VISIBLE);
-        expandFlag =1;
+        expandFlag = 1;
         relativeLayoutMap.setVisibility(View.VISIBLE);
-       // linearLayoutNameAndDetails.setVisibility(View.GONE);
+        // linearLayoutNameAndDetails.setVisibility(View.GONE);
         final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         linearLayoutMap.measure(widthSpec, heightSpec);
@@ -398,40 +441,40 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         autoCompleteTextView.setVisibility(View.GONE);
 
         relativeLayoutMap.setVisibility(View.GONE);
-      //  linearLayoutNameAndDetails.setVisibility(View.VISIBLE);
+        //  linearLayoutNameAndDetails.setVisibility(View.VISIBLE);
     }
-    private void expandPersonalDetailSegment()
-    {
+
+    private void expandPersonalDetailSegment() {
         expandView(cardViewPersonalInfo);
-        expandFlag =2;
+        expandFlag = 2;
         linearLayoutNameAndDetails.setVisibility(View.VISIBLE);
     }
-    private void collapsePersonalDetailSegment()
-    {
+
+    private void collapsePersonalDetailSegment() {
         CollapseView(cardViewPersonalInfo);
         expandFlag = 0;
         linearLayoutNameAndDetails.setVisibility(View.GONE);
     }
-    private void expandCollegeDetailSegment()
-    {
-       expandView(cardViewCollege);
-        expandFlag =4;
+
+    private void expandCollegeDetailSegment() {
+        expandView(cardViewCollege);
+        expandFlag = 4;
         linearLayoutCollege.setVisibility(View.VISIBLE);
     }
-    private void collapseCollegeDetailSegment()
-    {
+
+    private void collapseCollegeDetailSegment() {
         CollapseView(cardViewCollege);
         expandFlag = 0;
         linearLayoutCollege.setVisibility(View.GONE);
     }
-    private void expandExperienceFeeSegment()
-    {
+
+    private void expandExperienceFeeSegment() {
         expandView(cardViewFeeExperience);
-        expandFlag =3;
+        expandFlag = 3;
         linearLayoutExperienceFees.setVisibility(View.VISIBLE);
     }
-    private void collapseExperienceFeeSegment()
-    {
+
+    private void collapseExperienceFeeSegment() {
         CollapseView(cardViewFeeExperience);
         expandFlag = 0;
         linearLayoutExperienceFees.setVisibility(View.GONE);
@@ -452,12 +495,12 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         });
         return animator;
     }
-    private void makeMapAppear()
-    {
+
+    private void makeMapAppear() {
 
 //        relativeLayoutMap.animate().translationY(relativeLayoutMap.getHeight());
 //        autoCompleteTextView.animate().translationY(autoCompleteTextView.getHeight());
-        Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.slide_from_bottom);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_from_bottom);
         cardViewMap.setAnimation(animation);
         autoCompleteTextView.setVisibility(View.VISIBLE);
 
@@ -467,21 +510,22 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 
 
     }
-    private void makeMapDisAppear()
-    {
+
+    private void makeMapDisAppear() {
 //        relativeLayoutMap.animate().translationY(relativeLayoutMap.getHeight());
 //        autoCompleteTextView.animate().translationY(autoCompleteTextView.getHeight());
         autoCompleteTextView.setVisibility(View.GONE);
 
         relativeLayoutMap.setVisibility(View.GONE);
     }
+
     @Override
     public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
+        myContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
-    public void doWork()
-    {
+
+    public void doWork() {
         LayoutInflater li = LayoutInflater.from(getActivity());
         final View promptsView = li.inflate(R.layout.profile_date_picker, null);
         final DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
@@ -497,14 +541,14 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
                                 // edit text
                                 final DatePicker datePicker = (DatePicker) promptsView.findViewById(R.id.datePicker);
                                 if ((dateOfBirth != "") || (dateOfBirth != null)) {
-                                    int month = datePicker.getMonth()+1;
+                                    int month = datePicker.getMonth() + 1;
                                     int year = datePicker.getYear();
                                     int day = datePicker.getDayOfMonth();
                                     dateOfBirth = day + "/" + month + "/" + year;
 
-                                    databaseHandler.updatePersonalInfo("dob",dateOfBirth);
-                                    databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_NAME,Name.getText().toString());
-                                    databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY,personalObj.get_speciality());
+                                    databaseHandler.updatePersonalInfo("dob", dateOfBirth);
+                                    databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_NAME, Name.getText().toString());
+                                    databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY, personalObj.get_speciality());
                                     databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LATITUDE, String.valueOf(searchedLocation.latitude));
                                     databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_LONGITUDE, String.valueOf(searchedLocation.longitude));
                                     DOB.setText(dateOfBirth);
@@ -515,7 +559,7 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 //                                fragManager.beginTransaction()
 //                                        .replace(R.id.container, UserProfile.newInstance(1))
 //                                        .commit();
-                               // utility.recreateActivityCompat(getActivity());
+                                // utility.recreateActivityCompat(getActivity());
 
 
                             }
@@ -535,63 +579,61 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
 
 
     }
+
     /***** Sets up the map if it is possible to do so *****/
-    public  void setUpMapIfNeeded() {
+    public void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment)this.getChildFragmentManager()
+            mMap = ((SupportMapFragment) this.getChildFragmentManager()
                     .findFragmentById(R.id.location_map)).getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
             }
-        }
-        else
-        {
+        } else {
             setUpMap();
         }
     }
 
 
-    public void expandView(final View v){
+    public void expandView(final View v) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         //cardViewMap.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         DisplayMetrics metrics = new DisplayMetrics();
-        if(v!=relativeLayoutPhotoEmail)
-        relativeLayoutPhotoEmail.setVisibility(View.GONE);
-        if(v!=cardViewCollege)
-        cardViewCollege.setVisibility(View.GONE);
-        if(v!=cardViewFeeExperience)
-        cardViewFeeExperience.setVisibility(View.GONE);
-        if(v!=cardViewPersonalInfo)
-        cardViewPersonalInfo.setVisibility(View.GONE);
-        if(v!=cardViewMap) {
+        if (v != relativeLayoutPhotoEmail)
+            relativeLayoutPhotoEmail.setVisibility(View.GONE);
+        if (v != cardViewCollege)
+            cardViewCollege.setVisibility(View.GONE);
+        if (v != cardViewFeeExperience)
+            cardViewFeeExperience.setVisibility(View.GONE);
+        if (v != cardViewPersonalInfo)
+            cardViewPersonalInfo.setVisibility(View.GONE);
+        if (v != cardViewMap) {
             cardViewMap.setVisibility(View.GONE);
             collapseHeight = v.getMeasuredHeight();
-        }
-        else
-        {
+        } else {
             collapseHeightMap = v.getMeasuredHeight();
-            expandFlag=1;
+            expandFlag = 1;
         }
 
-       // scrollView.removeView(cardViewMap);
+        // scrollView.removeView(cardViewMap);
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         final int targetHeight = metrics.heightPixels;
         final int targetWidth = metrics.widthPixels;
 //        v.getLayoutParams().height =  metrics.heightPixels;
 //        v.getLayoutParams().width = metrics.widthPixels;
-       // cardViewMap.getLayoutParams().height =  metrics.heightPixels;
-       // cardViewMap.getLayoutParams().width = metrics.widthPixels;
+        // cardViewMap.getLayoutParams().height =  metrics.heightPixels;
+        // cardViewMap.getLayoutParams().width = metrics.widthPixels;
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 super.applyTransformation(interpolatedTime, t);
-                v.getLayoutParams().height = (int)(targetHeight);
+                v.getLayoutParams().height = (int) (targetHeight);
                 v.getLayoutParams().width = targetWidth;
                 v.requestLayout();
             }
+
             @Override
             public boolean willChangeBounds() {
                 return true;
@@ -599,35 +641,34 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         };
 
         a.setDuration(((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density)) * 8);
-       v.startAnimation(a);
+        v.startAnimation(a);
     }
+
     public void CollapseView(final View v) {
         v.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         int targetHeight;
-       // cardViewMap.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        // cardViewMap.measure(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        if(v!=relativeLayoutPhotoEmail)
-        relativeLayoutPhotoEmail.setVisibility(View.VISIBLE);
-        if(v!=cardViewCollege)
-        cardViewCollege.setVisibility(View.VISIBLE);
-        if(v!=cardViewFeeExperience)
-        cardViewFeeExperience.setVisibility(View.VISIBLE);
-        if(v!=cardViewPersonalInfo)
+        if (v != relativeLayoutPhotoEmail)
+            relativeLayoutPhotoEmail.setVisibility(View.VISIBLE);
+        if (v != cardViewCollege)
+            cardViewCollege.setVisibility(View.VISIBLE);
+        if (v != cardViewFeeExperience)
+            cardViewFeeExperience.setVisibility(View.VISIBLE);
+        if (v != cardViewPersonalInfo)
             cardViewPersonalInfo.setVisibility(View.VISIBLE);
-        if(v!=cardViewMap) {
+        if (v != cardViewMap) {
             cardViewMap.setVisibility(View.VISIBLE);
             targetHeight = collapseHeight;
 
-        }
-        else
-        {
+        } else {
             targetHeight = collapseHeightMap;
             expandFlag = 0;
         }
 
         //if((v == cardViewMap)||(v == linearLayoutMap))
-           // targetHeight = 600;
+        // targetHeight = 600;
 
 
         final int finalTargetHeight = targetHeight;
@@ -635,10 +676,11 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 super.applyTransformation(interpolatedTime, t);
-                v.getLayoutParams().height = (int)(finalTargetHeight);
+                v.getLayoutParams().height = (int) (finalTargetHeight);
 
                 v.requestLayout();
             }
+
             @Override
             public boolean willChangeBounds() {
                 return true;
@@ -665,6 +707,16 @@ if(relativeLayoutPhotoEmail.getVisibility()== View.VISIBLE) {
         // For showing a move to my loction button
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mMap.setMyLocationEnabled(true);
         LocationManager locationManager = (LocationManager)getActivity().getSystemService(getActivity().LOCATION_SERVICE);
         boolean gpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -1116,7 +1168,95 @@ if(new File(profilePicPath).length()>0) {
                 .commit();
        // utility.recreateActivityCompat(Activity_main_2.this);
     }
+    public void setDegreeData(View rootView)
+    {
+        DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+       personal_obj personalObj = databaseHandler.getPersonalInfo();
+        String degree = personalObj.get_designation();
 
+        ArrayList<String> degrees = new ArrayList<>();
+        if(degree.contains("/"))
+        { while (degree.contains("/"))
+       {
+           degrees.add(degree.substring(0,degree.indexOf("/")));
+           degree = degree.substring(degree.indexOf("/")+1);
+
+       }
+            degrees.add(degree);}
+        else
+        {
+            degrees.add(degree);
+        }
+
+         degreeListAdapter= new DegreeListAdapter(getActivity(),getActivity(),degrees);
+        listViewDegrees.setAdapter(degreeListAdapter);
+    }
+    public  void addMedicalDegree()
+    {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        final DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+
+
+
+        View promptsView = li.inflate(R.layout.add_degree, null);
+        TextView textView = (TextView)promptsView.findViewById(R.id.textView50) ;
+        textView.setText("Add a Medical Degree");
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getContext());
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText diagnosis = (EditText) promptsView
+                .findViewById(R.id.editTextDiagnosis);
+
+        final EditText date = (EditText) promptsView
+                .findViewById(R.id.editTextDate);
+        date.setVisibility(View.GONE);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Save",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                               personalObj.set_designation( personalObj.get_designation()+"/"+diagnosis.getText());
+                                databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_DESIGNATION,personalObj.get_designation());
+                                String degree = personalObj.get_designation();
+
+                                ArrayList<String> degrees = new ArrayList<>();
+                                if(degree.contains("/"))
+                                { while (degree.contains("/"))
+                                {
+                                    degrees.add(degree.substring(0,degree.indexOf("/")));
+                                    degree = degree.substring(degree.indexOf("/")+1);
+
+                                }
+                                    degrees.add(degree);}
+                                else
+                                {
+                                    degrees.add(degree);
+                                }
+                                degreeListAdapter.updateReceiptsList(degrees);
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
+
+    }
 
 
     public void setUserProfileData(View rootView)

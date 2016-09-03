@@ -416,6 +416,7 @@ camera.autoFocus(new Camera.AutoFocusCallback() {
                                 doc_obj.set_doc_name(photoFile.getName());
                                 doc_obj.set_doc_path(filePath);
                                 doc_obj.set_id(pid);
+                                doc_obj.set_bmp(new byte[0]);
                                 databaseHandler.addDocument(doc_obj);
                                 android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(CameraDemoActivity.this);
 
