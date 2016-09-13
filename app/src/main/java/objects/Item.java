@@ -3,8 +3,6 @@ package objects;
 //OBJECT TO HOLD ALL PATIENT HOME PAGE DATA
 import android.graphics.Bitmap;
 
-import java.util.Date;
-
 public class Item {
     public int getPatient_id() {
         return patient_id;
@@ -34,6 +32,26 @@ public class Item {
     }
 
     private String date;
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    private String extra;
+
+    public String getExtra1() {
+        return extra1;
+    }
+
+    public void setExtra1(String extra1) {
+        this.extra1 = extra1;
+    }
+
+    private String extra1;
     private String title;
     private String diagnosis;
     private Bitmap bmp;

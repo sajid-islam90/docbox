@@ -261,7 +261,7 @@ public class utility {
                     }
                     // ((Activity) context).recreate();
                     //progressDialog.hide();
-                    Toast.makeText(context, "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, "MySQL DB has been informed about Sync activity", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -278,7 +278,7 @@ public class utility {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "MySQL DB has not been informed about Sync activity", Toast.LENGTH_LONG).show();
 
             }
 
@@ -836,11 +836,11 @@ ArrayList<String> data =new ArrayList<String>();
         values.put("password", personalObj.get_password());
         values.put("speciality", personalObj.get_speciality());
         values.put("name", personalObj.get_name());
-        values.put("designation", "Designation");
-        values.put("address", "Address");
+        values.put("designation", "");
+        values.put("address", "");
         values.put("awards", "Awards");
-        values.put("experience", "Experience");
-        values.put("consultFee", "ConsultFee");
+        values.put("experience", "");
+        values.put("consultFee", "");
         values.put("documentPath", personalObj.get_photoPath());
         values.put(DataBaseEnums.KEY_GENDER,personalObj.get_gender());
 
@@ -1149,6 +1149,36 @@ catch(Exception e)
 
 
     }
+    public static void saveNews(JSONArray response,Context context,int index) {
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+        for (int k = index;k<response.size();k++) {
+
+
+            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) response.get(k);
+            if(jsonObject.size()==1) {
+
+                String table = String.valueOf(jsonObject.get("table"));
+                break;
+            }
+            try {
+
+
+//                databaseHandler.saveAppointmentSettings( String.valueOf(jsonObject.get("onlineDays")),String.valueOf(jsonObject.get("startTime")),
+//                        String.valueOf(jsonObject.get("endTime")), Integer.parseInt(String.valueOf(jsonObject.get("numberOfPatients"))));
+
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+    }
     public static void saveAppointmentSettingsTable(JSONArray response,Context context,int index) {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(context);
@@ -1243,6 +1273,10 @@ catch(Exception e)
         }
 
     }
+
+
+
+
 
 
 

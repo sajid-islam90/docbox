@@ -3,19 +3,6 @@ package utilityClasses;
 /**
  * Created by sajid on 2/12/2015.
  */
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.simple.JSONValue;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,12 +15,33 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
-
 
 import com.elune.sajid.myapplication.R;
 
-import objects.*;
+import org.json.simple.JSONValue;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import objects.DataBaseEnums;
+import objects.Item;
+import objects.Patient;
+import objects.document_obj;
+import objects.exam_obj;
+import objects.history_obj;
+import objects.media_obj;
+import objects.notes_obj;
+import objects.other_obj;
+import objects.personal_obj;
+import objects.treatment_obj;
 
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -302,7 +310,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-      if (DATABASE_VERSION ==2)
+      if (DATABASE_VERSION > 2)
       {
           db.execSQL(DATABASE_ALTER_APPOINTMENT_TABLE);
           db.execSQL(DATABASE_ALTER_APPOINTMENT_TABLE_2);

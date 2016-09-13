@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,23 +18,24 @@ import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -41,20 +43,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import utilityClasses.ConnectionDetector;
-import utilityClasses.DatabaseHandler;
-import utilityClasses.NsdHelper;
-import utilityClasses.PhotoHelper;
 import com.elune.sajid.myapplication.R;
-import utilityClasses.RoundImage;
-
-import fragments.UserProfile;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
@@ -75,9 +70,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
+import fragments.UserProfile;
+import fragments.news_Activity;
 import objects.document_obj;
 import objects.personal_obj;
+import utilityClasses.ConnectionDetector;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.NsdHelper;
+import utilityClasses.PhotoHelper;
+import utilityClasses.RoundImage;
 import utilityClasses.utility;
 
 
@@ -116,13 +117,23 @@ public class  Activity_main_2 extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_2);
+
        // startService(new Intent(this, SyncService.class));
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(c.getTime());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("AppVersion","5");
+        Calendar calender = Calendar.getInstance();
+        int hourOfDay = calender.get(Calendar.HOUR_OF_DAY);
 
+        boolean appVersionValid= prefs.getBoolean("appVersionValid",false);
+        if((hourOfDay>=12)||(!appVersionValid))
+        {
+            RestoreWebData restoreWebData = new RestoreWebData();
+            restoreWebData.execute((Void) null);
+        }
         String allowDataCollect = prefs.getString("DataCollectFromOlderUser","");
         if(allowDataCollect.equals(""))
         {
@@ -139,6 +150,8 @@ askDoctorType();
        // editor.putString(Activity_main_2.this.getString(R.string.account_type),Activity_main_2.this.getString(R.string.account_type_doctor));
         editor.commit();
         String validUpto= prefs.getString(getString(R.string.subscription_valid_upto),"");
+
+
 //askDoctorType();
         if (validUpto.contains(" "))
         {
@@ -182,6 +195,7 @@ askDoctorType();
         DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
         personal_obj personalObj =  dbHandle.getPersonalInfo();
         ImageView imageView = (ImageView)findViewById(R.id.profilePic);
+
         Bitmap bmp = null;
         File file = null;
         if(personalObj.get_photoPath()!=null)
@@ -273,7 +287,48 @@ askDoctorType();
         }
 
 
+
+
     }
+
+
+
+
+    public void updateApp() {
+        final android.app.AlertDialog.Builder alert1 = new android.app.AlertDialog.Builder(Activity_main_2.this);
+        try {
+            alert1.setTitle("App version out of date");
+            alert1.setMessage("Please Update the DocBox app to continue usage");
+            alert1.setPositiveButton("Take me to PlayStore", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent viewIntent =
+                            new Intent("android.intent.action.VIEW",
+                                    Uri.parse("https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication&hl=en"));
+                    startActivity(viewIntent);
+
+                    dialog.dismiss();
+                }
+
+            });
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    alert1.show();
+                }
+            });
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void askDoctorType()
     {
@@ -686,7 +741,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //                        .commit();
             }
             //mTitle = "My Calender";
-        } else if (position == 2) {
+        } else if (position == 3) {
             if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
 
             {
@@ -733,13 +788,15 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
-                fragmentNumber = 3;
+                fragmentNumber = 4;
 
                 fragmentManager.beginTransaction()
                         //.replace(R.id.container, UserProfile.newInstance(position + 1))
                         .replace(R.id.container,fragmentUserProfile)
 
                         .commit();
+//                Intent intent = new Intent(Activity_main_2.this,ScrollingActivity.class);
+//                startActivity(intent);
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
 //                fragmentManager.beginTransaction()
@@ -749,7 +806,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             }
 
 
-        } else if (position == 3) {
+        } else if (position == 4) {
             if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_student)))
             {
             boolean wifiEnable = false;
@@ -805,7 +862,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                         @Override
                                         public void run() {
                                             try {
-                                                fragmentNumber = 4;
+                                                fragmentNumber = 5;
                                                 Intent intent = new Intent(Activity_main_2.this, patients_today.class);
                                                 intent.putExtra("nsd", mNsdHelper);
                                                 startActivity(intent);
@@ -875,7 +932,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             }
         }
 
-        if (position == 4) {
+        if (position == 8) {
             if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
 
             {
@@ -923,7 +980,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 requestParams.add("token", s3);
 
                 getSubscription(requestParams);
-                fragmentNumber = 5;
+                fragmentNumber = 9;
 
             } else {
                 Toast.makeText(Activity_main_2.this, "You are not authorised to use this feature", Toast.LENGTH_SHORT).show();
@@ -936,7 +993,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             //mTitle = "My Calender";
         }
 
-                if(position == 5)
+                if(position == 6)
                 {
                     LayoutInflater li = LayoutInflater.from(Activity_main_2.this);
                     final View promptsView = li.inflate(R.layout.sms_text, null);
@@ -996,10 +1053,10 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                     // show it
                     alertDialog.show();
-                    fragmentNumber = 6;
+                    fragmentNumber = 7;
                 }
 
-                if(position == 6)
+                if(position == 7)
                 {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
@@ -1009,14 +1066,14 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             "https://itunes.apple.com/us/app/docbox-elune/id1147672610?ls=1&mt=8 \n Visit us at our website https://docbox.co.in");
                     sendIntent.setType("text/plain");
                     startActivity(Intent.createChooser(sendIntent, "Share Using..."));
-                    fragmentNumber = 7;
+                    fragmentNumber = 8;
 
                 }
-            if(position == 7)
+            if(position == 5)
             {
                 if (accountType.equals(Activity_main_2.this.getString(R.string.account_type_doctor)))
                {
-                    fragmentNumber = 8;
+                    fragmentNumber = 6;
                 addHelper();
                 }
                 else
@@ -1024,7 +1081,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                Toast.makeText(Activity_main_2.this,"This Option is available only for Practicing Doctors",Toast.LENGTH_LONG).show();
                 }
             }
-            if(position == 8)
+            if(position == 9)
             {
                int DoctorId = databaseHandler.getCustomerId();
 
@@ -1048,6 +1105,19 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 requestParams.put("doctorId", s2);
                 getVerificationStatus(requestParams);
             }
+                if(position == 2)
+                {
+//                    Intent intent = new Intent(Activity_main_2.this, article_view_activity.class);
+//intent.putExtra("heading","ANKLE, HINDFOOT STUDY: GRAFT=BETTER FUSION");
+//                    startActivity(intent);
+                    Fragment fragment = MainActivity.newInstance(position+1);
+                    getSupportActionBar().setTitle("News");
+                    fragmentNumber = 3;
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, news_Activity.newInstance(position + 1))
+
+                            .commit();
+                }
 
             }
             else
@@ -1617,7 +1687,7 @@ listMedia.addAll(listDocument);
 
                             .setContentText("Patient data is being downloaded from cloud");
 
-            notifier.notify(1, mBuilder.build());
+           // notifier.notify(1, mBuilder.build());
             super.onPreExecute();
 
         }
@@ -1625,24 +1695,32 @@ listMedia.addAll(listDocument);
 
         @Override
         protected Boolean doInBackground(Void... params) {
+
+            String s1 = null;
             DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
-            List<document_obj> listDocument = databaseHandler.getAllDocumentsForDownload(5);
-            List<document_obj> listMediaFollowUp = databaseHandler.getAllMediaFollowUpForSyncStatus(5);
-            List<document_obj> listMedia = databaseHandler.getAllMediaForSyncsStatus(5);
-            listMedia.addAll(listDocument);
-            listMedia.addAll(listMediaFollowUp);
-//            for (int i = 0; i < listDocument.size(); i++) {
-//                downloadFile(listDocument.get(i).get_id(), listDocument.get(i).get_doc_path());
-//            }
-            for (int i = 0; i < listMedia.size(); i++) {
-                try {
-                    if(i%40 == 0)
-                        Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                downloadFile(listMedia.get(i).get_id(), listMedia.get(i).get_doc_path());
+            final String  address =  "docbox.co.in/sajid";
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+            String appVersion = prefs.getString("AppVersion","");
+            RequestParams param = new RequestParams();
+
+            final AsyncHttpClient client = new SyncHttpClient(true, 80, 443);
+            ArrayList<String> CstmrId = new ArrayList<>();
+            int customerId = databaseHandler.getCustomerId();
+            CstmrId.add(String.valueOf(customerId));
+            CstmrId.add(String.valueOf(appVersion));
+            StringWriter out = new StringWriter();
+
+            try {
+                JSONValue.writeJSONString(CstmrId, out);
+                s1 = out.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            param.put("version", s1);
+            hitApiForAppointment("http://" + address + "/checkAppVersion.php",param,client,Activity_main_2.this);
+
+
+
 
             return null;
         }
@@ -1658,67 +1736,125 @@ listMedia.addAll(listDocument);
 
                             .setContentText(" Patients' data saved to Phone");
 
-            notifier.notify(1, mBuilder.build());
+            //notifier.notify(1, mBuilder.build());
 //            editor.putBoolean("restore", false);
 //            editor.commit();
-            pdia.dismiss();
+            //pdia.dismiss();
 
         }
 
         //i: patient id
         //s: file path
-        public void downloadFile(int i, String s) {
-            int totalSize = 0;
-            int downloadedSize = 0;
-            DatabaseHandler databaseHandler = new DatabaseHandler(Activity_main_2.this);
-            int CustomerId = databaseHandler.getPersonalInfo().get_customerId();
-            File file1 = new File(s);
-            File file2 = file1.getParentFile();
-            s= file2.getPath();
-            String dwnload_file_path = "http://docbox.co.in/sajid/" + CustomerId + "/" + String.valueOf(i) + "/" + file1.getName();
-            try {
-                URL url = new URL(dwnload_file_path);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-
-                //connect
-                urlConnection.connect();
-
-                //set the path where we want to save the file
-                File SDCardRoot = Environment.getExternalStorageDirectory();
-                //create a new file, to save the downloaded file
-                File file = new File(file2, file1.getName());
-
-                FileOutputStream fileOutput = new FileOutputStream(file);
-
-                //Stream used for reading the data from the internet
-                InputStream inputStream = urlConnection.getInputStream();
-
-                //this is the total size of the file which we are downloading
-                totalSize = urlConnection.getContentLength();
+        public void checkVersion(int customerId, String appVersion) {
 
 
-                //create a buffer...
-                byte[] buffer = new byte[1024];
-                int bufferLength = 0;
-
-                while ((bufferLength = inputStream.read(buffer)) > 0) {
-                    fileOutput.write(buffer, 0, bufferLength);
-                    downloadedSize += bufferLength;
-                    // update the progressbar //
-
-                }
-                //close the output stream when complete //
-                fileOutput.close();
+        }
+        public void hitApiForAppointment(String apiAddress, RequestParams params, AsyncHttpClient client,
+                                         final Context context) {
 
 
-            } catch (final Exception e) {
+            final DatabaseHandler databaseHandler = new DatabaseHandler(context);
+
+            try
+            {
+
+                client.post(apiAddress, params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes) {
+
+                        try {
+                            String str = new String(bytes, "UTF-8");
+                            JSONArray response;
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            // JSONObject mainObject = new JSONObject(str);
+                            ArrayList<String> appointmentPID;
+
+                            //response = (JSONArray) JSONValue.parse(str);
+                            if(str.contains("invalid version")) {
+                                Log.e("versionCheck", "Please Update App");
+                                editor.putBoolean("appVersionValid",false);
+                                updateApp();
+                            }
+                            else {
+                                Log.e("versionCheck", String.valueOf(str));
+                                editor.putBoolean("appVersionValid",true);
+                            }
+                            editor.apply();
+
+//System.out.print(response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(int i,cz.msebera.android.httpclient. Header[] headers, byte[] bytes, Throwable throwable) {
+                        try {
+                            return;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+
+                        // pdia.dismiss();
+
+
+
+                        // Toast.makeText(context,    "END", Toast.LENGTH_LONG).show();
+                        //((Activity) context).recreate();
+
+                    }
+
+
+                });
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
             }
+            // return customerId[0];
         }
 
+        public void updateApp() {
+            final android.app.AlertDialog.Builder alert1 = new android.app.AlertDialog.Builder(Activity_main_2.this);
+try {
+    alert1.setTitle("App version out of date");
+    alert1.setMessage("Please Update the DocBox app to continue usage");
+    alert1.setPositiveButton("Take me to PlayStore", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Intent viewIntent =
+                    new Intent("android.intent.action.VIEW",
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication&hl=en"));
+            startActivity(viewIntent);
+            dialog.dismiss();
+        }
+
+    });
+
+
+runOnUiThread(new Runnable() {
+    @Override
+    public void run() {
+        alert1.show();
+    }
+});
+
+}
+catch (Exception e)
+{
+    e.printStackTrace();
+}
+
+        }
 
         public void doSomething() {
 

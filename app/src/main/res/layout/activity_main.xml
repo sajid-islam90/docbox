@@ -1,5 +1,5 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -19,11 +19,38 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="List Is Currently Empty \n Start By Adding Patients"
         android:id="@+id/textView56"
-        android:layout_centerInParent="true"
-        android:gravity="center"
+        android:gravity="center|top"
         android:background="#50000000"
         android:textColor="#ffffff"
         android:visibility="gone" />
 
+    <pl.bclogic.pulsator4droid.library.PulsatorLayout
+        android:id="@+id/pulsator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:pulse_count="4"
+        app:pulse_duration="7000"
+        app:pulse_repeat="0"
+        app:pulse_color="@color/green"
+        app:pulse_startFromScratch="false"
+        app:pulse_interpolator="Linear"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+         >
+    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+    <utilityClasses.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_icon="@drawable/plus"
+        app:fab_title="Add Report"
+
+        android:id="@+id/addpatientfirst"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

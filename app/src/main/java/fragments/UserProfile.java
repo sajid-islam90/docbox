@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -27,7 +28,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -63,16 +63,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import activity.CameraDemoActivity;
-import activity.PatientProfileActivity;
-import adapters.DegreeListAdapter;
-import utilityClasses.DatabaseHandler;
-import redundant.FileUtils;
-
 import com.elune.sajid.myapplication.R;
-
-import utilityClasses.util.GeocodingLocation;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -94,20 +85,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import activity.Activity_main_2;
+import activity.CameraDemoActivity;
 import activity.MainActivity;
+import adapters.DegreeListAdapter;
 import objects.DataBaseEnums;
 import objects.media_obj;
 import objects.personal_obj;
+import redundant.FileUtils;
+import utilityClasses.DatabaseHandler;
 import utilityClasses.PhotoHelper;
 import utilityClasses.RoundImage;
 import utilityClasses.uploadfile;
+import utilityClasses.util.GeocodingLocation;
 import utilityClasses.utility;
 
 public class UserProfile extends Fragment implements OnItemSelectedListener {
@@ -135,7 +129,7 @@ public class UserProfile extends Fragment implements OnItemSelectedListener {
     private final String LOG_TAG = "Romi: Google Places";
     private final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private final String TYPE_AUTOCOMPLETE = "/autocomplete";
-    private final String API_KEY = "AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE"; //"AIzaSyBhivIm9hCGwEbVgEE95mHT6_aXahGmcPs";
+    private final String API_KEY = "AIzaSyBilukRY9_fuoa2YBX_CUjXSCHfs9lKgsE"; //"AIzaSyBhivIm9hCGwEbVgEE95mHT6_aXahGmcPs";
     private final String OUT_JSON = "/json";
     private static final int REQUEST_TAKE_PHOTO = 100;
     ImageView imageView1;
@@ -225,6 +219,7 @@ alert.show();
         experienceEditText = (EditText) rootView.findViewById(R.id.experienceEditText);
         imageView1 = (ImageView) rootView.findViewById(R.id.imageViewScrollDown);
         scrollView = (ScrollView) rootView.findViewById(R.id.scrollView6);
+
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1492,7 +1487,7 @@ doctorType.setText(docType);
         if (id == R.id.action_save) {
             DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
             ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
-            if (((String.valueOf(searchedLocation.latitude) != null) && (String.valueOf(searchedLocation.longitude) != null) && (!String.valueOf(searchedLocation.latitude).equals("")) && (!String.valueOf(searchedLocation.longitude).equals(""))))
+            if (((!String.valueOf(searchedLocation.latitude).equals("")) && (!String.valueOf(searchedLocation.longitude).equals(""))))
 
             savePersonalInfo();
             else

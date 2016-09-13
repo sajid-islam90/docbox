@@ -24,7 +24,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,7 +122,7 @@ public class documents extends ActionBarActivity {
 */
     public void displayDocuments(ArrayList<Item> documentList)
     {
-        ListView listView = (ListView)findViewById(R.id.listViewDocuments);
+        ListView listView = (ListView)findViewById(R.id.listViewNews);
          docAdapter = new DocumentsAdapter(this,documents.this,documentList);
         listView.setAdapter(docAdapter);
 

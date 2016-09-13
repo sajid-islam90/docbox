@@ -5,19 +5,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,21 +33,21 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import utilityClasses.ConnectionDetector;
-import utilityClasses.DatabaseHandler;
-
-import objects.*;
-import adapters.MyAdapter;
-import objects.Patient;
-
 import com.elune.sajid.myapplication.R;
-import utilityClasses.RoundImage;
 
 import java.util.ArrayList;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import adapters.MyAdapter;
+import objects.Item;
+import objects.Patient;
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
+import utilityClasses.ConnectionDetector;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.RoundImage;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
 
 
 public class MainActivity extends Fragment {
@@ -87,11 +85,23 @@ public class MainActivity extends Fragment {
         getActivity().setTitle("My Patients");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         accountType = prefs.getString(getActivity().getString(R.string.account_type), "");
-
+        PulsatorLayout pulsator = (PulsatorLayout) rootView.findViewById(R.id.pulsator);
+       // pulsator.start();
         ActionBar actionBar = ((AppCompatActivity) this.getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("My Patients");
         }
+        FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.addpatientfirst);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),DisplayMessageActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("parent", "main");
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 //        fetchPatientsTask fetchPatientsTask = new fetchPatientsTask();
 //        fetchPatientsTask.execute((Void)null);
         displayPatientList(new ArrayList<Item>());
@@ -101,6 +111,8 @@ public class MainActivity extends Fragment {
             RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
             TextView textView = (TextView)rootView.findViewById(R.id.textView56);
             textView.setVisibility(View.VISIBLE);
+            pulsator.start();
+            floatingActionButton.setVisibility(View.VISIBLE);
            //  relativeLayout.setBackgroundResource(R.drawable.backgroud);
         }
         return rootView;
@@ -270,8 +282,7 @@ public class MainActivity extends Fragment {
             case R.id.action_add:
 
                 if(!accountType.equals(getActivity().getString(R.string.account_type_helper)))
-                { Toast.makeText(getActivity(), "Add selected", Toast.LENGTH_SHORT)
-                        .show();
+                {
 
                 Intent intent = new Intent(getActivity(),DisplayMessageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

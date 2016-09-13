@@ -236,7 +236,11 @@
         <activity
             android:name="activity.PGSubscriptionActivity"
             android:theme="@style/MainActivity" />
-        <activity android:name="activity.PrivacyAndTermsView"></activity>
+        <activity android:name="activity.PrivacyAndTermsView" />
+        <activity
+            android:name="activity.article_view_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivity" />
     </application>
 
 </manifest>

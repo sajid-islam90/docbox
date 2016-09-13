@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/black_overlay</item>
         <item name="android:windowNoTitle">true</item>
@@ -39,7 +39,13 @@
         <item name="actionBarStyle">@style/MyActionBar</item>
 
 
+    </style>
+    <style name="MainActivity.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="MainActivity.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="MainActivity.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>

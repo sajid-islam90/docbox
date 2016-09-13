@@ -147,6 +147,11 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         items.add(item);
 
         item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item10));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_news));
+        items.add(item);
+
+        item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item3));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_user_profile));
         items.add(item);
@@ -156,11 +161,12 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
             item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_schedule));
             items.add(item);
 
-
         item =new Item();
-        item.setTitle(getString(R.string.nav_drawer_item5));
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
+        item.setTitle(getString(R.string.nav_drawer_item6));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_add_helper));
         items.add(item);
+
+
 
         item =new Item();
         item.setTitle(getString(R.string.nav_drawer_item9));
@@ -173,9 +179,9 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         items.add(item);
 
 
-            item =new Item();
-            item.setTitle(getString(R.string.nav_drawer_item6));
-        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_add_helper));
+        item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item5));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_pay));
         items.add(item);
 
 
@@ -183,6 +189,9 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setTitle(getString(R.string.nav_drawer_item7));
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_verify));
         items.add(item);
+
+
+
 
 
        DrawerListAdapter drawerListAdapter = new DrawerListAdapter(getActivity(),items);
