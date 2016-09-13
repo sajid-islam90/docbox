@@ -3,32 +3,25 @@ package adapters;
 /**
  * Created by sajid on 3/23/2016.
  */
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
-import objects.DataBaseEnums;
+import java.util.HashMap;
+import java.util.List;
+
 import utilityClasses.DatabaseHandler;
-import utilityClasses.utility;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -38,14 +31,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
     private HashMap<String, List<String>> _listDataChildDates;
+    private ExpandableListView expandableListView;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData,List<String> listDataHeaderDates, HashMap<String, List<String>> listChildDataDates) {
+                                 HashMap<String, List<String>> listChildData, List<String> listDataHeaderDates,
+                                 HashMap<String, List<String>> listChildDataDates, ExpandableListView expandableListView) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataHeaderDates = listDataHeaderDates;
         this._listDataChild = listChildData;
         this._listDataChildDates = listChildDataDates;
+        this.expandableListView = expandableListView;
     }
 
     @Override
@@ -107,8 +103,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(final int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, final boolean isExpanded,
+                             View convertView, final ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
         String headerDate = (String)_listDataHeaderDates.get(groupPosition);
         if (convertView == null) {
@@ -120,9 +116,28 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
         final View finalConvertView = convertView;
+        lblListHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isExpanded)
+                {
+                    expandableListView.collapseGroup(groupPosition);
+                }
+                else
+                {
+                    expandableListView.expandGroup(groupPosition);
+                }
+            }
+        });
+
         lblListHeader.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+
+
+
+
+
                 final PopupMenu popup = new PopupMenu(_context, finalConvertView);
                 popup.getMenuInflater().inflate(R.menu.diagnosis_popup
                         , popup.getMenu());
@@ -178,7 +193,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 /** Showing the popup menu */
                 popup.show();
 
-                return false;
+                return true;
             }
         });
         lblListHeader.setTypeface(null, Typeface.BOLD);

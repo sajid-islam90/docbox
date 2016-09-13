@@ -1060,8 +1060,8 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Make your day to day practice much easier by using DocBox and never loose any of your Patient's Data ever." +
-                            "With services (like online appointments,safe data storage on cloud,view ,edit and add new patient data without internet,Print Prescription, Print Discharge card of patients ) specially designed to enhance your daily practice.\n"+
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "DocBox has helped me manage my practice" +
+                            "with outstanding services (like online appointments,safe data storage on cloud,view ,edit and add new patient data without internet,Print Prescription, Print Discharge card of patients ) specially designed to enhance a doctor's daily practice.\n"+
                             " Download DocBox for android by clicking on this link: " + "https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication \n and for iOS " +
                             "https://itunes.apple.com/us/app/docbox-elune/id1147672610?ls=1&mt=8 \n Visit us at our website https://docbox.co.in");
                     sendIntent.setType("text/plain");

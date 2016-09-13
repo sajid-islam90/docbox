@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-import utilityClasses.DatabaseHandler;
 import com.elune.sajid.myapplication.R;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +28,7 @@ import java.util.Map;
 import activity.PatientProfileActivity;
 import adapters.ExpandableListAdapter;
 import objects.DataBaseEnums;
+import utilityClasses.DatabaseHandler;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,7 +116,7 @@ public class Diagnosis extends Fragment {
         // preparing list data
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,listDataHeaderDates,listDataChildDates);
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild,listDataHeaderDates,listDataChildDates,expListView);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
