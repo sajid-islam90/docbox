@@ -1,5 +1,6 @@
 package utilityClasses;
 //UTILITY CLASS
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.widget.Toast;
@@ -27,7 +29,6 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONObject;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
@@ -54,9 +55,17 @@ import java.util.Random;
 import activity.Other_Notes_Activity;
 import activity.Treatment_Activity;
 import activity.View_Media_notes_grid;
-
-
-import objects.*;
+import objects.DataBaseEnums;
+import objects.Item;
+import objects.Patient;
+import objects.document_obj;
+import objects.exam_obj;
+import objects.history_obj;
+import objects.media_obj;
+import objects.notes_obj;
+import objects.other_obj;
+import objects.personal_obj;
+import objects.treatment_obj;
 
 /**
  * Created by sajid on 3/28/2015.
@@ -90,6 +99,16 @@ public class utility {
         }
 
         return present;
+    }
+
+
+    public static void doPhotoPrint(Context context,Bitmap bitmap) {
+        PrintHelper photoPrinter = new PrintHelper(context);
+        photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+//        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),
+//                R.drawable.);
+
+        photoPrinter.printBitmap("droids.jpg - test print", bitmap);
     }
 
     public static void bookAppointmentToday(int pid ,Context context)
@@ -318,7 +337,7 @@ public class utility {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                     String hashString = prefs.getString(context.getString(R.string.hash_code), "");
                     String syncStatus = "1";
-ArrayList<String> data =new ArrayList<String>();
+                    ArrayList<String> data =new ArrayList<String>();
                         data.add(String.valueOf(DoctorId));
                         data.add(hashString);
                         data.add(syncStatus);
@@ -1126,6 +1145,7 @@ return  arrayListIdPhotoPath;
 
                 databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_NAME, String.valueOf(jsonObject.get("Name")));
                 databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_ADDRESS, String.valueOf(jsonObject.get("Address")));
+                databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_DESIGNATION,String.valueOf(jsonObject.get("Designation")));
                 databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_EXPERIENCE, String.valueOf(jsonObject.get("Experience")));
                 databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_CONSULT_FEE, String.valueOf(jsonObject.get("ConsultFee")));
                 databaseHandler.updatePersonalInfo(DataBaseEnums.KEY_SPECIALITY, String.valueOf(jsonObject.get("Speciality")));

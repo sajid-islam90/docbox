@@ -1,10 +1,6 @@
 package utilityClasses;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-
 import android.annotation.TargetApi;
-
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,20 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-
 import android.os.Build;
-
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.elune.sajid.myapplication.R;
-
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,6 +27,12 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 import activity.Activity_main_2;
 import activity.data_sync_activity;
@@ -317,8 +312,9 @@ public class uploadfile  {
                     // Server response
                     responseString = EntityUtils.toString(r_entity);
                     DatabaseHandler databaseHandler = new DatabaseHandler(context);
-                   databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS, "1", path.get(i).get_media_path());
-                    databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS, "1", path.get(i).get_media_path());
+                  int retVal =  databaseHandler.updateMedia(DataBaseEnums.KEY_SYNC_STATUS, "1", path.get(i).get_media_path());
+                   int retValFollowUp = databaseHandler.updateMediaFollowUp(DataBaseEnums.KEY_SYNC_STATUS, "1", path.get(i).get_media_path());
+                    Log.e("followup upload",path.get(i).get_media_path()+"is uploaded with ret value"+retValFollowUp);
                     databaseHandler.updateDocument(DataBaseEnums.KEY_SYNC_STATUS, "1", path.get(i).get_media_path());
 
 

@@ -9,7 +9,10 @@
         android:layout_height="wrap_content"
         android:text="Add Follow Up"
         android:id="@+id/buttonAddFollowup"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/button_green"
+        android:elevation="0dp"
+        android:textColor="@color/white" />
 
     <ListView
         android:layout_width="wrap_content"

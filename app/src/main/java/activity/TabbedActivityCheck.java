@@ -1,15 +1,5 @@
 package activity;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,20 +9,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.design.widget.TextInputEditText;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,10 +34,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,31 +46,39 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import redundant.FileUtils;
-import utilityClasses.floatingactionbutton.FloatingActionButton;
-import utilityClasses.DatabaseHandler;
-
-import objects.DataBaseEnums;
-import objects.Item;
-import objects.Patient;
-import objects.personal_obj;
-
-import utilityClasses.PhotoHelper;
 import com.elune.sajid.myapplication.R;
 
-import utilityClasses.floatingactionbutton.FloatingActionsMenu;
-import utilityClasses.utility;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
-import adapters.*;
+import adapters.InputAgainstAFieldAdapter;
+import adapters.recyclerAdapter;
+import objects.Item;
+import objects.Patient;
 import objects.history_obj;
 import objects.media_obj;
 import objects.other_obj;
+import objects.personal_obj;
+import redundant.FileUtils;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
+import utilityClasses.floatingactionbutton.FloatingActionsMenu;
+import utilityClasses.utility;
 
 
 public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.TabListener {
     static int pid;
      static RelativeLayout relativeLayoutHelp;
     static FloatingActionsMenu floatingActionsMenuHelp;
+
     static FloatingActionButton floatingActionButton1Help;
     static FloatingActionButton floatingActionButton2Help;
     static FloatingActionButton floatingActionButton3Help;
@@ -120,6 +118,7 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
      */
     ViewPager mViewPager;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +136,10 @@ public class TabbedActivityCheck extends ActionBarActivity implements ActionBar.
          imageView = (ImageView)findViewById(R.id.imageView11);
         relativeLayoutHelp = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
         // relativeLayoutHelp = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.status_bar));
          floatingActionsMenuHelp = (FloatingActionsMenu)findViewById(R.id.viewHelp);
         if(firstTime) {
             relativeLayoutHelp.setVisibility(View.VISIBLE);
@@ -479,7 +482,7 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
             final RecyclerView listViewOtherHistView = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
             final RecyclerView listViewMedia = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
             final CardView cardView = (CardView)rootView.findViewById(R.id.view13);
-
+final ImageView imageViewDim = (ImageView)rootView.findViewById(R.id.imageView13) ;
             relativeLayoutHelp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -488,6 +491,18 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
             });
 //            floatingActionsMenuHelp = (FloatingActionsMenu)rootView.findViewById(R.id.viewHelp);
             final FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu)rootView.findViewById(R.id.view);
+
+            floatingActionsMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+                @Override
+                public void onMenuExpanded() {
+                    imageViewDim.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onMenuCollapsed() {
+                    imageViewDim.setVisibility(View.GONE);
+                }
+            });
 floatingActionsMenuHelp.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
     @Override
     public void onMenuExpanded() {

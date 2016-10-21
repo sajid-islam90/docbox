@@ -16,6 +16,12 @@
             android:id="@+id/listViewNews"
             android:layout_weight="1" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView13"
+            android:background="#90000000"
+            android:visibility="gone" />
         <utilityClasses.floatingactionbutton.FloatingActionsMenu
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

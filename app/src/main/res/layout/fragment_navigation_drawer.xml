@@ -28,9 +28,10 @@
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="47dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,7 +40,7 @@
                 android:text="Medium Text"
                 android:id="@+id/drawer_name"
                 android:layout_below="@+id/profilePic"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="47dp"
                 android:textColor="#ffffff" />
 
             <TextView
@@ -55,7 +56,7 @@
                 android:layout_toEndOf="@+id/profilePic"
                 android:layout_below="@+id/drawer_name"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="47dp"
                 android:layout_marginTop="5dp" />
 
         </RelativeLayout>

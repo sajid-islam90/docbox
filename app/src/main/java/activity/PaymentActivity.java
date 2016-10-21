@@ -1,18 +1,27 @@
 package activity;
+
 import android.app.Activity;
-import android.view.View;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.RadioButton;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
-import android.util.Log;
 
 import com.elune.sajid.myapplication.R;
+import com.loopj.android.http.RequestParams;
 import com.razorpay.Checkout;
+
 import org.json.JSONObject;
+import org.json.simple.JSONValue;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
 
 import objects.personal_obj;
 import utilityClasses.DatabaseHandler;
+import utilityClasses.utility;
 
 public class PaymentActivity extends Activity
 {
@@ -42,21 +51,21 @@ DatabaseHandler databaseHandler = new DatabaseHandler(PaymentActivity.this);
         /**
          * Replace with your public key
          */
-        final String public_key = "rzp_test_lapLGQHo4X4Nma";
+
         RadioButton radioButton = (RadioButton)findViewById(R.id.radioButton);
         RadioButton radioButton2 = (RadioButton)findViewById(R.id.radioButton2);
         RadioButton radioButton3 = (RadioButton)findViewById(R.id.radioButton3);
         if(radioButton.isChecked())
         {
-            amountPayable = 25000;
+            amountPayable = 50000;
         }
         else if(radioButton2.isChecked())
         {
-            amountPayable = 125000;
+            amountPayable = 250000;
         }
         else if(radioButton3.isChecked())
         {
-            amountPayable = 250000;
+            amountPayable = 500000;
         }
         /**
          * You need to pass current activity in order to let razorpay create CheckoutActivity
@@ -65,11 +74,11 @@ DatabaseHandler databaseHandler = new DatabaseHandler(PaymentActivity.this);
 
 
         final Checkout co = new Checkout();
-        co.setPublicKey(public_key);
-
+        //co.setPublicKey(public_key);
+        co.setImage(R.drawable.icon4);
         try{
             JSONObject options = new JSONObject("{" +
-                    "description: 'Demoing Charges'," +
+                    "description: 'Charges'," +
                     "image: 'www.docbox.co.in/sajid/icon4.png'," +
                     "currency: 'INR'}"
             );
@@ -94,6 +103,23 @@ DatabaseHandler databaseHandler = new DatabaseHandler(PaymentActivity.this);
     public void onPaymentSuccess(String razorpayPaymentID){
         try {
             Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            final String  address =  getResources().getString(R.string.action_server_ip_address);
+            final RequestParams requestParams = new RequestParams();
+            ArrayList<String> data = new ArrayList<>();
+            data.add(razorpayPaymentID);
+            data.add(personalObj.get_email());
+            data.add(String.valueOf(amountPayable/100));
+
+            String s1 ="";
+            StringWriter out = new StringWriter();
+            try {
+                JSONValue.writeJSONString(data, out);
+                s1 = out.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            requestParams.put("payment_data", s1);
+            utility.sync("http://" + address + "/paymentCaptureRazorPay.php",requestParams,PaymentActivity.this);
         }
         catch (Exception e){
             Log.e("com.merchant", e.getMessage(), e);

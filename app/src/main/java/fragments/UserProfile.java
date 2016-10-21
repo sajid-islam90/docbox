@@ -66,11 +66,13 @@ import android.widget.Toast;
 import com.elune.sajid.myapplication.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -580,12 +582,18 @@ alert.show();
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) this.getChildFragmentManager()
-                    .findFragmentById(R.id.location_map)).getMap();
+            ((SupportMapFragment) this.getChildFragmentManager()
+                    .findFragmentById(R.id.location_map)).getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    mMap = googleMap;
+                    if (mMap != null) {
+                        setUpMap();
+                    }
+                }
+            });
             // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
+
         } else {
             setUpMap();
         }
@@ -1344,16 +1352,26 @@ doctorType.setText(docType);
         if(bmp!=null)
         {bmp = PhotoHelper.getResizedBitmap(bmp, 200, 200);
             roundedImage = new RoundImage(bmp);
+            Picasso.with(getActivity()).load(new File(personalObj.get_photoPath())).resize(100,100).centerCrop().into(imageView);
             // Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
 
         }
         else {
+            if(personalObj.get_gender()!=null)
+                if (personalObj.get_gender().compareToIgnoreCase("male") == 0)
 
-            bmp = BitmapFactory.decodeResource(getResources(),R.drawable.add_new_photo);
-            roundedImage = new RoundImage(bmp);
-            imageView.setBackgroundResource(R.drawable.add_new_photo);
+                    Picasso.with(getActivity()).load(R.drawable.docbox_boy).resize(100,100).centerCrop().into(imageView);
+                else
+                    Picasso.with(getActivity()).load(R.drawable.docbox_girl).resize(100,100).centerCrop().into(imageView);
+
+            else
+                Picasso.with(getActivity()).load(R.drawable.docbox_boy).resize(100,100).centerCrop().into(imageView);
+
+           // roundedImage = new RoundImage(bmp);
+            //Picasso.with(getActivity()).load(R.drawable.default_pic).resize(100,100).centerCrop().into(imageView);
+            //imageView.setBackgroundResource(R.drawable.default_pic);
         }
-        imageView.setImageDrawable(roundedImage);
+        //imageView.setImageDrawable(roundedImage);
 
 
     }
@@ -1487,7 +1505,8 @@ doctorType.setText(docType);
         if (id == R.id.action_save) {
             DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
             ArrayList<String> latLong = databaseHandler.getSavedLatitudeLongitude();
-            if (((!String.valueOf(searchedLocation.latitude).equals("")) && (!String.valueOf(searchedLocation.longitude).equals(""))))
+            if(searchedLocation!=null)
+            if (((String.valueOf(searchedLocation.latitude) != null) && (String.valueOf(searchedLocation.longitude) != null) && (!String.valueOf(searchedLocation.latitude).equals("")) && (!String.valueOf(searchedLocation.longitude).equals(""))))
 
             savePersonalInfo();
             else

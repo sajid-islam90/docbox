@@ -36,6 +36,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -48,6 +50,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
+import com.squareup.picasso.Picasso;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -112,6 +115,7 @@ public class  Activity_main_2 extends AppCompatActivity
     String accountType;
     static NsdHelper mNsdHelper;
     boolean hasHelper;
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,17 +131,21 @@ public class  Activity_main_2 extends AppCompatActivity
         editor.putString("AppVersion","5");
         Calendar calender = Calendar.getInstance();
         int hourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-
+        String staticSpecialityNews = prefs.getString("staticSpecialityNews","all");
+        if(staticSpecialityNews.equals("all"))
+        {
+            editor.putString("staticSpecialityNews","all");
+        }
         boolean appVersionValid= prefs.getBoolean("appVersionValid",false);
         if((hourOfDay>=12)||(!appVersionValid))
         {
-            RestoreWebData restoreWebData = new RestoreWebData();
-            restoreWebData.execute((Void) null);
+            CheckAppVersion checkAppVersion = new CheckAppVersion();
+            checkAppVersion.execute((Void) null);
         }
         String allowDataCollect = prefs.getString("DataCollectFromOlderUser","");
         if(allowDataCollect.equals(""))
         {
-askDoctorType();
+            askDoctorType();
             editor.putString("DataCollectFromOlderUser","doctorType");//doctorType--> practicing or student
 
 
@@ -171,7 +179,7 @@ askDoctorType();
         }
 
         boolean restoreFlag = prefs.getBoolean("restore", false);
-       int fragmentNumberToShow =  getIntent().getIntExtra("fragmentNumber",1);
+        int fragmentNumberToShow =  getIntent().getIntExtra("fragmentNumber",1);
         notifier = (NotificationManager)
                 Activity_main_2.this.getSystemService(Context.NOTIFICATION_SERVICE);
 //        Toolbar toolbar = (Toolbar)findViewById(R.id.main_activity_toolbar);
@@ -195,7 +203,10 @@ askDoctorType();
         DatabaseHandler dbHandle = new DatabaseHandler(getApplicationContext());
         personal_obj personalObj =  dbHandle.getPersonalInfo();
         ImageView imageView = (ImageView)findViewById(R.id.profilePic);
-
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.status_bar));
         Bitmap bmp = null;
         File file = null;
         if(personalObj.get_photoPath()!=null)
@@ -214,11 +225,26 @@ askDoctorType();
         }
         else {
 
-            bmp = BitmapFactory.decodeResource(getResources(),R.drawable.add_new_photo);
-            roundedImage = new RoundImage(bmp);
-            imageView.setBackgroundResource(R.drawable.add_new_photo);
+            if(personalObj.get_gender()!=null)
+
+                if(personalObj.get_gender().compareToIgnoreCase("male")==0)
+                {
+// bmp = BitmapFactory.decodeResource(getResources(),R.drawable.add_new_photo);
+//
+//                    roundedImage = new RoundImage(bmp);
+//                    imageView.setBackgroundResource(R.drawable.add_new_photo);
+                    Picasso.with(Activity_main_2.this).load(R.drawable.docbox_boy).into(imageView);
+                }
+                else
+                {
+                    Picasso.with(Activity_main_2.this).load(R.drawable.docbox_girl).into(imageView);
+                }
+            else
+            {
+                Picasso.with(Activity_main_2.this).load(R.drawable.docbox_boy).into(imageView);
+            }
         }
-        imageView.setImageDrawable(roundedImage);
+       // imageView.setImageDrawable(roundedImage);
         mName = (TextView)findViewById(R.id.drawer_name);
         if (!accountType.equals(Activity_main_2.this.getString(R.string.account_type_helper)))
         mName.setText("Dr." + personalObj.get_name());
@@ -294,39 +320,7 @@ askDoctorType();
 
 
 
-    public void updateApp() {
-        final android.app.AlertDialog.Builder alert1 = new android.app.AlertDialog.Builder(Activity_main_2.this);
-        try {
-            alert1.setTitle("App version out of date");
-            alert1.setMessage("Please Update the DocBox app to continue usage");
-            alert1.setPositiveButton("Take me to PlayStore", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent viewIntent =
-                            new Intent("android.intent.action.VIEW",
-                                    Uri.parse("https://play.google.com/store/apps/details?id=com.elune.sajid.myapplication&hl=en"));
-                    startActivity(viewIntent);
 
-                    dialog.dismiss();
-                }
-
-            });
-
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    alert1.show();
-                }
-            });
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-    }
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -346,7 +340,7 @@ askDoctorType();
         // set values for custom dialog components - text, image and button
         final RadioButton doctor = (RadioButton) dialog1.findViewById(R.id.radioButton4);
         final RadioButton student = (RadioButton) dialog1.findViewById(R.id.radioButton5);
-doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(isChecked)
@@ -1111,7 +1105,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //intent.putExtra("heading","ANKLE, HINDFOOT STUDY: GRAFT=BETTER FUSION");
 //                    startActivity(intent);
                     Fragment fragment = MainActivity.newInstance(position+1);
-                    getSupportActionBar().setTitle("News");
+                    getSupportActionBar().setTitle("");
                     fragmentNumber = 3;
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, news_Activity.newInstance(position + 1))
@@ -1178,6 +1172,7 @@ doctor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
         if(fragmentNumber!=1)
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
+
             if(fragmentNumber ==3)
             {
              if( fragmentUserProfile.contractAll())
@@ -1672,7 +1667,7 @@ listMedia.addAll(listDocument);
     }
 
 
-    public class RestoreWebData extends AsyncTask<Void, Void, Boolean> {
+    public class CheckAppVersion extends AsyncTask<Void, Void, Boolean> {
 
 
 

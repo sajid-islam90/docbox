@@ -25,7 +25,7 @@
         android:visibility="gone" />
 
     <pl.bclogic.pulsator4droid.library.PulsatorLayout
-        android:id="@+id/pulsator"
+        android:id="@+id/pulse_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:pulse_count="4"

@@ -2,8 +2,8 @@ package activity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -12,8 +12,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import utilityClasses.DatabaseHandler;
-import utilityClasses.PhotoHelper;
 import com.elune.sajid.myapplication.R;
 
 import java.io.File;
@@ -24,12 +22,17 @@ import adapters.recyclerAdapter;
 import objects.Item;
 import objects.media_obj;
 import objects.other_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
 
 public class ViewFollowUp_Activity extends AppCompatActivity {
     private static final int TWO_TEXT_FIELDS = 1;
     private static final int ONE_PHOTO = 2;
     int pid;
     int version;
+    int number;
+    Menu menu;
+    ListView listView1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class ViewFollowUp_Activity extends AppCompatActivity {
         Intent intent = getIntent();
         pid = intent.getIntExtra("id",0);
         version = intent.getIntExtra("version",0);
-        int number = intent.getIntExtra("number",1);
+        number= intent.getIntExtra("number",1);
         setTitle("Follow Up #"+number);
         TextView textView10 =(TextView)findViewById(R.id.textViewFollowUpNotesView);
         TextView textView6 =(TextView)findViewById(R.id.textViewFollowupOtherView);
@@ -92,7 +95,7 @@ doWork();
         DatabaseHandler databaseHandler = new DatabaseHandler(ViewFollowUp_Activity.this);
         int customerId = databaseHandler.getCustomerId();
         ArrayList<Item> FollowUpFields = databaseHandler.getFollowUpUnixVersion(pid, version);
-        ListView listView1 = (ListView)findViewById(R.id.fieldsListFollowUpView);
+         listView1 = (ListView)findViewById(R.id.fieldsListFollowUpView);
         InputAgainstAFieldAdapter inputAgainstAFieldAdapter = new InputAgainstAFieldAdapter(this,FollowUpFields);
         if (listView1 != null) {
             listView1.setAdapter(inputAgainstAFieldAdapter);
@@ -158,6 +161,22 @@ doWork();
 
     }
 
+    @Override
+    protected void onResume() {
+      // utility.recreateActivityCompat(ViewFollowUp_Activity.this);
+        super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent(ViewFollowUp_Activity.this,PatientProfileActivity.class);
+        intent.putExtra("id",pid);
+        intent.putExtra("tab",1);
+        startActivity(intent);
+        this.finish();
+        super.onBackPressed();
+    }
 
     public void displayAddedField(ArrayList<Item> fieldList)
     {
@@ -189,6 +208,7 @@ doWork();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_view_follow_up_, menu);
         return true;
     }
@@ -202,6 +222,16 @@ doWork();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(ViewFollowUp_Activity.this,edit_followup.class);
+            intent.putExtra("version",version);
+            intent.putExtra("number",number);
+            intent.putExtra("parent",ViewFollowUp_Activity.class.toString());
+            intent.putExtra("id", pid);
+            startActivity(intent);
+            finish();
+//            listView1.setItemsCanFocus(true);
+//            listView1.setFocusable(true);
+//            listView1.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             return true;
         }
 

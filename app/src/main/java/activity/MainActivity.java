@@ -64,10 +64,16 @@ public class MainActivity extends Fragment {
     private TextView mEmail;
     private ListView listView;
     private ProgressDialog pdia;
+    private int numberOfPatients ;
+    private RelativeLayout relativeLayout;
+    private  TextView textView;
+    private FloatingActionButton floatingActionButton;
+    private PulsatorLayout pulsator;
     boolean doubleBackToExitPressedOnce = false;
+//    Context context;
     RoundImage roundedImage;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    final Context context = getActivity();
+    static Context context ;
     private String[] navigationDrawerOptions;
     private TextView mStatusView;
     List<String> patientNames = new ArrayList<String>();
@@ -78,20 +84,20 @@ public class MainActivity extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
         listView = (ListView)rootView.findViewById(R.id.listViewMain);
-
+        context = getActivity();
        // SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandle = new DatabaseHandler(getActivity());
         setHasOptionsMenu(true);
         getActivity().setTitle("My Patients");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         accountType = prefs.getString(getActivity().getString(R.string.account_type), "");
-        PulsatorLayout pulsator = (PulsatorLayout) rootView.findViewById(R.id.pulsator);
+         pulsator  = (PulsatorLayout) rootView.findViewById(R.id.pulse_button);
        // pulsator.start();
         ActionBar actionBar = ((AppCompatActivity) this.getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("My Patients");
         }
-        FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.addpatientfirst);
+         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.addpatientfirst);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,16 +111,18 @@ public class MainActivity extends Fragment {
 //        fetchPatientsTask fetchPatientsTask = new fetchPatientsTask();
 //        fetchPatientsTask.execute((Void)null);
         displayPatientList(new ArrayList<Item>());
-       int numberOfPatients = getPatientList();
-        if(numberOfPatients == 0)
-        {
-            RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
-            TextView textView = (TextView)rootView.findViewById(R.id.textView56);
-            textView.setVisibility(View.VISIBLE);
-            pulsator.start();
-            floatingActionButton.setVisibility(View.VISIBLE);
-           //  relativeLayout.setBackgroundResource(R.drawable.backgroud);
-        }
+       //int numberOfPatients = getPatientList();
+        fetchPatientsTask fetchPatientsTask = new fetchPatientsTask();
+        fetchPatientsTask.execute((Void) null);
+//        if(numberOfPatients == 0)
+//        {
+//             relativeLayout = (RelativeLayout)rootView.findViewById(R.id.drawer_layout);
+//             textView  = (TextView)rootView.findViewById(R.id.textView56);
+//            textView.setVisibility(View.VISIBLE);
+//            pulsator.start();
+//            floatingActionButton.setVisibility(View.VISIBLE);
+//           //  relativeLayout.setBackgroundResource(R.drawable.backgroud);
+//        }
         return rootView;
     }
     public static MainActivity newInstance(int sectionNumber) {
@@ -423,7 +431,7 @@ public class MainActivity extends Fragment {
 
 
 
-
+        ArrayList<Item> nameWithImage;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -432,7 +440,7 @@ public class MainActivity extends Fragment {
         public int getPatientList()
         {
 
-            DatabaseHandler dbHandler = new DatabaseHandler(getActivity());
+            DatabaseHandler dbHandler = new DatabaseHandler(context);
 
             Bitmap image = null;
             String name = null;
@@ -441,10 +449,10 @@ public class MainActivity extends Fragment {
             byte[] bmpImage ;
             String lastVisit;
             Item nameImage = new Item();
-            ArrayList<Item> nameWithImage = new ArrayList<Item>();
+             nameWithImage = new ArrayList<Item>();
             List<Patient>patientList = dbHandler.getAllPatient();
             // List<String> patientNames = new ArrayList<String>();
-            image = BitmapFactory.decodeResource(getResources(),R.drawable.default_photo);
+            image = BitmapFactory.decodeResource(context.getResources(),R.drawable.default_photo);
             Collections.sort(patientNames, new Comparator<String>() {
                 @Override
                 public int compare(String s1, String s2) {
@@ -476,7 +484,7 @@ public class MainActivity extends Fragment {
                     patientNames.add(i, name);
                 }
 
-                adapter.updateReceiptsList(nameWithImage);
+
 
 
             }
@@ -485,7 +493,7 @@ public class MainActivity extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            getPatientList();
+           numberOfPatients = getPatientList();
             return null;
 
         }
@@ -493,7 +501,17 @@ public class MainActivity extends Fragment {
         @Override
         protected void onPostExecute(final Boolean success) {
 
+            if(numberOfPatients == 0)
+            {
 
+                textView.setVisibility(View.VISIBLE);
+                pulsator.start();
+                floatingActionButton.setVisibility(View.VISIBLE);
+                //  relativeLayout.setBackgroundResource(R.drawable.backgroud);
+            }
+            else {
+                adapter.updateReceiptsList(nameWithImage);
+            }
         }
 
 

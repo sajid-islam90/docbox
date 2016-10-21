@@ -3,6 +3,7 @@ package utilityClasses;
 /**
  * Created by sajid on 2/12/2015.
  */
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -548,6 +549,7 @@ mapping = cursor.getInt(0);
         args.put(columnName, columnValue);
 
         db.update(TABLE_PATIENT, args, KEY_ID + "= '" + Pid + "'", null) ;
+        db.close();
 
     }
 
@@ -558,6 +560,7 @@ mapping = cursor.getInt(0);
         args.put(columnName, columnValue);
 
         db.update(TABLE_APPOINTMENTS, args, KEY_FIRST_AID_ID + "= '" + firstAidId + "'", null) ;
+        db.close();
 
     }
     public void deleteAppointmentSettings(String onlineDay)
@@ -573,6 +576,7 @@ mapping = cursor.getInt(0);
         args.put(columnName, columnValue);
 
         db.update(TABLE_APPOINTMENT_SETTINGS, args, KEY_ONLINE_DAYS + "= '" + day + "'", null) ;
+        db.close();
 
     }
     public ArrayList<String> getAppointmentSettings(String day)
@@ -589,6 +593,7 @@ mapping = cursor.getInt(0);
 
             settings.add(String.valueOf(cursor.getInt(3)));
         }
+        db.close();
         return settings;
 
     }
@@ -606,6 +611,7 @@ mapping = cursor.getInt(0);
 
             settings.add(String.valueOf(cursor.getInt(3)));
         }
+        db.close();
 return settings;
 
     }
@@ -673,6 +679,7 @@ return settings;
 
 
         }
+        db.close();
         treatmentData.add(treatment);
         treatmentData.add(dates);
         return treatmentData;
@@ -764,6 +771,7 @@ cursor.moveToPosition(version-1);
            unixVersion = Long.parseLong(cursor.getString(cursor.getColumnIndex(KEY_VERSION)));
 
         }
+        db.close();
         return unixVersion;
     }
     public void updateTreatment(String field,String value,String version,String pid)
@@ -777,6 +785,7 @@ cursor.moveToPosition(version-1);
 
         db.update(TABLE_TREATMENT, args, KEY_VERSION + "= '" + version + "' AND " +
                 KEY_ID+" = "+pid, null) ;
+        db.close();
 
     }
     public void updateDiagnosis(String field,String value,String version,String pid)
@@ -790,6 +799,7 @@ cursor.moveToPosition(version-1);
 
         db.update(TABLE_DIAGNOSIS, args, KEY_VERSION + "= '" + version + "' AND " +
                 KEY_ID+" = "+pid, null) ;
+        db.close();
 
     }
 public int getDiagnosisCurrentVersion(String pid)
@@ -867,6 +877,7 @@ db.close();
             while (cursor.moveToNext());
 
         }
+        db.close();
         return  listOfItems;
     }
 
@@ -898,6 +909,37 @@ db.close();
         db.close();
     }
 
+    public void updateFollowUp(ArrayList<Item> listOfItems)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+
+       // for(int i = 0;i<listOfItems.size();i++) {
+//            ContentValues values = new ContentValues();
+//            values.put(KEY_ID, listOfItems.get(i).getPatient_id());
+//            values.put(KEY_DATE, listOfItems.get(i).getDate());
+//            values.put(KEY_FIELD_NAME, listOfItems.get(i).getTitle());
+//            values.put(KEY_FIELD_VALUE, listOfItems.get(i).getDiagnosis());
+//            values.put(KEY_VERSION, listOfItems.get(i).getSection());
+//            values.put(KEY_SYNC_STATUS, "0");
+
+//            ContentValues args = new ContentValues();
+//            args.put(listOfItems.get(i).getTitle(), listOfItems.get(i).getDiagnosis());
+            String sql = "Delete FROM "+TABLE_FOLLOW_UP+" WHERE "+KEY_VERSION+" = "+listOfItems.get(0).getSection();
+            Cursor cursor = db.rawQuery(sql,null);
+
+        db.delete(TABLE_FOLLOW_UP, KEY_VERSION + " = ?",
+                new String[]{String.valueOf(listOfItems.get(0).getSection())});
+        this.saveFollowUp(listOfItems);
+//            db.update(TABLE_FOLLOW_UP, args, KEY_VERSION + "= '" + listOfItems.get(i).getSection() + "' AND " +
+//                    KEY_ID + " = " + listOfItems.get(i).getPatient_id(), null);
+            // db.insert(TABLE_FOLLOW_UP, null, values);
+//            updatePatient(KEY_DATE_LAST_VISIT, listOfItems.get(0).getDate(), String.valueOf(listOfItems.get(0).getPatient_id()));
+//            updatePatient(KEY_SYNC_STATUS, "0", String.valueOf(listOfItems.get(0).getPatient_id()));
+       // }
+        //db.close();
+    }
+
 
 
     public ArrayList<Item> getFollowUpUnixVersion(int pid,int version) {
@@ -923,6 +965,7 @@ db.close();
             while (cursor.moveToNext());
 
         }
+        db.close();
         return  listOfItems;
     }
     public ArrayList<Item> getFollowUp(int pid,int version) {
@@ -949,6 +992,7 @@ db.close();
             while (cursor.moveToNext());
 
         }
+        db.close();
         return  listOfItems;
     }
 
@@ -999,6 +1043,7 @@ db.close();
             paths.add(mediaObj);
 
         }
+        db.close();
         return paths;
 
     }
@@ -1015,6 +1060,7 @@ db.close();
             latLong.add(cursor.getString(cursor.getColumnIndex(KEY_LONGITUDE)));
 
         }
+        db.close();
         return latLong;
 
     }
@@ -1030,6 +1076,7 @@ db.close();
            password = cursor.getString(cursor.getColumnIndex(KEY_PASSWORD));
 
         }
+        db.close();
         return password;
 
 
@@ -1084,9 +1131,10 @@ db.close();
         args.put(field, value);
 
          db.update(TABLE_PERSONAL_INFO, args, KEY_EMAIL + "= '" + email + "'", null) ;
+        db.close();
 
     }
-    public void updateMedia(String field,String value,String docPath)
+    public int  updateMedia(String field,String value,String docPath)
 
 
     {
@@ -1095,7 +1143,9 @@ db.close();
         ContentValues args = new ContentValues();
         args.put(field, value);
 
-        db.update(TABLE_MEDIA, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
+       int retval =  db.update(TABLE_MEDIA, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
+        db.close();
+        return retval;
 
     }
     public void updateTableSyncStatus(String field,String value,String tableName,String pid)
@@ -1109,6 +1159,7 @@ db.close();
         value =value.replace("'","");
         db.update(tableName, args, KEY_FIELD_NAME + " = '" + field +
                 "' AND "+ KEY_FIELD_VALUE+" = '"+value+"' AND "+KEY_ID +" = '"+pid+"'", null) ;
+        db.close();
 
     }
 
@@ -1141,7 +1192,9 @@ db.close();
         String[] whereArgs = new String[] {String.valueOf(notes.get_id()), String.valueOf(notes.get_version())};
 
         // updating row
-        return  db.update(TABLE_NOTES, values, where,whereArgs);
+        int retVal = db.update(TABLE_NOTES, values, where,whereArgs);
+        db.close();
+        return  retVal;
 
     }
 
@@ -1187,7 +1240,7 @@ return max;
             cursor.moveToLast();
             version = cursor.getInt(0);
         }
-
+        db.close();
         return version;
     }
 
@@ -1195,25 +1248,26 @@ return max;
     public ArrayList<String> getAllNotesDates(int pid,Context context)
     {
         ArrayList<String> dates = new ArrayList<String>();
-        SQLiteDatabase db = this.getReadableDatabase();
+//        SQLiteDatabase db = this.getReadableDatabase();
         int version[] = getMaxFollowupVersion(pid);
         Resources resource = context.getResources();
         String[] fields = resource.getStringArray(R.array.follow_up);
         int c=1;
         String table = null;
-for(c=0;dates.size()<version.length;c++)
-{
-    ArrayList<Item> listOfItems = new ArrayList<>();
-    listOfItems = getFollowUp(pid,version[c]);
-//    Log.i("debug", String.valueOf(version.length));
-//    Log.i("debug", String.valueOf(dates.size()));
-    if(listOfItems.size()>0)
-        dates.add("# "+ (c+1) +" date : "+getNotesDateFromVersion(version[c],pid)+ "\n  "+ fields[0]+" : "+listOfItems.get(0).getDiagnosis() );
-    else
-    {
-        Log.i("empty followup version", String.valueOf(version[c]+" : "+c));
-    }
-}
+        for(c=0;dates.size()<version.length;c++)
+                //for(c=version.length-1;dates.size()<version.length;c--)
+        {
+            ArrayList<Item> listOfItems = new ArrayList<>();
+            listOfItems = getFollowUp(pid,version[c]);
+        //    Log.i("debug", String.valueOf(version.length));
+        //    Log.i("debug", String.valueOf(dates.size()));
+            if(listOfItems.size()>0)
+                dates.add(fields[0]+" : "+listOfItems.get(0).getDiagnosis()+ "\n"+  " date : "+getNotesDateFromVersion(version[c],pid));
+            else
+            {
+                Log.i("empty followup version", String.valueOf(version[c]+" : "+c));
+            }
+        }
 //        while (c<=version.length)
 //        {
 //            ArrayList<Item> listOfItems = new ArrayList<>();
@@ -1241,7 +1295,7 @@ for(c=0;dates.size()<version.length;c++)
         }
 
 
-
+        db.close();
         return version;
     }
 
@@ -1249,7 +1303,7 @@ for(c=0;dates.size()<version.length;c++)
     {
         ArrayList<String> patients = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-String sql="";
+        String sql="";
 
 
 //        sql =  "SELECT DISTINCT "+DataBaseEnums.KEY_ID+
@@ -1264,24 +1318,24 @@ String sql="";
         sql = "SELECT DISTINCT "+DataBaseEnums.KEY_ID+" FROM "+DataBaseEnums.TABLE_PATIENT+" WHERE "+KEY_SYNC_STATUS+" != '3' AND "
         +KEY_DATE +" = '"+date+"'";
 
-try {
-    Cursor cursor = db.rawQuery(sql, null);
-    int c = cursor.getCount();
-    if(cursor.getCount()!=0) {
-        cursor.moveToFirst();
-        do {
-            patients.add(cursor.getString(0));
+        try {
+            Cursor cursor = db.rawQuery(sql, null);
+            int c = cursor.getCount();
+            if(cursor.getCount()!=0) {
+                cursor.moveToFirst();
+                do {
+                    patients.add(cursor.getString(0));
 
+                }
+                while (cursor.moveToNext());
+            }
         }
-        while (cursor.moveToNext());
-    }
-}
-catch (Exception e)
-{
-    e.printStackTrace();
-}
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-db.close();
+        db.close();
         return patients;
     }
 
@@ -1318,6 +1372,7 @@ db.close();
            notesObj = utility.cursorToNotes(cursor);
 
         }
+        db.close();
         return notesObj;
     }
 
@@ -1362,6 +1417,7 @@ db.close();
             histObj = utility.cursorToHistory(cursor);
 
         }
+        db.close();
         return histObj;
     }
     //gives date of a version of any notes table
@@ -1378,6 +1434,7 @@ db.close();
             date = cursor.getString(cursor.getColumnIndex(DataBaseEnums.KEY_DATE));
 
         }
+        db.close();
         return date;
     }
 
@@ -1398,6 +1455,7 @@ db.close();
            histObj = utility.cursorToHistory(cursor);
 
         }
+        db.close();
         return histObj;
     }
 
@@ -1423,6 +1481,7 @@ db.close();
             String strSQL = " DELETE FROM " + TABLE_EXAM+ " WHERE " + KEY_ID + " = " + examObj.get_pid() + " AND " + KEY_VERSION + " <= " + previousVersion;
             db.execSQL(strSQL);
         }
+        db.close();
         db.close(); // Closing database connection
 
 
@@ -1440,6 +1499,7 @@ db.close();
             examObj = utility.cursorToExam(cursor);
 
         }
+        db.close();
         return examObj;
     }
 
@@ -1466,6 +1526,7 @@ db.close();
             String strSQL = " DELETE FROM " + TABLE_TREATMENT+ " WHERE " + KEY_ID + " = " + treatmentObj.get_pid() + " AND " + KEY_VERSION + " <= " + previousVersion;
             db.execSQL(strSQL);
         }
+
         db.close(); // Closing database connection
 
 
@@ -1483,6 +1544,7 @@ db.close();
             treatmentObj = utility.cursorToTreatment(cursor);
 
         }
+        db.close();
         return treatmentObj;
     }
 
@@ -1532,6 +1594,7 @@ db.close();
             }
 
         }
+        db.close();
         return other_objs;
     }
 
@@ -1578,6 +1641,7 @@ db.close();
            while (cursor.moveToNext());
 
         }
+        db.close();
         return otherObj;
     }
     public ArrayList<other_obj> geOtherNote(int pid,int version)
@@ -1605,6 +1669,7 @@ db.close();
             }
 
         }
+        db.close();
         return other_objs;
     }
     public  void deleteOtherNote(other_obj otherObj,int pid,int version)
@@ -1639,13 +1704,15 @@ db.close();
 
 
     }
-    public void updateMediaFollowUp(String columnName,String columnValue,String docPath)
+    public int  updateMediaFollowUp(String columnName,String columnValue,String docPath)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(columnName, columnValue);
 
-        db.update(TABLE_MEDIA_FOLLOW_UP, args, KEY_DOC_NAME + "= '" + docPath + "'", null) ;
+       int retVal = db.update(TABLE_MEDIA_FOLLOW_UP, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
+        db.close();
+        return retVal;
 
     }
     public void updateAllMediaFollowUp()
@@ -1655,6 +1722,7 @@ db.close();
         args.put(KEY_SYNC_STATUS, 1);
 
         db.update(TABLE_MEDIA_FOLLOW_UP, args, "1", null) ;
+        db.close();
 
     }
     public media_obj[] getMediaFollowUp(int pid,int version)
@@ -1673,6 +1741,7 @@ db.close();
             mediaObjs = utility.cursorToMedia(cursor);
 
         }
+        db.close();
         return mediaObjs;
     }
     public  ArrayList<media_obj> getMediaFollowUpTobeUploaded()
@@ -1767,7 +1836,8 @@ db.close();
             mediaObjs = new media_obj[cursor.getCount()];
             mediaObjs = utility.cursorToMedia(cursor);
 
-        }  db.close();
+        }
+        db.close();
         return mediaObjs;
     }
 
@@ -1812,21 +1882,29 @@ db.close();
 
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String strSQL = " SELECT DISTINCT "+KEY_VERSION+" FROM "+ TABLE_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid;
+        String strSQL = " SELECT DISTINCT "+KEY_VERSION+" FROM "+ TABLE_FOLLOW_UP+" WHERE "+KEY_ID+" = "+pid+" ORDER BY "+KEY_VERSION;
 
         int i =0;
         Cursor cursor = db.rawQuery(strSQL, null);
         int versions[] = new int[cursor.getCount()];
+//        Arrays.sort(versions, new Comparator<Integer>()
+//        {
+//            @Override
+//            public int compare(Integer x, Integer y)
+//            {
+//                return x - y;
+//            }
+//        });
         if(cursor.getCount()>0)
         {
-            cursor.moveToFirst();
+            cursor.moveToLast();
            do {
               versions[i]=  cursor.getInt(cursor.getColumnIndex(KEY_VERSION));
-Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION))));
+               Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION))));
                i++;
 
 
-            } while (cursor.moveToNext());
+            } while (cursor.moveToPrevious());
             //cursor.moveToLast();
             db.close();
            // return cursor.getInt(cursor.getColumnIndex("COUNT( DISTINCT "+KEY_VERSION+")"));
@@ -2269,8 +2347,11 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
 
 
         // updating row
-        return db.update(TABLE_DOCUMENTS, values, KEY_DOC_PATH + " = ?",
+        int retVal = db.update(TABLE_DOCUMENTS, values, KEY_DOC_PATH + " = ?",
                 new String[] { doc_obj.get_doc_path() });
+        db.close();
+        return retVal;
+
     }
 
 
@@ -2294,8 +2375,10 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
 
 
         // updating row
-        return db.update(TABLE_DOCUMENTS, args, KEY_ID + " = ?",
+        int retVal = db.update(TABLE_DOCUMENTS, args, KEY_ID + " = ?",
                 new String[] {String.valueOf(id)});
+        db.close();
+        return retVal;
     }
 
 
@@ -2336,7 +2419,8 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         values.put(KEY_HEIGHT, patient.get_height());
         values.put(KEY_WEIGHT, patient.get_weight());
         values.put(KEY_OPD_IPD, patient.get_opd_ipd());
-        if(patient.get_id()!=0) {
+        if(patient.get_id()!=0)
+        {
             values.put(KEY_ID, patient.get_id());
             db.execSQL("delete from " + TABLE_PATIENT + " WHERE " + KEY_ID + " = '" + patient.get_id() + "'");
         }
@@ -2356,8 +2440,8 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         values.put(KEY_DATE,formattedDate );
         values.put(KEY_SYNC_STATUS,0);
 
-         values.put(KEY_PHOTO_PATH,patient.get_photoPath());
-         values.put(KEY_DATE_NEXT_FOLLOW_UP,patient.get_next_follow_up_date());
+        values.put(KEY_PHOTO_PATH,patient.get_photoPath());
+        values.put(KEY_DATE_NEXT_FOLLOW_UP,patient.get_next_follow_up_date());
        if(patient.get_id()!=0) {
 
            db.execSQL("delete from " + TABLE_PATIENT + " WHERE " + KEY_ID + " = '" + patient.get_id() + "'");
@@ -2573,8 +2657,10 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         values.put(KEY_DATE_NEXT_FOLLOW_UP, patient.get_next_follow_up_date());
 
         // updating row
-        return db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
+        int retVal = db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(patient.get_id()) });
+        db.close();
+        return retVal;
     }
     public int updatePatient(Patient patient,int syncStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -2598,8 +2684,10 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         values.put(KEY_DATE_NEXT_FOLLOW_UP, patient.get_next_follow_up_date());
 
         // updating row
-        return db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
+        int retVal = db.update(TABLE_PATIENT, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(patient.get_id()) });
+        db.close();
+        return retVal;
     }
 
     public void removePatient(Patient patient)
@@ -2668,43 +2756,43 @@ Log.i("versions", String.valueOf(cursor.getInt(cursor.getColumnIndex(KEY_VERSION
         return cursor.getCount();
     }
 
-    public List<Patient> search(String nameString,String diagnosisString, String locationString)
+    public List<Patient> search(String nameString,String diagnosisString, String patientUniqueId)
     {
         List<Patient> patientList = new ArrayList<Patient>();
         String searchNameQuery = "";
-        if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(locationString.equals("")))
+        if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(patientUniqueId.equals("")))
          searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                 " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if(((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(!locationString.equals("")))||
-        ((nameString.equals(""))&&(diagnosisString.equals(""))&&(locationString.equals(""))))
+        else if(((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(!patientUniqueId.equals("")))||
+        ((nameString.equals(""))&&(diagnosisString.equals(""))&&(patientUniqueId.equals(""))))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
                     KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
+                    KEY_OPD_IPD+ " LIKE '%" + patientUniqueId + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(locationString.equals("")))
+        else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(patientUniqueId.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if((nameString.equals(""))&&(diagnosisString.equals(""))&&(!locationString.equals("")))
+        else if((nameString.equals(""))&&(diagnosisString.equals(""))&&(!patientUniqueId.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
-                    " WHERE " +KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
+                    " WHERE " +KEY_OPD_IPD+ " LIKE '%" + patientUniqueId + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(locationString.equals("")))
+        else if((!nameString.equals(""))&&(!diagnosisString.equals(""))&&(patientUniqueId.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
                     KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(!locationString.equals("")))
+        else if((nameString.equals(""))&&(!diagnosisString.equals(""))&&(!patientUniqueId.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_DIAGNOSIS+ " LIKE '%" + diagnosisString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
+                    KEY_OPD_IPD+ " LIKE '%" + patientUniqueId + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
-        else if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(!locationString.equals("")))
+        else if((!nameString.equals(""))&&(diagnosisString.equals(""))&&(!patientUniqueId.equals("")))
             searchNameQuery = "SELECT * FROM " + TABLE_PATIENT +
                     " WHERE " + KEY_NAME + " LIKE '%" + nameString + "%' OR "+
-                    KEY_ADDRESS+ " LIKE '%" + locationString + "%' AND "+KEY_SYNC_STATUS+" != 3";
+                    KEY_OPD_IPD+ " LIKE '%" + patientUniqueId + "%' AND "+KEY_SYNC_STATUS+" != 3";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(searchNameQuery,null);
@@ -2892,7 +2980,7 @@ if(telephonyManager.getDeviceId()!=null)
         ArrayList<ArrayList<String>> patientList;
         patientList = new ArrayList<ArrayList<String>>();
 
-        SQLiteDatabase database = this.getWritableDatabase();
+//        SQLiteDatabase database = this.getWritableDatabase();
 int customerId = getCustomerId();
                 ArrayList<String> list =new ArrayList<String>(Arrays.asList(String.valueOf(customerId),"","","","","","","","","","","","","","",""));
 
@@ -3070,7 +3158,7 @@ int customerId = getCustomerId();
             e.printStackTrace();
         }
 
-
+        database.close();
 
         //Use GSON to serialize Array List to JSON
         return s1;
@@ -3184,7 +3272,7 @@ int customerId = getCustomerId();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        database.close();
         return s1;
     }
 

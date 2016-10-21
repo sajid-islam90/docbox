@@ -125,7 +125,7 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        selectItem(2);
+                        selectItem(3);
                     }
                 }, 300);
 

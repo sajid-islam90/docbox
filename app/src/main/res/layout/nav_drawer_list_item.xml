@@ -4,11 +4,11 @@
     android:layout_height="50dp">
 
     <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
         android:id="@+id/menuItemImageView"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="33dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,5 +19,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp" />
+        android:layout_marginLeft="29dp"
+        android:textSize="13sp" />
 </LinearLayout>

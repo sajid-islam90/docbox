@@ -1,8 +1,5 @@
 package adapters;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,26 +17,26 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.PopupMenu.OnMenuItemClickListener;
-
-import utilityClasses.DatabaseHandler;
-
-import activity.TabbedActivityCheck;
-import objects.DataBaseEnums;
-import objects.Item;
 
 import com.elune.sajid.myapplication.R;
-import objects.document_obj;
 
-import utilityClasses.utility;
+import java.io.File;
+import java.util.ArrayList;
 
 import activity.History_Activity;
 import activity.Other_Notes_Activity;
+import activity.TabbedActivityCheck;
 import activity.Treatment_Activity;
 import activity.View_Media_notes_grid;
 import activity.documents;
+import objects.DataBaseEnums;
+import objects.Item;
+import objects.document_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.utility;
 
 public class DocumentsAdapter extends ArrayAdapter<Item> {
 
@@ -161,6 +158,25 @@ public class DocumentsAdapter extends ArrayAdapter<Item> {
                                }
 
                             }
+//                            else if (item.getTitle().equals("print"))
+//                            {
+//
+//
+////                                Intent printIntent = new Intent(context, PrintDialogActivity.class);
+////                                Uri uri = Uri.fromFile(new File(filePath));
+////                                printIntent.setDataAndType(uri, "application/pdf");
+////                                printIntent.putExtra("title", "Today");
+////
+//                                Intent intent = new Intent(context, CustomPrintActivity.class);
+//                                context.startActivity(intent);
+//
+////                                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+////                                utility.doPhotoPrint(context,bitmap);
+//
+//
+//
+//
+//                            }
 
                             else if (item.getTitle().equals("rename"))
                             {

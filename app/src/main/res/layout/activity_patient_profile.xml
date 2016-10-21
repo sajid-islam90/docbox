@@ -37,7 +37,7 @@
         android:id="@+id/patientPic"
         android:src="@drawable/default_photo"
         app:border="true"
-        app:border_color="@color/green"
+        app:border_color="@color/circularImageBorder"
         app:border_width="4dp"
         app:shadow="true"
         app:shadow_radius="10"
@@ -47,7 +47,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/patientProfileEditIcon"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        android:visibility="gone" />
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -58,7 +59,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="9dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -132,12 +133,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/patientPic"
-                android:layout_toEndOf="@+id/patientPic"
                 android:id="@+id/linearLayoutPersonalDetails"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_toRightOf="@+id/patientPic1">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -145,7 +145,6 @@
                     android:id="@+id/patientProfile_name"
                     android:layout_below="@+id/patientPic"
                     android:layout_alignParentStart="false"
-                    android:textColor="@color/green"
                     android:layout_alignParentLeft="false"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                     android:text="Sajid Islam"
@@ -155,7 +154,8 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="2dp">
+                    android:layout_margin="2dp"
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -178,7 +178,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="55 Kg"
                     android:id="@+id/textViewWeight"
-                    android:layout_margin="2dp" />
+                    android:layout_margin="2dp"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -270,7 +271,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="@color/green"
+                android:background="@drawable/rounded2"
                 android:id="@+id/linearLayoutPatientProfileTabsDiagnosis">
 
                 <TextView
@@ -279,7 +280,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Diagnosis"
                     android:id="@+id/textView"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textStyle="normal|bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -296,7 +298,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Follow Ups"
                     android:id="@+id/textView41"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textStyle="normal|bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -313,7 +316,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Contact"
                     android:id="@+id/textView42"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textStyle="normal|bold" />
             </LinearLayout>
 
         </LinearLayout>
@@ -341,10 +345,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/fabButtonPatientProfile"
-            android:src="@drawable/ic_action_patient_profile_fab"
+            android:src="@drawable/view_info_docbox25"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="false" />
+            android:layout_alignParentEnd="false"
+            android:adjustViewBounds="true" />
 
 
     </RelativeLayout>
@@ -372,7 +377,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/fabButtonPatientProfileHelp"
-            android:src="@drawable/ic_action_patient_profile_fab"
+            android:src="@drawable/view_details"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -399,7 +404,8 @@
             android:textColor="#ffffff"
             android:layout_below="@+id/imageView10"
             android:layout_alignLeft="@+id/imageView10"
-            android:layout_alignStart="@+id/imageView10" />
+            android:layout_alignStart="@+id/imageView10"
+            android:visibility="gone" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -410,7 +416,8 @@
 
             android:layout_alignTop="@+id/imageView10"
             android:layout_alignRight="@+id/fabButtonPatientProfileHelp"
-            android:layout_alignEnd="@+id/fabButtonPatientProfileHelp">
+            android:layout_alignEnd="@+id/fabButtonPatientProfileHelp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -441,7 +448,8 @@
             android:layout_marginTop="49dp"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/fabButtonPatientProfileHelp"
-            android:layout_toStartOf="@+id/fabButtonPatientProfileHelp" />
+            android:layout_toStartOf="@+id/fabButtonPatientProfileHelp"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

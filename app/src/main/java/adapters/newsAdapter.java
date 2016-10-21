@@ -25,7 +25,7 @@ import utilityClasses.DatabaseHandler;
 public class newsAdapter extends ArrayAdapter<Item> {
 
     private final Context context;
-    private final ArrayList<Item> itemsArrayList;
+    public final ArrayList<Item> itemsArrayList;
 
     public newsAdapter(Context context, ArrayList<Item> itemsArrayList) {
 
@@ -45,6 +45,7 @@ public class newsAdapter extends ArrayAdapter<Item> {
         TextView titleView ;
         ImageView imageView ;
         TextView dateView ;
+        TextView sourceView;
 //RelativeLayout relativeLayout;
         LinearLayout linearLayout;
 
@@ -63,6 +64,7 @@ public class newsAdapter extends ArrayAdapter<Item> {
             convertView  = inflater.inflate(R.layout.news_preview, parent, false);
             holder = new ViewHolder();
             holder.titleView = (TextView) convertView.findViewById(R.id.textViewTitle);
+            holder.sourceView = (TextView) convertView.findViewById(R.id.textViewSource);
             holder.imageView = (ImageView) convertView.findViewById(R.id.imageViewPic);
             holder.dateView = (TextView) convertView.findViewById(R.id.textViewDate);
             holder.linearLayout = (LinearLayout) convertView.findViewById(R.id.linearLayoutNews);
@@ -82,8 +84,14 @@ public class newsAdapter extends ArrayAdapter<Item> {
         // 4. Set the text for textView
         DatabaseHandler dbHandle = new DatabaseHandler(getContext());
 
+String newsUrl = itemsArrayList.get(position).getDiagnosis();
 
+        int i = newsUrl.indexOf("//");
+        newsUrl = newsUrl.substring(i+2);
+        i = newsUrl.indexOf("/");
+        newsUrl = newsUrl.substring(0,i);
         holder.titleView.setText(itemsArrayList.get(position).getTitle());
+        holder.sourceView.setText(newsUrl);
         holder.dateView.setText(itemsArrayList.get(position).getDate());
         String urldisplay = itemsArrayList.get(position).getExtra();
         Picasso.with(context).load(urldisplay)
@@ -146,7 +154,7 @@ public class newsAdapter extends ArrayAdapter<Item> {
         this.notifyDataSetChanged();
     }
     public void updateReceiptsList() {
-//        itemsArrayList.clear();
+        itemsArrayList.clear();
 //        itemsArrayList.addAll(itemsArrayListNew);
         this.notifyDataSetChanged();
     }

@@ -1,6 +1,5 @@
 package activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -94,7 +93,7 @@ public class SubscriptionActivity extends AppCompatActivity {
             button1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(SubscriptionActivity.this,paymentOptionNotAvailableActivity.class);
+                    Intent intent = new Intent(SubscriptionActivity.this,PaymentActivity.class);
                     startActivity(intent);
                 }
             });
@@ -133,7 +132,7 @@ String validFrom = prefs.getString(getString(R.string.subscription_valid_from),"
             if(accountType.equals(SubscriptionActivity.this.getString(R.string.account_type_doctor)))
             {
 
-                if(days<=10) {
+                if(days<=100) {
                     if (textView2 != null) {
                         textView2.setVisibility(View.VISIBLE);
                     }
@@ -161,9 +160,16 @@ String validFrom = prefs.getString(getString(R.string.subscription_valid_from),"
             }
             if(accountType.equals(SubscriptionActivity.this.getString(R.string.account_type_student)))
             {
-                if(days<=10) {
+                if(days<=100) {
                     assert textView2 != null;
                     textView2.setVisibility(View.VISIBLE);
+                    // change for checking payment gateway start
+//                    assert button1 != null;
+//                    button1.setVisibility(View.VISIBLE);
+//                    assert textView1 != null;
+//                    textView1.setVisibility(View.VISIBLE);
+                    // change for checking payment gateway end
+
                     assert button != null;
                     button.setVisibility(View.VISIBLE);
                     assert textView != null;
@@ -178,10 +184,11 @@ String validFrom = prefs.getString(getString(R.string.subscription_valid_from),"
                     assert textView != null;
                     textView.setVisibility(View.GONE);
                 }
-                assert button1 != null;
-                button1.setVisibility(View.GONE);
-                assert textView1 != null;
-                textView1.setVisibility(View.GONE);
+                // change for checking payment gateway
+//                assert button1 != null;
+//                button1.setVisibility(View.GONE);
+//                assert textView1 != null;
+//                textView1.setVisibility(View.GONE);
             }
             if (remainingDays != null) {
                 remainingDays.setText(String.valueOf(days));

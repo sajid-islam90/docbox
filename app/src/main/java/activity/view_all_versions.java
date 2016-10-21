@@ -2,25 +2,27 @@ package activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import utilityClasses.DatabaseHandler;
 import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
+
+import utilityClasses.DatabaseHandler;
 
 public class view_all_versions extends Fragment {
     static int pid;
@@ -28,6 +30,7 @@ public class view_all_versions extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     View rootView;
     String accountType;
+    Animation animation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +48,9 @@ public class view_all_versions extends Fragment {
             }
         });
         displayAllVersionDates();
+//        animation = AnimationUtils.loadAnimation(getActivity(),
+//                R.anim.wobble);
+//        button.startAnimation(animation);
         return rootView;
 
     }
@@ -122,8 +128,10 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         ArrayList<String> dates = databaseHandler.getAllNotesDates(pid,getActivity());
         final int version[] = databaseHandler.getMaxFollowupVersion(pid);
+       // Collections.reverse(dates);
+        //Collections.reverse(version);
         ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, dates);
+                new ArrayAdapter<String>(getActivity(), R.layout.simple_list_item, dates);
         ListView listView = (ListView)rootView.findViewById(R.id.allVersionDates);
         listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,6 +147,7 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
                 intent.putExtra("number",position+1);
                 intent.putExtra("parent",view_all_versions.class.toString());
                 startActivity(intent);
+                getActivity().finish();
                 // String value = (String) adapter.getItemAtPosition(position);
                 // assuming string and if you want to get the value on click of list item
                 // do what you intend to do on click of listview row

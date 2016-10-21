@@ -53,7 +53,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location"
+            android:text="Unique Id"
             android:id="@+id/locationCheckBox"
             android:checked="false"
             android:layout_weight="1" />

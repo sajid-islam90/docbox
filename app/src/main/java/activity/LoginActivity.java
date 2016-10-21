@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
@@ -18,16 +17,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -47,7 +43,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,27 +53,22 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
-import objects.*;
-import utilityClasses.DatabaseHandler;
-import utilityClasses.UserEmailFetcher;
-import utilityClasses.utility;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import objects.personal_obj;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.UserEmailFetcher;
+import utilityClasses.utility;
 
 /**
  * A login screen that offers login via email/password.
@@ -100,7 +90,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> ,
     private int newUserFlag = 1;
     private ProgressDialog pdia;
     // UI references.
-    private CheckedTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private EditText mName;
     private EditText mAttachedDoctorEmailView;
@@ -193,6 +183,12 @@ address =  getResources().getString(R.string.action_server_ip_address);
                     builder.setMessage("You will be registered as a Practicing doctor with all the permissions\n" )
 
                             .setTitle("You will be registered as a Practicing Doctor ");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
 // 3. Get the AlertDialog from create()
                     AlertDialog dialog = builder.create();
@@ -218,6 +214,12 @@ address =  getResources().getString(R.string.action_server_ip_address);
                             "3.Not be able to take appointments")
 
                             .setTitle("You will be registered as a Student ");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
 // 3. Get the AlertDialog from create()
                     AlertDialog dialog = builder.create();
@@ -257,6 +259,12 @@ if(isChecked)
             "2. All changes made by you will be saved on cloud after approval from your doctor" )
 
             .setTitle("You will be registered as a Helper ");
+    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    });
 
 // 3. Get the AlertDialog from create()
     AlertDialog dialog = builder.create();
@@ -319,7 +327,7 @@ else
     }
 });
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailView = (CheckedTextView) findViewById(R.id.emailSignIn);
+        mEmailView = (EditText) findViewById(R.id.emailSignIn);
         if (personalObj.get_email()!= null)
         {
 

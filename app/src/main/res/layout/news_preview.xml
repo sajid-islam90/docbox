@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,25 +23,51 @@
             android:id="@+id/imageViewPic"
             android:layout_centerVertical="true" />
 
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/textViewTitle"
-            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/imageViewPic"
-            android:layout_marginLeft="5dp" />
+            android:layout_toEndOf="@+id/imageViewPic"
+            android:layout_marginLeft="11dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Small Text"
-            android:id="@+id/textViewDate"
-            android:layout_below="@+id/textViewTitle"
-            android:layout_toRightOf="@+id/imageViewPic"
-            android:layout_marginLeft="5dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:id="@+id/textViewTitle"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/imageViewPic"
+                android:layout_marginLeft="5dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textViewSource"
+                android:layout_below="@+id/textViewTitle"
+                android:layout_toRightOf="@+id/imageViewPic"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="#BDBDBD"
+                android:textSize="9sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/textViewDate"
+                android:layout_below="@+id/textViewSource"
+                android:layout_toRightOf="@+id/imageViewPic"
+                android:layout_marginLeft="5dp"
+                android:textSize="11sp" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
     </android.support.v7.widget.CardView>

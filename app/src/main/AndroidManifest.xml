@@ -43,6 +43,7 @@
     <!-- android:name="com.google.android.maps.v2.API_KEY" -->
     <!-- android:value="AIzaSyB6hI6Of7oCq1FYh46pE2Qip6trvqLg0gw" /> -->
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon4"
         android:label="@string/app_name"
@@ -51,7 +52,10 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA9mOUNzx3OR8d9D6CqnUGOXmInGOoe-jE" />
+            android:value="AIzaSyBilukRY9_fuoa2YBX_CUjXSCHfs9lKgsE" />
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_live_KO4O4D0L2a7urx" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -85,7 +89,11 @@
             android:label="@string/title_activity_edit_patient_data"
             android:parentActivityName="activity.PatientProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActivity" />
+            android:theme="@style/MainActivity">
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
+        </activity>
         <activity
             android:name="activity.documents"
             android:label="@string/title_activity_documents"
@@ -137,6 +145,7 @@
         <activity
             android:name="activity.Add_view_notes"
             android:label="@string/title_activity_add_view_notes"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.View_Media_notes_grid"
@@ -144,7 +153,8 @@
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.view_notes_version"
-            android:label="@string/title_activity_view_notes_version" />
+            android:label="@string/title_activity_view_notes_version"
+            android:screenOrientation="portrait" />
         <activity
             android:name="activity.LoginActivity"
             android:label="@string/title_activity_login"
@@ -188,7 +198,8 @@
             android:name="activity.ViewFollowUp_Activity"
             android:label="@string/title_activity_view_follow_up_"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActivity" />
+            android:theme="@style/MainActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="activity.Appointments"
             android:label="@string/title_activity_appointments"
@@ -201,10 +212,12 @@
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.dataRestoreActivity"
-            android:label="@string/title_activity_data_restore" />
+            android:label="@string/title_activity_data_restore"
+            android:screenOrientation="portrait" />
         <activity
             android:name="activity.AppointmentSettingsCheck"
             android:label="@string/title_activity_appointment_settings_check"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.AccountVerificationActivity"
@@ -218,7 +231,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="activity.PaymentActivity"
-            android:label="@string/title_activity_payment" />
+            android:label="@string/title_activity_payment"
+            android:screenOrientation="portrait" />
         <activity android:name="com.razorpay.CheckoutActivity" />
         <activity
             android:name="activity.patients_today"
@@ -228,6 +242,7 @@
         <activity
             android:name="activity.SubscriptionActivity"
             android:label="@string/title_activity_subscription"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.paymentOptionNotAvailableActivity"
@@ -235,12 +250,20 @@
             android:theme="@style/MainActivity" />
         <activity
             android:name="activity.PGSubscriptionActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
         <activity android:name="activity.PrivacyAndTermsView" />
         <activity
             android:name="activity.article_view_activity"
             android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
+        <activity android:name="activity.PrintDialogActivity" />
+        <activity android:name="activity.CustomPrintActivity" />
+
+        <activity android:name="activity.edit_followup"
+            android:theme="@style/MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

@@ -2,19 +2,20 @@ package activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
+import me.wangyuwei.particleview.ParticleView;
 import utilityClasses.DatabaseHandler;
 import utilityClasses.utility;
 
@@ -24,6 +25,22 @@ public class Title_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title_);
+        final ParticleView  mParticleView = (ParticleView)findViewById(R.id.pv_1) ;
+//        mParticleView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mParticleView.startAnim();
+//            }
+//        },200);
+        doWork();
+        mParticleView.setOnParticleAnimListener(new ParticleView.ParticleAnimListener() {
+            @Override
+            public void onAnimationEnd() {
+                //mParticleView.clearAnimation();
+               //utility.recreateActivityCompat(Title_Activity.this);
+                doWork();
+            }
+        });
     }
 
     @Override
@@ -35,9 +52,58 @@ public class Title_Activity extends AppCompatActivity {
        /* ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.GET_ACCOUNTS},
                 1);*/
-        doWork();
+
+
+
 
         return true;
+    }
+    @TargetApi(Build.VERSION_CODES.M)
+    public void permissions()
+    {
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.M){
+            // Do something for lollipop and above versions
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)!= PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
+                    ||(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED))
+            {
+                new AlertDialog.Builder(Title_Activity.this)
+                    .setTitle("Android permissions required")
+                    .setMessage("For android marshmallow and above following permissions are required by DocBox to perform various functions." +
+                            "\n1. Account Permission : For securing your credentials." +
+                            "\n2. Storage Permission : For storing reports locally." +
+                            "\n3. Phone state Permission : For contacting patients." +
+                            "\n4. Record audio and camera Permission : For organizing all the reports data." +
+                            "\n5.Location Permission : For patients to locate you on the world map.")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            doWork();
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            utility.recreateActivityCompat(Title_Activity.this);
+                            return;
+                            // do nothingret
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();}
+            else
+            {
+                doWork();
+            }
+        } else{
+            doWork();
+            // do something for phones running an SDK before lollipop
+        }
+
     }
     @TargetApi(Build.VERSION_CODES.M)
     public void doWork()

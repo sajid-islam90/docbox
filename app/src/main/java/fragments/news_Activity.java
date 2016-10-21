@@ -1,12 +1,17 @@
 package fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Spinner;
 
 import com.elune.sajid.myapplication.R;
 import com.loopj.android.http.AsyncHttpClient;
@@ -46,6 +52,8 @@ import utilityClasses.DatabaseHandler;
 import utilityClasses.EndlessScrollListener;
 import utilityClasses.utility;
 
+import static com.elune.sajid.myapplication.R.id.spinner;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -66,9 +74,11 @@ public class news_Activity extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    ListView  listView;
     View rootView;
-    TextView textView;
+    Menu menu;
     ImageView imageView;
+    static String specialityToDisplay;
     static newsAdapter news_Adapter;
     String title;
     String accountType;
@@ -107,8 +117,91 @@ public class news_Activity extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        newsLoadPageCounter = 0;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.data_refresh, menu);
+        this.menu=menu;
+        MenuItem item = menu.findItem(spinner);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences.Editor editor = prefs.edit();
+        String staticSpecialityNews = prefs.getString("staticSpecialityNews","all");
+//        ArrayAdapter<CharSequence> barAdapter = new ArrayAdapter<CharSequence>(this, R.layout.action_sort,
+//                android.R.id.text1, getResources().getStringArray(R.array.specialities));
+//        barAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        //MenuItem menuItem = menu.findItem(spinner);
+        //Spinner spinner = (Spinner) MenuItemCompat.getActionView(menuItem);
+       // if (specialityToDisplay != null)
+            if (staticSpecialityNews.equals("all"))
+
+                spinner.setSelection(0);
+            else
+                spinner.setSelection(Integer.parseInt(staticSpecialityNews));
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+               // R.array.specialities, android.R.layout.simple_spinner_item);
+        R.array.specialitiesNews, R.layout.action_sort);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                newsLoadPageCounter = 0;
+//                String[] myResArray = getResources().getStringArray(R.array.specialitiesNews);
+//                if(position == 0 )
+//                {
+//                    specialityToDisplay = "all";
+//                }
+//                else
+//                {
+//                    specialityToDisplay = String.valueOf(position-1);
+//                }
+//                GetUrlData getUrlData = new GetUrlData();
+//                getUrlData.execute((Void) null);
+//            }
+//        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                newsLoadPageCounter = 0;
+
+
+                String[] myResArray = getResources().getStringArray(R.array.specialitiesNews);
+                if(position == 0 )
+                {
+                    specialityToDisplay = "all";
+
+                }
+                else
+                {
+                    specialityToDisplay = String.valueOf(position);
+                }
+                editor.putString("staticSpecialityNews",specialityToDisplay);
+               news_Adapter.updateReceiptsList();
+                GetUrlData getUrlData = new GetUrlData();
+                getUrlData.execute((Void) null);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override
@@ -119,15 +212,18 @@ public class news_Activity extends Fragment {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.refresh1) {
-
-            GetUrlData getUrlData = new GetUrlData();
-            getUrlData.execute((Void) null);
-            ListView  listView = (ListView)rootView.findViewById(R.id.listViewNews);
-            listView.setSelection(0);
-
-            return true;
-        }
+//        if (id == R.id.refresh1) {
+//newsLoadPageCounter = 0;
+//            newsArrayList = new ArrayList<Item>();
+//            GetUrlData getUrlData = new GetUrlData();
+//            getUrlData.execute((Void) null);
+//            ListView  listView = (ListView)rootView.findViewById(R.id.listViewNews);
+//            listView.setSelection(0);
+////            MenuItem menuItemSpinner = menu.findItem(R.id.spinner);
+////            menuItemSpinner.setVisible(false);
+////            item.collapseActionView();
+//            return true;
+//        }
 
 
         return super.onOptionsItemSelected(item);
@@ -142,15 +238,19 @@ public class news_Activity extends Fragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         rootView = inflater.inflate(R.layout.activity_news_, container, false);
-        getActivity().setTitle("Latest News");
+       // getActivity().setTitle("Latest News");
         setHasOptionsMenu(true);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+        specialityToDisplay = prefs.getString("staticSpecialityNews","all");
+imageView = (ImageView)rootView.findViewById(R.id.imageViewEmptyNews);
 //        Item item = new Item();
 //        item.setTitle("");
 //        itemsArrayList.add(item);
@@ -159,12 +259,16 @@ public class news_Activity extends Fragment {
             @Override
             public void onRefresh() {
                 //Toast.makeText(getActivity(),"hi",Toast.LENGTH_LONG).show();
-
+newsLoadPageCounter = 0;
+                newsArrayList = new ArrayList<Item>();
+                news_Adapter.updateReceiptsList();
                 GetUrlData getUrlData = new GetUrlData();
                 getUrlData.execute((Void) null);
 
             }
         });
+
+
         // imageView = (ImageView)rootView.findViewById(R.id.imageView13);
          //textView = (TextView)rootView.findViewById(R.id.textView73);
         if(newsArrayList==null)
@@ -172,7 +276,7 @@ public class news_Activity extends Fragment {
 
         news_Adapter = new newsAdapter(getActivity(),newsArrayList);
 
-        ListView  listView = (ListView)rootView.findViewById(R.id.listViewNews);
+          listView        = (ListView)rootView.findViewById(R.id.listViewNews);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -299,6 +403,8 @@ for(int i = 0;i<response.size();i++)
 }
 
 
+
+
         }
         public void hitApiForAppointment(String apiAddress, RequestParams params, AsyncHttpClient client,
                                          final Context context) {
@@ -318,10 +424,13 @@ for(int i = 0;i<response.size();i++)
                             JSONArray response;
                             // JSONObject mainObject = new JSONObject(str);
                             ArrayList<String> appointmentPID;
+if(!str.equals("0"))
+{ response = (JSONArray) JSONValue.parse(str);
 
-                            response = (JSONArray) JSONValue.parse(str);
 
-parseNewsResponse(response);
+parseNewsResponse(response);}
+
+
                             newsLoadPageCounter++;
 //System.out.print(response);
                         } catch (Exception e) {
@@ -376,6 +485,7 @@ parseNewsResponse(response);
             int customerId = databaseHandler.getCustomerId();
             CstmrId.add(String.valueOf(customerId));
             CstmrId.add(String.valueOf(newsLoadPageCounter));
+            CstmrId.add(specialityToDisplay);
             StringWriter out = new StringWriter();
 
             try {
@@ -438,6 +548,13 @@ parseNewsResponse(response);
             //imageView.setImageBitmap(mIcon11);
            // textView.setText(title);
             news_Adapter.updateReceiptsList(itemsArrayList);
+            if(news_Adapter.itemsArrayList.size()==0)
+           // if(itemsArrayList==null)
+            { imageView.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);}
+            else
+            { imageView.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);}
             //newsArrayList.addAll(itemsArrayList);
             swipeRefreshLayout.setRefreshing(false);
 

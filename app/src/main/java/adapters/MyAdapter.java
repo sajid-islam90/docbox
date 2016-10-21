@@ -1,7 +1,5 @@
 package adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -12,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
+
+import java.util.ArrayList;
+
 import objects.Item;
 import objects.Patient;
-
+import utilityClasses.DatabaseHandler;
 import utilityClasses.PhotoHelper;
-import com.elune.sajid.myapplication.R;
 import utilityClasses.RoundImage;
 
 public class MyAdapter extends ArrayAdapter<Item> {
@@ -82,14 +82,20 @@ public class MyAdapter extends ArrayAdapter<Item> {
         // 4. Set the text for textView
         DatabaseHandler dbHandle = new DatabaseHandler(getContext());
         Patient patient = new Patient();
+        patient = dbHandle.getPatient(itemsArrayList.get(position).getPatient_id());
 if(itemsArrayList.get(position).getBmp()==null)
+
 {
-    itemsArrayList.get(position).setBmp(BitmapFactory.decodeResource(context.getResources(),R.drawable.default_photo));
+    if(patient.get_gender().compareTo("Male")==0)
+    itemsArrayList.get(position).setBmp(BitmapFactory.decodeResource(context.getResources(),R.drawable.default_boy));
+    else
+        itemsArrayList.get(position).setBmp(BitmapFactory.decodeResource(context.getResources(),R.drawable.default_girl));
 }
 
         RoundImage roundedImage = new RoundImage( PhotoHelper.getResizedBitmap(itemsArrayList.get(position).getBmp(), 100, 100));
 
-        patient = dbHandle.getPatient(itemsArrayList.get(position).getPatient_id());
+
+
         try {
           //  patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(context.getResources(), R.drawable.default_photo)));
 

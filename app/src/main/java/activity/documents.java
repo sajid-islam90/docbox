@@ -1,6 +1,7 @@
 package activity;
 //DISPLAYS ALL THE DOCUMENTS OF A PARTICULAR PATIENT AND HAS BUTTONS FOR ADDING DOCUMENTS AND NOTES.
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,34 +15,27 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import utilityClasses.floatingactionbutton.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import utilityClasses.DatabaseHandler;
-import adapters.DocumentsAdapter;
-import objects.Item;
-import objects.Patient;
-
-import redundant.FileUtils;
-import utilityClasses.PhotoHelper;
 import com.elune.sajid.myapplication.R;
-import objects.document_obj;
-import utilityClasses.utility;
 import com.loopj.android.http.RequestParams;
-
 
 import org.json.simple.JSONValue;
 
@@ -57,6 +51,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
+import adapters.DocumentsAdapter;
+import objects.Item;
+import objects.Patient;
+import objects.document_obj;
+import redundant.FileUtils;
+import utilityClasses.DatabaseHandler;
+import utilityClasses.PhotoHelper;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
+import utilityClasses.floatingactionbutton.FloatingActionsMenu;
+import utilityClasses.utility;
 
 
 public class documents extends ActionBarActivity {
@@ -75,6 +80,7 @@ public class documents extends ActionBarActivity {
     final Context context = this;
     String accountType;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +94,23 @@ public class documents extends ActionBarActivity {
         if(pid>0)
             getDocumentsList(pid);
         displayDocuments(nameWithImage);
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(getResources().getColor(R.color.status_bar));
+        final ImageView imageViewDim = (ImageView)findViewById(R.id.imageView13) ;
+        final FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu)findViewById(R.id.view5);
+        floatingActionsMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                imageViewDim.setVisibility(View.VISIBLE);
+            }
 
-
+            @Override
+            public void onMenuCollapsed() {
+                imageViewDim.setVisibility(View.GONE);
+            }
+        });
         FloatingActionButton floatingActionButtonStartCam = (FloatingActionButton)findViewById(R.id.view2);
         floatingActionButtonStartCam.setOnClickListener(new View.OnClickListener() {
             @Override

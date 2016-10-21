@@ -9,8 +9,11 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,8 +22,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,19 +31,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
-
-import objects.time;
-import utilityClasses.floatingactionbutton.FloatingActionButton;
 import com.loopj.android.http.RequestParams;
 
 import org.json.simple.JSONValue;
@@ -54,15 +55,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-import adapters.TwoTextFieldsAdapter;
 import fragments.Contact_Fragment;
 import fragments.Diagnosis;
 import objects.Item;
 import objects.Patient;
 import objects.personal_obj;
+import objects.time;
 import utilityClasses.DatabaseHandler;
 import utilityClasses.PhotoHelper;
 import utilityClasses.RoundImage;
+import utilityClasses.floatingactionbutton.FloatingActionButton;
 import utilityClasses.utility;
 
 
@@ -80,6 +82,7 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
     FloatingActionButton floatingActionButton;
     FloatingActionButton floatingActionButtonHelp;
     String accountType;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +237,7 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
               //  actionBar.setSelectedNavigationItem(position);
             }
         });
-
+           // Html.fromHtml("<small>YOUR TITLE</small>"));
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
@@ -243,7 +246,7 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
             // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+                            .setText(Html.fromHtml("<small>"+mSectionsPagerAdapter.getPageTitle(i)+"</small>"))
                             .setTabListener(this));
 
         }
@@ -377,43 +380,44 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
     private void displayPatientData(Patient patient) {
 
 
-        ArrayList<Item> itemsArrayList = new ArrayList<Item>();
-        Item Iadd = new Item();
-        Iadd.setTitle("Address");
-        Iadd.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_address));
-        Iadd.setDiagnosis(patient.get_address());
-
-
-        Item Ioccupation = new Item();
-        Ioccupation.setTitle("Occupation");
-        Ioccupation.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_occupation));
-        Ioccupation.setDiagnosis(patient.get_ocupation());
-
-        Item Idiagnosis = new Item();
-        Idiagnosis.setTitle("Diagnosis");
-        Idiagnosis.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_diagnosis));
-        Idiagnosis.setDiagnosis(patient.get_diagnosis());
-
-        Item Iphone = new Item();
-        Iphone.setTitle("Next Follow Up Date");
-        Iphone.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_calender_patient_profile));
-        Iphone.setDiagnosis(patient.get_next_follow_up_date());
-
-        Item Iemail = new Item();
-        Iemail.setTitle("Email");
-        Iemail.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_email));
-        Iemail.setDiagnosis(patient.get_email());
-
-        itemsArrayList.add(Iadd);
-        itemsArrayList.add(Ioccupation);
-        itemsArrayList.add(Idiagnosis);
-        itemsArrayList.add(Iphone);
-        itemsArrayList.add(Iemail);
-        TwoTextFieldsAdapter twoTextFieldsAdapter = new TwoTextFieldsAdapter(this,PatientProfileActivity.this,itemsArrayList);
-        ListView listView = (ListView)findViewById(R.id.patientDatalist);
-        listView.setAdapter(twoTextFieldsAdapter);
+//        ArrayList<Item> itemsArrayList = new ArrayList<Item>();
+//        Item Iadd = new Item();
+//        Iadd.setTitle("Address");
+//        Iadd.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_address));
+//        Iadd.setDiagnosis(patient.get_address());
+//
+//
+//        Item Ioccupation = new Item();
+//        Ioccupation.setTitle("Occupation");
+//        Ioccupation.setBmp(BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_occupation));
+//        Ioccupation.setDiagnosis(patient.get_ocupation());
+//
+//        Item Idiagnosis = new Item();
+//        Idiagnosis.setTitle("Diagnosis");
+//        Idiagnosis.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_diagnosis));
+//        Idiagnosis.setDiagnosis(patient.get_diagnosis());
+//
+//        Item Iphone = new Item();
+//        Iphone.setTitle("Next Follow Up Date");
+//        Iphone.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_calender_patient_profile));
+//        Iphone.setDiagnosis(patient.get_next_follow_up_date());
+//
+//        Item Iemail = new Item();
+//        Iemail.setTitle("Email");
+//        Iemail.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_email));
+//        Iemail.setDiagnosis(patient.get_email());
+//
+//        itemsArrayList.add(Iadd);
+//        itemsArrayList.add(Ioccupation);
+//        itemsArrayList.add(Idiagnosis);
+//        itemsArrayList.add(Iphone);
+//        itemsArrayList.add(Iemail);
+//        TwoTextFieldsAdapter twoTextFieldsAdapter = new TwoTextFieldsAdapter(this,PatientProfileActivity.this,itemsArrayList);
+//        ListView listView = (ListView)findViewById(R.id.patientDatalist);
+//        listView.setAdapter(twoTextFieldsAdapter);
          TextView textView = (TextView)findViewById(R.id.textViewNextFollowUpDate);
         TextView name = (TextView)findViewById(R.id.patientProfile_name);
+
         TextView gender = (TextView)findViewById(R.id.textViewGender);
         TextView age = (TextView)findViewById(R.id.textViewAge);
         TextView OpdIpd = (TextView)findViewById(R.id.textViewOPDIPD);
@@ -424,9 +428,10 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         weight.setText(patient.get_weight()+ " Kgs. ");
         textView.setText(patient.get_next_follow_up_date());
 
-        ImageView bmp = (ImageView)findViewById(R.id.patientPic);
-
-        gender.setText(patient.get_gender()+",");
+        ImageView bmp = (ImageView)findViewById(R.id.patientPic1);
+//chenges for textual appearance of patient data
+        String pronoun = "His";
+        gender.setText(patient.get_gender());
         if(!patient.get_age().equals(""))
         age.setText(patient.get_age()+" Yrs. old");
         else
@@ -435,18 +440,36 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         OpdIpd.setText(patient.get_opd_ipd());
 DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
         byte[] image = patient.get_bmp();
+
 if(image.length==0) {
     //patient.set_bmp(PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo)));
     //databaseHandler.updatePatient(patient,0);
-    image =PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_photo));
+
+    if(patient.get_gender().compareTo("Male")==0) {
+        image = PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_boy));
+        bmp.setImageResource(R.drawable.default_boy);
+        pronoun = "His";
+    }
+    else
+        //image =PhotoHelper.getBitmapAsByteArray(BitmapFactory.decodeResource(getResources(), R.drawable.default_girl));
+    {bmp.setImageResource(R.drawable.default_girl);
+    pronoun = "Her";}
+
 }
-        Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
-        RoundImage roundedImage = new RoundImage( PhotoHelper.getResizedBitmap(bmpImage, 100, 100));
-       // roundedImage = new RoundImage(bmpImage);
-        bmp.setImageDrawable(roundedImage);
+        else {
+    Bitmap bmpImage = BitmapFactory.decodeByteArray(image, 0, image.length);
+    //RoundImage roundedImage = new RoundImage(PhotoHelper.getResizedBitmap(bmpImage, 100, 100));
+    // roundedImage = new RoundImage(bmpImage);
+    bmp.setImageBitmap(bmpImage);
+}
+//        String dataText = "<font color=#cc0029>"+patient.get_name()+ "</font> is a "+
+//                age.getText()+" <font color=#cc0029>"+ gender.getText()+"</font>.\n"+pronoun+" reason " +
+//                "for visit is <font color=#cc0029>"+patient.get_diagnosis()+"</font>."+pronoun +" weight is approx. "+weight.getText();
+//        name.setText(Html.fromHtml(dataText));
         setTitle(patient.get_name());
         ActionBar actionBar = this.getSupportActionBar();
-        actionBar.setSubtitle("last edited : "+patient.get_last_seen_date());
+
+        actionBar.setSubtitle(Html.fromHtml("<small>"+"last edited : "+patient.get_last_seen_date()+"</small>"));
 
 
 
@@ -909,21 +932,41 @@ time time;
         LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
         LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
         LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
+        ColorDrawable[] transparentToColored = {new ColorDrawable(getResources().getColor(android.R.color.transparent)), new ColorDrawable(getResources().getColor(R.color.green))};
+        TransitionDrawable trans1 = new TransitionDrawable(transparentToColored);
+        ColorDrawable[] coloredToTransparent = {new ColorDrawable(getResources().getColor(R.color.black)), new ColorDrawable(getResources().getColor(android.R.color.transparent))};
+        TransitionDrawable trans2 = new TransitionDrawable(coloredToTransparent);
+        Animation animation = AnimationUtils.loadAnimation(PatientProfileActivity.this,
+                R.anim.wobble);
         if(position == 0)
         {
+
+
+            //This will work also on old devices. The latest API says you have to use setBackground instead.
+            linearLayout.setBackgroundDrawable(trans1);
+
             linearLayout.setBackgroundResource(R.color.green);
+            //trans1.startTransition(1000);
+            linearLayout.startAnimation(animation);
             linearLayout1.setBackgroundResource(android.R.color.transparent);
             linearLayout2.setBackgroundResource(android.R.color.transparent);
         }
         else if(position == 1)
         {
+            linearLayout1.setBackgroundDrawable(trans1);
             linearLayout1.setBackgroundResource(R.color.green);
+            //trans1.startTransition(1000);
+            linearLayout1.startAnimation(animation);
             linearLayout2.setBackgroundResource(android.R.color.transparent);
             linearLayout.setBackgroundResource(android.R.color.transparent);
         }
         else if(position == 2)
         {
+            linearLayout2.setBackgroundDrawable(trans1);
             linearLayout2.setBackgroundResource(R.color.green);
+            //trans1.startTransition(1000);
+            linearLayout2.startAnimation(animation);
+           // trans1.startTransition(1000);
             linearLayout.setBackgroundResource(android.R.color.transparent);
             linearLayout1.setBackgroundResource(android.R.color.transparent);
         }

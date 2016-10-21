@@ -55,20 +55,23 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lastVisit_layout">
+            android:layout_below="@+id/lastVisit_layout"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+
                 android:text="Gender/Age : "
+                android:textSize="11sp"
                 android:id="@+id/textView25"
                 android:layout_gravity="center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="13sp"
                 android:id="@+id/genderAge"
                 android:layout_below="@+id/lastVisit_layout"
                 android:layout_alignParentStart="true"
@@ -83,13 +86,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/diagnosis_layout"
-            android:layout_below="@+id/name_layout">
+            android:layout_below="@+id/name_layout"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+
                 android:text="Diagnosis :"
+                android:textSize="11sp"
                 android:id="@+id/textView23"
                 android:layout_toRightOf="@+id/photogender_layout" />
 
@@ -101,7 +107,7 @@
                 android:paddingLeft="5dp"
                 android:layout_toRightOf="@+id/textView23"
                 android:textColor="@color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -109,16 +115,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/lastVisit_layout"
-            android:layout_below="@+id/diagnosis_layout">
+            android:layout_below="@+id/diagnosis_layout"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+
                 android:text="Last Visit :"
                 android:id="@+id/textView24"
+                android:textSize="11sp"
                 android:layout_below="@+id/row_diagnosis"
-                android:layout_toRightOf="@+id/photogender_layout" />
+                android:layout_toRightOf="@+id/photogender_layout"
+                android:layout_marginRight="5dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -131,7 +141,7 @@
                 android:layout_toRightOf="@+id/textView24"
                 android:layout_below="@+id/row_diagnosis"
                 android:textColor="@color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textSize="13sp" />
 
         </LinearLayout>
 
@@ -139,16 +149,18 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/name_layout">
+            android:id="@+id/name_layout"
+            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+
                 android:text="Name :"
                 android:id="@+id/textView22"
                 android:layout_toRightOf="@+id/photogender_layout"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/label"
@@ -163,7 +175,7 @@
                 android:nestedScrollingEnabled="false"
                 android:layout_toRightOf="@+id/textView22"
                 android:layout_gravity="center_vertical"
-                android:textAppearance="?android:attr/textAppearanceMedium">
+                android:textSize="13sp">
             </TextView>
         </LinearLayout>
     </RelativeLayout>
