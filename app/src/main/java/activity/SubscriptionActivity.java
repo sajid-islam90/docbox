@@ -55,6 +55,14 @@ public class SubscriptionActivity extends AppCompatActivity {
             alert.show();
             return;
         }
+        else
+        {
+            Intent intent = new Intent(SubscriptionActivity.this,Activity_main_2.class);
+
+                intent.putExtra("fragmentNumber",1);
+            startActivity(intent);
+            finish();
+        }
         super.onBackPressed();
     }
 

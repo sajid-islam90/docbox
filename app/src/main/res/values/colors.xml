@@ -6,7 +6,7 @@
    <!-- <color name="green">#51A5BA</color>-->
     <color name="green">#03a6b9</color>
     <color name="buttonsColor">#EF5350</color>
-    <color name="buttonsColorOnPressed">#D32F2F</color>
+    <color name="buttonsColorOnPressed">#d32f2f</color>
     <color name="circularImageBorder">#006064</color>
     <color name="greendark">#0f6688</color>
     <color name="status_bar">#3d889b</color>

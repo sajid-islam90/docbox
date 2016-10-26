@@ -40,11 +40,12 @@
             android:textColor="@color/black"
             android:linksClickable="true"
             android:nestedScrollingEnabled="false"
-            android:textAlignment="viewEnd"
+            android:textAlignment="textStart"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_toRightOf="@+id/imageView2"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp">
         </TextView>
 
         <ImageView

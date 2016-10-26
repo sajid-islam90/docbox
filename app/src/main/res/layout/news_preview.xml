@@ -37,7 +37,6 @@
                 android:text="Medium Text"
                 android:id="@+id/textViewTitle"
                 android:layout_centerHorizontal="true"
-                android:layout_toRightOf="@+id/imageViewPic"
                 android:layout_marginLeft="5dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -49,7 +48,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:id="@+id/textViewSource"
                 android:layout_below="@+id/textViewTitle"
-                android:layout_toRightOf="@+id/imageViewPic"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
                 android:layout_marginLeft="5dp"
@@ -63,7 +61,6 @@
                 android:text="Small Text"
                 android:id="@+id/textViewDate"
                 android:layout_below="@+id/textViewSource"
-                android:layout_toRightOf="@+id/imageViewPic"
                 android:layout_marginLeft="5dp"
                 android:textSize="11sp" />
         </RelativeLayout>

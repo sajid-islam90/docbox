@@ -1,7 +1,10 @@
 package activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,23 +16,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
 
+import adapters.view_all_versions_followup_adapter;
+import objects.Item;
 import utilityClasses.DatabaseHandler;
 
 public class view_all_versions extends Fragment {
     static int pid;
-    ArrayList<String> dates = new ArrayList<>();
+     ArrayList<Item> dates = new ArrayList<>();
+     int version[];
+  //  ArrayList<String> dates = new ArrayList<>();
     private static final String ARG_SECTION_NUMBER = "section_number";
     View rootView;
     String accountType;
+    view_all_versions_followup_adapter view_all_versions_followup_adapter;
     Animation animation;
 
     @Override
@@ -126,32 +134,202 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     public void displayAllVersionDates()
     {
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
-        ArrayList<String> dates = databaseHandler.getAllNotesDates(pid,getActivity());
-        final int version[] = databaseHandler.getMaxFollowupVersion(pid);
+        // dates = databaseHandler.getAllNotesDates(pid,getActivity());
+       fetchFollowups fetchPatientsTask = new fetchFollowups();
+        fetchPatientsTask.execute((Void) null);
+
        // Collections.reverse(dates);
         //Collections.reverse(version);
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(getActivity(), R.layout.simple_list_item, dates);
-        ListView listView = (ListView)rootView.findViewById(R.id.allVersionDates);
-        listView.setAdapter(itemsAdapter);
+         view_all_versions_followup_adapter = new view_all_versions_followup_adapter(getActivity(),getContext(),dates);
+//        ArrayAdapter<String> itemsAdapter =
+//                new ArrayAdapter<String>(getActivity(), R.layout.simple_list_item, dates);
+        final ListView listView = (ListView)rootView.findViewById(R.id.allVersionDates);
+        listView.setAdapter(view_all_versions_followup_adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapter, View v, int position,
+            public void onItemClick(final AdapterView<?> adapter, View v, final int position,
                                     long arg3) {
 
-                Intent  intent;
 
-                intent = new Intent(getActivity(), ViewFollowUp_Activity.class);
-                intent.putExtra("id",pid);
-                intent.putExtra("version",version[position]);
-                intent.putExtra("number",position+1);
-                intent.putExtra("parent",view_all_versions.class.toString());
-                startActivity(intent);
-                getActivity().finish();
+                final PopupMenu popup = new PopupMenu(getActivity(),listView.getChildAt(position));
+                popup.getMenuInflater().inflate(R.menu.followup_pop_up
+                        , popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+
+
+                        if (item.getTitle().equals("Delete")) {
+
+                            final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+                            alert.setTitle("Alert!!");
+                            alert.setMessage("Are you sure to delete this follow up dated "+dates.get(position).getDiagnosis()+" ?");
+
+                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+                                    databaseHandler.deleteFollowUp(pid,String.valueOf(version[position]));
+//                                    databaseHandler.deleteDiagnosis(_listDataHeader.get(groupPosition));
+//                                    _listDataHeader.remove(groupPosition);
+//                                    updateReceiptsList();
+                                    Toast.makeText(getActivity(),"Follow Up deleted",Toast.LENGTH_LONG).show();
+                                    dates.remove(position);
+                                    view_all_versions_followup_adapter.updateDataSet(dates);
+                                    dialog.dismiss();
+
+                                }
+                            });
+
+
+                            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.show();
+
+                        }
+                        if (item.getTitle().equals("Open")) {
+
+                            Intent  intent;
+
+                            intent = new Intent(getActivity(), ViewFollowUp_Activity.class);
+                            intent.putExtra("id",pid);
+                            intent.putExtra("version",version[position]);
+                            intent.putExtra("number",position+1);
+                            intent.putExtra("parent",view_all_versions.class.toString());
+                            startActivity(intent);
+                            getActivity().finish();
+
+                        }
+
+
+                        return false;
+
+
+                    }
+                });
+
+                /** Showing the popup menu */
+                popup.show();
+
+
+
+
+
+
+
                 // String value = (String) adapter.getItemAtPosition(position);
                 // assuming string and if you want to get the value on click of list item
                 // do what you intend to do on click of listview row
             }
         });
+//        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                final PopupMenu popup = new PopupMenu(getActivity(),listView);
+//                popup.getMenuInflater().inflate(R.menu.diagnosis_popup
+//                        , popup.getMenu());
+//
+//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//
+//
+//
+//                        if (item.getTitle().equals("delete")) {
+//
+//                            final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+//
+//                            alert.setTitle("Alert!!");
+//                            alert.setMessage("Are you sure to delete this follow up ? ");
+//
+//                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//
+////                                    DatabaseHandler databaseHandler = new DatabaseHandler(_context);
+////                                    databaseHandler.deleteDiagnosis(_listDataHeader.get(groupPosition));
+////                                    _listDataHeader.remove(groupPosition);
+////                                    updateReceiptsList();
+//                                    dialog.dismiss();
+//
+//                                }
+//                            });
+//
+//
+//                            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                            alert.show();
+//
+//                        }
+//
+//
+//                        return false;
+//
+//
+//                    }
+//                });
+//
+//                /** Showing the popup menu */
+//                popup.show();
+//                return false;
+//            }
+//        });
+    }
+
+    public class fetchFollowups extends AsyncTask<Void, Void, Boolean> {
+
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+             dates = databaseHandler.getAllNotesDates(pid,getActivity());
+            version = databaseHandler.getMaxFollowupVersion(pid);
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+view_all_versions_followup_adapter.updateDataSet(dates);
+        }
+
+
+
+
+        public void doSomething() {
+
+        }
+
+
     }
 }

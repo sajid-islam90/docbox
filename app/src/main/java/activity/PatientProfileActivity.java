@@ -9,8 +9,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,13 +52,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 import fragments.Contact_Fragment;
 import fragments.Diagnosis;
 import objects.Item;
 import objects.Patient;
-import objects.personal_obj;
 import objects.time;
 import utilityClasses.DatabaseHandler;
 import utilityClasses.PhotoHelper;
@@ -231,25 +228,25 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-              //  actionBar.setSelectedNavigationItem(position);
-            }
-        });
+//        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//              //  actionBar.setSelectedNavigationItem(position);
+//            }
+//        });
            // Html.fromHtml("<small>YOUR TITLE</small>"));
         // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(Html.fromHtml("<small>"+mSectionsPagerAdapter.getPageTitle(i)+"</small>"))
-                            .setTabListener(this));
-
-        }
+//        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+//            // Create a tab with text corresponding to the page title defined by
+//            // the adapter. Also specify this Activity object, which implements
+//            // the TabListener interface, as the callback (listener) for when
+//            // this tab is selected.
+//            actionBar.addTab(
+//                    actionBar.newTab()
+//                            .setText(Html.fromHtml("<small>"+mSectionsPagerAdapter.getPageTitle(i)+"</small>"))
+//                            .setTabListener(this));
+//
+//        }
         mViewPager.setCurrentItem(Tabselected);
         getPatientData(id);
         Window window = this.getWindow();
@@ -932,10 +929,14 @@ time time;
         LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
         LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
         LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
-        ColorDrawable[] transparentToColored = {new ColorDrawable(getResources().getColor(android.R.color.transparent)), new ColorDrawable(getResources().getColor(R.color.green))};
-        TransitionDrawable trans1 = new TransitionDrawable(transparentToColored);
-        ColorDrawable[] coloredToTransparent = {new ColorDrawable(getResources().getColor(R.color.black)), new ColorDrawable(getResources().getColor(android.R.color.transparent))};
-        TransitionDrawable trans2 = new TransitionDrawable(coloredToTransparent);
+        TextView textView = (TextView)findViewById(R.id.textView);
+        TextView textView1 = (TextView)findViewById(R.id.textView41);
+        TextView textView2 = (TextView)findViewById(R.id.textView42);
+
+//        ColorDrawable[] transparentToColored = {new ColorDrawable(getResources().getColor(android.R.color.transparent)), new ColorDrawable(getResources().getColor(R.color.green))};
+//        TransitionDrawable trans1 = new TransitionDrawable(transparentToColored);
+//        ColorDrawable[] coloredToTransparent = {new ColorDrawable(getResources().getColor(R.color.black)), new ColorDrawable(getResources().getColor(android.R.color.transparent))};
+//        TransitionDrawable trans2 = new TransitionDrawable(coloredToTransparent);
         Animation animation = AnimationUtils.loadAnimation(PatientProfileActivity.this,
                 R.anim.wobble);
         if(position == 0)
@@ -943,29 +944,39 @@ time time;
 
 
             //This will work also on old devices. The latest API says you have to use setBackground instead.
-            linearLayout.setBackgroundDrawable(trans1);
+//            linearLayout.setBackgroundDrawable(trans1);
 
             linearLayout.setBackgroundResource(R.color.green);
+            //linearLayout.setBackgroundColor(R.color.green);
             //trans1.startTransition(1000);
             linearLayout.startAnimation(animation);
+            textView.setTextColor(Color.parseColor("#ffffff"));
+            textView1.setTextColor(R.color.black_overlay);
+            textView2.setTextColor(R.color.black_overlay);
             linearLayout1.setBackgroundResource(android.R.color.transparent);
             linearLayout2.setBackgroundResource(android.R.color.transparent);
         }
         else if(position == 1)
         {
-            linearLayout1.setBackgroundDrawable(trans1);
+            //linearLayout1.setBackgroundDrawable(trans1);
             linearLayout1.setBackgroundResource(R.color.green);
             //trans1.startTransition(1000);
             linearLayout1.startAnimation(animation);
+            textView1.setTextColor(Color.parseColor("#ffffff"));
+            textView2.setTextColor(R.color.black_overlay);
+            textView.setTextColor(R.color.black_overlay);
             linearLayout2.setBackgroundResource(android.R.color.transparent);
             linearLayout.setBackgroundResource(android.R.color.transparent);
         }
         else if(position == 2)
         {
-            linearLayout2.setBackgroundDrawable(trans1);
+            //linearLayout2.setBackgroundDrawable(trans1);
             linearLayout2.setBackgroundResource(R.color.green);
             //trans1.startTransition(1000);
             linearLayout2.startAnimation(animation);
+            textView2.setTextColor(Color.parseColor("#ffffff"));
+            textView.setTextColor(R.color.black_overlay);
+            textView1.setTextColor(R.color.black_overlay);
            // trans1.startTransition(1000);
             linearLayout.setBackgroundResource(android.R.color.transparent);
             linearLayout1.setBackgroundResource(android.R.color.transparent);
@@ -999,24 +1010,7 @@ else
             return 3;
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            DatabaseHandler databaseHandler = new DatabaseHandler(PatientProfileActivity.this);
-            personal_obj personalInfo = databaseHandler.getPersonalInfo();
-            int specialityId = Integer.parseInt(personalInfo.get_speciality());
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-                case 3:
-                    return getString(R.string.title_section4).toUpperCase(l);
-            }
-            return null;
-        }
+
 
 
     }

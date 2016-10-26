@@ -2,14 +2,18 @@ package activity;
 
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +28,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.elune.sajid.myapplication.R;
+import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -42,12 +47,13 @@ import objects.document_obj;
 import objects.media_obj;
 import objects.personal_obj;
 import utilityClasses.DatabaseHandler;
+import utilityClasses.ProgressGenerator;
 import utilityClasses.uploadfile;
 import utilityClasses.utility;
 
 import static com.elune.sajid.myapplication.R.layout.activity_data_sync_activity;
 
-public class data_sync_activity extends AppCompatActivity {
+public class data_sync_activity extends AppCompatActivity implements ProgressGenerator.OnCompleteListener{
     DatabaseHandler controller = new DatabaseHandler(this);
     //Progress Dialog Object
     ProgressDialog prgDialog;
@@ -57,6 +63,7 @@ public class data_sync_activity extends AppCompatActivity {
     static NotificationManager notifier;
    static TextView textViewFileNumber;
    static ArrayList<media_obj>  mediaObjsFollowUp = new ArrayList<>();
+     ActionProcessButton btnSignIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,19 +75,33 @@ public class data_sync_activity extends AppCompatActivity {
                 data_sync_activity.this.getSystemService(Context.NOTIFICATION_SERVICE);
         final RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.progressBarLayout);
         ArrayList<HashMap<String, String>> userList =  controller.getAllSyncUsers();
-        Button button = (Button)findViewById(R.id.buttonSaveToCloud);
-        button.setVisibility(View.VISIBLE);
+
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.saveSuccessfullLinearLayout);
         TextView textView = (TextView)findViewById(R.id.saveSuccessfullTextView);
         textView.setText("Press button to sync your data");
         //
+        final ProgressGenerator progressGenerator = new ProgressGenerator(this);
+         btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
+        btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+        btnSignIn.setOnClickNormalState(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // progressGenerator.start(btnSignIn);
+                btnSignIn.setProgress(10);
+                new Synctask().execute();
+
+                btnSignIn.setEnabled(false);
+
+            }
+        }).build();
+
         if(userList.size()!=0){
             //Set the User Array list in ListView
             ListAdapter adapter = new SimpleAdapter( data_sync_activity.this,userList, R.layout.view_user_entry, new String[] { "userId","userName"}, new int[] {R.id.userId, R.id.customerId});
             ListView myList=(ListView)findViewById(R.id.synclist);
             textView.setText("Press button to sync your data");
             myList.setAdapter(adapter);
-            button.setVisibility(View.VISIBLE);
+
 
 
         }
@@ -96,29 +117,6 @@ public class data_sync_activity extends AppCompatActivity {
         }
         //Initialize Progress Dialog properties
         progressBar  =(ProgressBar) findViewById(R.id.progressBar);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                new Synctask().execute();
-                //syncSQLiteMySQLDB();
-
-
-//                mediaObjsFollowUp = controller.getMediaFollowUpTobeUploaded();
-//                ArrayList<media_obj>  mediaObjsMedia = new ArrayList<>();
-//                mediaObjsMedia = controller.getMediaTobeUploaded();
-//                ArrayList<media_obj>  mediaObjsDocuments = new ArrayList<>();
-//                mediaObjsDocuments = controller.getDocumentsTobeUploaded();
-//                mediaObjsFollowUp.addAll(mediaObjsMedia);
-//                mediaObjsFollowUp.addAll(mediaObjsDocuments);
-//                //progressBar.setProgress(50);
-//                if(mediaObjsFollowUp.size()>0)
-//                {relativeLayout.setVisibility(View.VISIBLE);
-//                uploadfile.uploadImage(data_sync_activity.this, mediaObjsFollowUp, progressBar, textViewFileNumber);}
-
-            }
-        });
 
         textViewFileNumber =(TextView)findViewById(R.id.textViewCurrentFileNumber);
 
@@ -234,6 +232,11 @@ public class data_sync_activity extends AppCompatActivity {
         return hex.toString();
     }
 
+    @Override
+    public void onComplete() {
+
+    }
+
     public class Synctask extends AsyncTask<Void, Void, Boolean> {
 
 
@@ -253,12 +256,20 @@ public class data_sync_activity extends AppCompatActivity {
                     try {
 
                         progressDialog.setMessage("Connecting please wait");
+                        Intent intent = new Intent(data_sync_activity.this,data_sync_activity.class);
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon4);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(
+                                getApplicationContext(),
+                                0,
+                                intent,
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
                         mBuilder =
                                 new NotificationCompat.Builder(data_sync_activity.this)
                                         .setSmallIcon(android.R.drawable.stat_sys_upload)
+                                        .setLargeIcon(bitmap)
                                         .setContentTitle("DocBox")
-
-
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true)
                                         .setContentText("Patient Data Being saved to cloud");
 
                         notifier.notify(1, mBuilder.build());
@@ -297,11 +308,20 @@ e.printStackTrace();
         protected void onPostExecute(final Boolean success) {
            // progressDialog.dismiss();
             ((NotificationManager) data_sync_activity.this.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(1);
+            Intent intent = new Intent(data_sync_activity.this,Activity_main_2.class);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon4);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    getApplicationContext(),
+                    0,
+                    intent,
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             mBuilder =
                     new NotificationCompat.Builder(data_sync_activity.this)
                             .setSmallIcon(R.drawable.icon_notification)
+                            .setLargeIcon(bitmap)
                             .setContentTitle("DocBox")
-
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
                             .setContentText(userList.size()+" Patients' data saved to cloud");
 
             notifier.notify(1, mBuilder.build());
@@ -356,12 +376,20 @@ e.printStackTrace();
 
         @Override
         protected void onPreExecute() {
+            Intent intent = new Intent(data_sync_activity.this,data_sync_activity.class);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon4);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    getApplicationContext(),
+                    0,
+                    intent,
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             mBuilder =
                     new NotificationCompat.Builder(data_sync_activity.this)
                             .setSmallIcon(android.R.drawable.stat_sys_download)
+                            .setLargeIcon(bitmap)
                             .setContentTitle("DocBox")
-
-
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
                             .setContentText("Patient data is being downloaded from cloud");
 
             notifier.notify(1, mBuilder.build());
@@ -443,14 +471,24 @@ e.printStackTrace();
         protected void onPostExecute(final Boolean success) {
 //            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
 //            SharedPreferences.Editor editor = prefs.edit();
+            Intent intent = new Intent(data_sync_activity.this,Activity_main_2.class);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.icon4);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    getApplicationContext(),
+                    0,
+                    intent,
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             mBuilder =
                     new NotificationCompat.Builder(data_sync_activity.this)
                             .setSmallIcon(R.drawable.icon_notification)
+                            .setLargeIcon(bitmap)
                             .setContentTitle("DocBox")
-
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
                             .setContentText(" Patients' data saved to Phone");
 
             notifier.notify(1, mBuilder.build());
+            btnSignIn.setProgress(100);
 //            editor.putBoolean("restore", false);
 //            editor.commit();
 //            pdia.dismiss();

@@ -62,7 +62,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Address"
             android:id="@+id/textView45"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:textSize="13sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -100,7 +101,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Phone Number"
-            android:id="@+id/textView47" />
+            android:id="@+id/textView47"
+            android:textSize="13sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -167,7 +169,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Email"
-            android:id="@+id/textView49" />
+            android:id="@+id/textView49"
+            android:textSize="13sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"

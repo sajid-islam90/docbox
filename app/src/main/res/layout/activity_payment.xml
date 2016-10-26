@@ -113,7 +113,7 @@
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rs 1250/6 months"
+                            android:text="Rs 2500/6 months"
                             android:id="@+id/radioButton2"
                             android:layout_weight="1"
                             android:textColor="@android:color/darker_gray"
@@ -122,7 +122,7 @@
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rs 2500/1 year"
+                            android:text="Rs 5000/1 year"
                             android:id="@+id/radioButton3"
                             android:layout_weight="1"
                             android:textColor="@android:color/darker_gray"

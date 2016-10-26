@@ -482,7 +482,7 @@ if(relativeLayoutHelp.getVisibility()==View.GONE)
             final RecyclerView listViewOtherHistView = (RecyclerView)rootView.findViewById(R.id.listViewOtherHistView);
             final RecyclerView listViewMedia = (RecyclerView)rootView.findViewById(R.id.listViewMedia);
             final CardView cardView = (CardView)rootView.findViewById(R.id.view13);
-final ImageView imageViewDim = (ImageView)rootView.findViewById(R.id.imageView13) ;
+            final ImageView imageViewDim = (ImageView)rootView.findViewById(R.id.imageView13) ;
             relativeLayoutHelp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

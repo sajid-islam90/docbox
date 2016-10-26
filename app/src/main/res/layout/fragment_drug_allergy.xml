@@ -17,7 +17,8 @@
             android:backgroundTint="@color/button_green"
             tools:typeface="monospace"
             android:textColorLink="@color/white"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium" />
 
         <ExpandableListView
             android:layout_width="wrap_content"

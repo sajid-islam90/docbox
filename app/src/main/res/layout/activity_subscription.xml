@@ -131,7 +131,10 @@
             android:layout_below="@+id/buttonRenewDoctorSubscription"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:backgroundTint="@color/button_green"
+            android:textColor="@color/white"
+            android:typeface="sans" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -153,7 +156,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="Purchase Subscription"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/button_green" />
 
     </LinearLayout>
 

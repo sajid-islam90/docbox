@@ -152,6 +152,7 @@
         <item>Respiratory Medicine</item>
         <item>Skin and VD</item>
         <item>Clinical Hematology</item>
+        <item>Ayurveda</item>
 
     </string-array>
 
@@ -193,6 +194,8 @@
         <item>Skin and VD</item>
         <item>Clinical Hematology</item>
         <item>Psychiatry</item>
+        <item>Others</item>
+        <item>Ayurveda</item>
 
     </string-array>
 
@@ -348,5 +351,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="contact">Contact</string>
+    <string name="diagnosis">Diagnosis</string>
 
 </resources>

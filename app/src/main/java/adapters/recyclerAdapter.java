@@ -1,9 +1,6 @@
 
 package adapters;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,10 +21,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import objects.*;
-
-import utilityClasses.DatabaseHandler;
 import com.elune.sajid.myapplication.R;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import activity.TabbedActivityCheck;
+import objects.Item;
+import objects.other_obj;
+import utilityClasses.DatabaseHandler;
 import utilityClasses.utility;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHolder>{
@@ -102,7 +104,8 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.ViewHo
         {
             textView1.setVisibility(View.GONE);
             textView2.setVisibility(View.GONE);
-            if(itemsArrayList.get(position).getDiagnosis().contains(".jpg"))
+            if((itemsArrayList.get(position).getDiagnosis().contains(".jpg"))||(itemsArrayList.get(position).getDiagnosis().contains(".png"))
+                ||(itemsArrayList.get(position).getDiagnosis().contains(".jpeg"))||(itemsArrayList.get(position).getDiagnosis().contains(".PNG")))
             videoPlayIcon.setVisibility(View.GONE);
         }
 
@@ -313,7 +316,13 @@ final other_obj otherObj = new other_obj();
     imageButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            dbHandle.deleteOtherNote(otherObj,pid,version);
+            String parent = TabbedActivityCheck.class.getSimpleName();
+            if(activity_parent.getClass().getSimpleName().equals(parent))
+            dbHandle.deleteOtherNote(otherObj,pid,itemsArrayList.get(p).getSection());
+
+            itemsArrayList.remove(p);
+            updateReceiptsListOtherNotes(itemsArrayList);
+            dialog.dismiss();
 
         }
     });

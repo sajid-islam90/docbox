@@ -146,16 +146,25 @@ public class uploadfile  {
             if(!String.valueOf(path.get(fileNumber).get_pid()).equals("0"))
 
             {
-                Intent myIntent = new Intent(context, Activity_main_2.class);
-                PendingIntent intent2 = PendingIntent.getBroadcast(context, 1,
-                        myIntent, PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_ONE_SHOT);
+                Intent intent = new Intent(context, data_sync_activity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        intent,
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+
+//
+//                Intent myIntent = new Intent(context, Activity_main_2.class);
+//                PendingIntent intent2 = PendingIntent.getBroadcast(context, 1,
+//                        myIntent, PendingIntent.FLAG_UPDATE_CURRENT
+//                                | PendingIntent.FLAG_ONE_SHOT);
              mBuilder =
                     new NotificationCompat.Builder(context)
                             .setSmallIcon(android.R.drawable.stat_sys_upload)
                             .setContentTitle("DocBox")
                             .setWhen(System.currentTimeMillis())
-                            .setContentIntent(intent2)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
                             .setContentText("Uploading " + (fileNumber + 1) + " of total "+ path.size() + " files")
                             .setProgress(100, 0, false);
 
@@ -168,7 +177,7 @@ public class uploadfile  {
 
              notifier = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
-
+                //mBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
             notifier.notify(1, mBuilder.build());
 
             textViewCurrentFileNumber.setText("Uploading "+(fileNumber+1)+ " of total "+path.size()+" files");
@@ -342,18 +351,26 @@ public class uploadfile  {
             //showAlert(result);
             if(!String.valueOf(path.get(fileNumber).get_pid()).equals("0")) {
                 progressBar.setProgress(0);
-                Intent newIntent = new Intent(context, data_sync_activity.class);
 
-                Intent myIntent = new Intent(context, Activity_main_2.class);
-                PendingIntent intent2 = PendingIntent.getBroadcast(context, 1,
-                        myIntent, PendingIntent.FLAG_UPDATE_CURRENT
-                                | PendingIntent.FLAG_ONE_SHOT);
+                Intent intent = new Intent(context,Activity_main_2.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        intent,
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Intent newIntent = new Intent(context, data_sync_activity.class);
+//
+//                Intent myIntent = new Intent(context, Activity_main_2.class);
+//                PendingIntent intent2 = PendingIntent.getBroadcast(context, 1,
+//                        myIntent, PendingIntent.FLAG_UPDATE_CURRENT
+//                                | PendingIntent.FLAG_ONE_SHOT);
                 ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(1);
                 mBuilder =
                         new NotificationCompat.Builder(context)
                                 .setSmallIcon(R.drawable.icon_notification)
                                 .setContentTitle("DocBox")
-                                .setContentIntent(intent2)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true)
                                 .setContentText("Files Saved To Cloud");
 
                 notifier.notify(1, mBuilder.build());

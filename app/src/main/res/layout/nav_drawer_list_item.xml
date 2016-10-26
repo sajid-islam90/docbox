@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="50dp"
+    android:layout_marginTop="11dp">
 
     <ImageView
         android:layout_width="17dp"
         android:layout_height="17dp"
         android:id="@+id/menuItemImageView"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="33dp" />
+        android:layout_marginLeft="33dp"
+        android:src="@drawable/ic_txt"
+        android:layout_marginTop="7dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:id="@+id/imageView14"
+        android:layout_marginLeft="33dp"
+        android:src="@drawable/new_corner"
+        android:layout_toLeftOf="@+id/menuItemTextView"
+        android:layout_toStartOf="@+id/menuItemTextView"
+        android:visibility="gone"
+        android:layout_marginTop="7dp" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="17dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/menuItemTextView"
-        android:gravity="center"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="29dp"
-        android:textSize="13sp" />
-</LinearLayout>
+        android:textSize="13sp"
+        android:text="hello"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/menuItemImageView"
+        android:layout_toEndOf="@+id/menuItemImageView"
+        android:layout_marginLeft="19dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="7dp" />
+</RelativeLayout>

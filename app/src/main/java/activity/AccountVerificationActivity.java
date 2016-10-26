@@ -1,6 +1,5 @@
 package activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,10 +8,10 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import objects.Patient;
 import objects.media_obj;
 import objects.personal_obj;
 import utilityClasses.DatabaseHandler;
@@ -352,7 +350,7 @@ EditText idProof;
         { if(parent.equals("main_activity"))
             intent.putExtra("fragmentNumber",1);}
         else
-        intent.putExtra("fragmentNumber",2);
+        intent.putExtra("fragmentNumber",1);
         startActivity(intent);
         finish();
         super.onBackPressed();

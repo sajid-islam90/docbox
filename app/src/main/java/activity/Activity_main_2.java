@@ -77,6 +77,7 @@ import fragments.UserProfile;
 import fragments.news_Activity;
 import objects.document_obj;
 import objects.personal_obj;
+import services.TimeService;
 import utilityClasses.ConnectionDetector;
 import utilityClasses.DatabaseHandler;
 import utilityClasses.NsdHelper;
@@ -121,6 +122,9 @@ public class  Activity_main_2 extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_2);
+        stopService(new Intent(this, TimeService.class));
+        startService(new Intent(this, TimeService.class));
+
 
        // startService(new Intent(this, SyncService.class));
         Calendar c = Calendar.getInstance();
@@ -128,7 +132,7 @@ public class  Activity_main_2 extends AppCompatActivity
         String formattedDate = df.format(c.getTime());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("AppVersion","5");
+        editor.putString("AppVersion","7");
         Calendar calender = Calendar.getInstance();
         int hourOfDay = calender.get(Calendar.HOUR_OF_DAY);
         String staticSpecialityNews = prefs.getString("staticSpecialityNews","all");
@@ -301,10 +305,17 @@ public class  Activity_main_2 extends AppCompatActivity
             else
 
             {  if(fragmentNumberToShow == 2)
-                fragmentManager.beginTransaction()
+            { fragmentManager.beginTransaction()
                         .replace(R.id.container, activity_view_patient_visits.newInstance(2, true))
 
+                        .commit();}
+            else if(fragmentNumberToShow == 3)
+            {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, news_Activity.newInstance(3))
+
                         .commit();
+            }
             else
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MainActivity.newInstance(1))
@@ -1107,6 +1118,9 @@ public class  Activity_main_2 extends AppCompatActivity
                     Fragment fragment = MainActivity.newInstance(position+1);
                     getSupportActionBar().setTitle("");
                     fragmentNumber = 3;
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("newsNotification",false);
+                    editor.apply();
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, news_Activity.newInstance(position + 1))
 
@@ -1590,11 +1604,17 @@ listMedia.addAll(listDocument);
         protected void onPostExecute(final Boolean success) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Activity_main_2.this);
             SharedPreferences.Editor editor = prefs.edit();
+            Intent intent = new Intent(Activity_main_2.this,Activity_main_2.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    getApplicationContext(),
+                    0,
+                    intent,
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             mBuilder =
                     new NotificationCompat.Builder(Activity_main_2.this)
                             .setSmallIcon(R.drawable.icon_notification)
                             .setContentTitle("DocBox")
-
+                            .setContentIntent(pendingIntent)
                             .setContentText(" Patients' data saved to Phone");
 
             notifier.notify(1, mBuilder.build());

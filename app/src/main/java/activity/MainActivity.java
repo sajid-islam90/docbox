@@ -85,6 +85,7 @@ public class MainActivity extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
         listView = (ListView)rootView.findViewById(R.id.listViewMain);
         context = getActivity();
+
        // SQLiteDatabase myDataBase= openOrCreateDatabase("patientManager",MODE_PRIVATE,null);
         DatabaseHandler dbHandle = new DatabaseHandler(getActivity());
         setHasOptionsMenu(true);
@@ -503,7 +504,7 @@ public class MainActivity extends Fragment {
 
             if(numberOfPatients == 0)
             {
-
+if(textView!=null)
                 textView.setVisibility(View.VISIBLE);
                 pulsator.start();
                 floatingActionButton.setVisibility(View.VISIBLE);

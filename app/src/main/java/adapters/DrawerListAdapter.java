@@ -1,8 +1,8 @@
 package adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import utilityClasses.DatabaseHandler;
+import com.elune.sajid.myapplication.R;
+
+import java.util.ArrayList;
 
 import objects.Item;
-
-import com.elune.sajid.myapplication.R;
+import utilityClasses.DatabaseHandler;
 
 public class DrawerListAdapter extends ArrayAdapter<Item> {
 
@@ -43,10 +44,19 @@ public class DrawerListAdapter extends ArrayAdapter<Item> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView;
         // 2. Get rowView from inflater
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
          rowView = inflater.inflate(R.layout.nav_drawer_list_item, parent, false);
 
-
+ImageView imageViewNews = (ImageView) rowView.findViewById(R.id.imageView14);
+        boolean newsUpdateRequired = prefs.getBoolean("newsNotification",false);
+        if((newsUpdateRequired)&&(position == 2 ))
+        {
+            imageViewNews.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            imageViewNews.setVisibility(View.GONE);
+        }
 
 
        // rowView.setTag(position);

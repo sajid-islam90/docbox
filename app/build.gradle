@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    maven { url "http://dl.bintray.com/jjhesk/maven" }
+    maven {
+        url 'https://dl.bintray.com/spark/maven'
+    }
     maven {
         url 'https://dl.bintray.com/wangyuwei/maven'
     }
@@ -31,8 +35,8 @@ android {
         applicationId "com.elune.sajid.myapplication"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 17
-        versionName "1.1.7"
+        versionCode 19
+        versionName "1.1.9"
         multiDexEnabled true
 
     }
@@ -103,6 +107,8 @@ dependencies {
     compile 'com.leocardz:link-preview:1.2.1@aar'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'me.spark:submitbutton:1.0.1'
+    compile 'com.hkm:hkmprocessbuttons:1.2.4'
     //compile project(':ParticleView')
     compile 'me.wangyuwei:ParticleView:1.0.4'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'

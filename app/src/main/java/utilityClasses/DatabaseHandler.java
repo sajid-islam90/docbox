@@ -549,7 +549,7 @@ mapping = cursor.getInt(0);
         args.put(columnName, columnValue);
 
         db.update(TABLE_PATIENT, args, KEY_ID + "= '" + Pid + "'", null) ;
-        db.close();
+       // db.close();
 
     }
 
@@ -848,7 +848,7 @@ db.close();
             db.insert(TABLE_NOTES, null, values);
             updatePatient(KEY_DATE_LAST_VISIT, formattedDate, String.valueOf(listOfItems.get(i).getPatient_id()));
         }
-        db.close();
+       // db.close();
 
     }
 
@@ -938,6 +938,28 @@ db.close();
 //            updatePatient(KEY_SYNC_STATUS, "0", String.valueOf(listOfItems.get(0).getPatient_id()));
        // }
         //db.close();
+    }
+
+    public void deleteFollowUp(int pid , String version)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_SYNC_STATUS, 3);
+
+
+//String sql = "UPDATE "+TABLE_FOLLOW_UP +"SET "+KEY_SYNC_STATUS+" = 3 WHERE "+KEY_VERSION =
+        // updating row
+        int retVal = db.update(TABLE_FOLLOW_UP, args, KEY_VERSION + " = ?",
+                new String[] {version});
+        db.close();
+
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ArrayList<Item> itemArrayList = getFollowUp(pid, Integer.parseInt(version));
+//        String sql = "UPDATE "+TABLE_FOLLOW_UP
+//        db.delete(TABLE_FOLLOW_UP, KEY_VERSION + " = ?",
+//                new String[]{version});
+
     }
 
 
@@ -1245,28 +1267,35 @@ return max;
     }
 
 
-    public ArrayList<String> getAllNotesDates(int pid,Context context)
+    public ArrayList<Item> getAllNotesDates(int pid,Context context)
     {
-        ArrayList<String> dates = new ArrayList<String>();
+        ArrayList<Item> dates = new ArrayList<Item>();
 //        SQLiteDatabase db = this.getReadableDatabase();
         int version[] = getMaxFollowupVersion(pid);
         Resources resource = context.getResources();
         String[] fields = resource.getStringArray(R.array.follow_up);
         int c=1;
         String table = null;
+
         for(c=0;dates.size()<version.length;c++)
                 //for(c=version.length-1;dates.size()<version.length;c--)
         {
+            Item item = new Item();
             ArrayList<Item> listOfItems = new ArrayList<>();
             listOfItems = getFollowUp(pid,version[c]);
         //    Log.i("debug", String.valueOf(version.length));
         //    Log.i("debug", String.valueOf(dates.size()));
             if(listOfItems.size()>0)
-                dates.add(fields[0]+" : "+listOfItems.get(0).getDiagnosis()+ "\n"+  " date : "+getNotesDateFromVersion(version[c],pid));
-            else
             {
-                Log.i("empty followup version", String.valueOf(version[c]+" : "+c));
+                item.setTitle(listOfItems.get(0).getDiagnosis());
+                item.setDiagnosis(getNotesDateFromVersion(version[c],pid));
+                dates.add(item);
             }
+               // dates.add(fields[0]+" : "+listOfItems.get(0).getDiagnosis()+ "\n"+  " date : "+getNotesDateFromVersion(version[c],pid));
+//            else
+//            {
+//                Log.i("empty followup version", String.valueOf(version[c]+" : "+c));
+//            }
         }
 //        while (c<=version.length)
 //        {
@@ -1675,8 +1704,18 @@ return max;
     public  void deleteOtherNote(other_obj otherObj,int pid,int version)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        String strSQL = " DELETE FROM "+ TABLE_OTHER+" WHERE "+KEY_ID+" = '"+pid+ "' AND " + KEY_VERSION + " = '" + version+ "' AND " + KEY_FIELD_NAME + " = '" + otherObj.get_field_name()+ "' AND " + KEY_FIELD_VALUE + " = '" + otherObj.get_field_value()+"'";
-        db.rawQuery(strSQL, null);
+
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_SYNC_STATUS,"3"); //These Fields should be your String values of actual column names
+
+       int ret =  db.update(TABLE_OTHER, cv, KEY_VERSION+" = "+version +" AND "+KEY_ID+" = "+pid+" AND "
+                +KEY_FIELD_NAME+" = "+otherObj.get_field_name()+" AND "+KEY_FIELD_VALUE+" = "+otherObj.get_field_value(), null);
+
+//        String strSQL = " UPDATE "+ TABLE_OTHER+" SET "+KEY_SYNC_STATUS+" = 3 "+" WHERE "+KEY_ID+" = '"+pid+ "' AND " +
+//                KEY_VERSION + " = '" + version+ "' AND " + KEY_FIELD_NAME + " = '" + otherObj.get_field_name()+ "' AND "
+//                + KEY_FIELD_VALUE + " = '" + otherObj.get_field_value()+"'";
+        Log.e("delete other note", String.valueOf(ret));
+//        db.rawQuery(strSQL, null);
         db.close();
     }
 
@@ -1694,8 +1733,9 @@ return max;
         values.put(KEY_DOC_PATH, mediaObj.get_media_path());
         values.put(KEY_SYNC_STATUS, 0);
         values.put(KEY_BMP, mediaObj.get_bmp());
-
-
+        db.delete(TABLE_MEDIA_FOLLOW_UP, KEY_DOC_PATH + " = ?",
+                new String[]{String.valueOf(mediaObj.get_media_path())});
+        Log.e("follow up add", String.valueOf(mediaObj.get_pid()));
         long i = db.insert(TABLE_MEDIA_FOLLOW_UP, null, values);
         //long j =  db.insert(TABLE_OTHER_HIST, null, values);
 
@@ -1709,7 +1749,7 @@ return max;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(columnName, columnValue);
-
+Log.e("update follow up",columnValue+" "+columnName);
        int retVal = db.update(TABLE_MEDIA_FOLLOW_UP, args, KEY_DOC_PATH + "= '" + docPath + "'", null) ;
         db.close();
         return retVal;
@@ -1720,7 +1760,7 @@ return max;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put(KEY_SYNC_STATUS, 1);
-
+        Log.e("update follow up","sync status update");
         db.update(TABLE_MEDIA_FOLLOW_UP, args, "1", null) ;
         db.close();
 
