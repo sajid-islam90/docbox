@@ -31,13 +31,13 @@ import utilityClasses.DatabaseHandler;
 
 public class view_all_versions extends Fragment {
     static int pid;
-     ArrayList<Item> dates = new ArrayList<>();
+    static ArrayList<Item> dates = new ArrayList<>();
      int version[];
   //  ArrayList<String> dates = new ArrayList<>();
     private static final String ARG_SECTION_NUMBER = "section_number";
     View rootView;
     String accountType;
-    view_all_versions_followup_adapter view_all_versions_followup_adapter;
+    static view_all_versions_followup_adapter view_all_versions_followup_adapter;
     Animation animation;
 
     @Override
@@ -133,6 +133,8 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
     public void displayAllVersionDates()
     {
+
+        view_all_versions_followup_adapter = new view_all_versions_followup_adapter(getActivity(),getContext(),dates);
         DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
         // dates = databaseHandler.getAllNotesDates(pid,getActivity());
        fetchFollowups fetchPatientsTask = new fetchFollowups();
@@ -140,7 +142,7 @@ public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
        // Collections.reverse(dates);
         //Collections.reverse(version);
-         view_all_versions_followup_adapter = new view_all_versions_followup_adapter(getActivity(),getContext(),dates);
+
 //        ArrayAdapter<String> itemsAdapter =
 //                new ArrayAdapter<String>(getActivity(), R.layout.simple_list_item, dates);
         final ListView listView = (ListView)rootView.findViewById(R.id.allVersionDates);

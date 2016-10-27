@@ -2,6 +2,7 @@ package adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,97 +33,53 @@ public class view_all_versions_followup_adapter extends ArrayAdapter<Item> {
         this.activity_parent = activity_parent;
         this.itemsArrayList = itemsArrayList;
     }
+    static class ViewHolder {
+        View rowView ;
+        TextView chiefComplaint ;
+
+        TextView date ;
+
+
+    }
 
     @Override
-    public View getView(int position, final View convertView, final ViewGroup parent) {
+    public View getView(int position,  View convertView, final ViewGroup parent) {
+        ViewHolder holder ;
+        if(convertView==null) {
+            holder = new ViewHolder();
+            // 1. Create inflater
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // 1. Create inflater
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        // 2. Get rowView from inflater
-        final View rowView = inflater.inflate(R.layout.view_all_followup_version_row, parent, false);
+            // 2. Get rowView from inflater
+            convertView= inflater.inflate(R.layout.view_all_followup_version_row, parent, false);
 
 
-        // 3. Get the two text view from the rowView
-        TextView chiefComplaint = (TextView) rowView.findViewById(R.id.textViewComplaint);
-        TextView date = (TextView) rowView.findViewById(R.id.textViewDate);
-//
-//        rowView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v){
-//                final PopupMenu popup = new PopupMenu(context,rowView);
-//                popup.getMenuInflater().inflate(R.menu.followup_pop_up
-//                        , popup.getMenu());
-//
-//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem item) {
-//
-//
-//
-//                        if (item.getTitle().equals("Delete")) {
-//
-//                            final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-//
-//                            alert.setTitle("Alert!!");
-//                            alert.setMessage("Are you sure to delete this follow up ? ");
-//
-//                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//
-////                                    DatabaseHandler databaseHandler = new DatabaseHandler(_context);
-////                                    databaseHandler.deleteDiagnosis(_listDataHeader.get(groupPosition));
-////                                    _listDataHeader.remove(groupPosition);
-////                                    updateReceiptsList();
-//                                    dialog.dismiss();
-//
-//                                }
-//                            });
-//
-//
-//                            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                            alert.show();
-//
-//                        }
-//                        if (item.getTitle().equals("Open")) {
-//
-//
-//
-//                        }
-//
-//
-//                        return false;
-//
-//
-//                    }
-//                });
-//
-//                /** Showing the popup menu */
-//                popup.show();
-//                return false;
-//            }
-//        });
+            // 3. Get the two text view from the rowView
+//            TextView chiefComplaint = (TextView) rowView.findViewById(R.id.textViewComplaint);
+//            TextView date = (TextView) rowView.findViewById(R.id.textViewDate);
+             holder.chiefComplaint = (TextView) convertView.findViewById(R.id.textViewComplaint);
+             holder.date = (TextView) convertView.findViewById(R.id.textViewDate);
 
+        }
+        else
+        {
+            holder = (ViewHolder) convertView.getTag();
+            Log.e("all followup adapter","view converted");
+        }
         // 4. Set the text for textView
+try {
+    holder.chiefComplaint.setText(itemsArrayList.get(position).getTitle());
 
-        chiefComplaint.setText(itemsArrayList.get(position).getTitle());
-
-       date.setText(itemsArrayList.get(position).getDiagnosis());
-
+    holder.date.setText(itemsArrayList.get(position).getDiagnosis());
+}
+catch (Exception e)
+{
+   // e.printStackTrace();
+}
 
         // 5. retrn rowView
-        return rowView;
+        return convertView;
     }
     public void updateDataSet()
     {

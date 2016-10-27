@@ -59,6 +59,7 @@ import objects.Item;
 import objects.Patient;
 import objects.time;
 import utilityClasses.DatabaseHandler;
+import utilityClasses.FlipAnimation;
 import utilityClasses.PhotoHelper;
 import utilityClasses.RoundImage;
 import utilityClasses.floatingactionbutton.FloatingActionButton;
@@ -79,6 +80,14 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
     FloatingActionButton floatingActionButton;
     FloatingActionButton floatingActionButtonHelp;
     String accountType;
+    RelativeLayout relativeLayoutMonetory;
+    RelativeLayout relativeLayoutClinicalData;
+    LinearLayout  linearLayout;
+    LinearLayout  linearLayout1;
+    LinearLayout  linearLayout2;
+    LinearLayout linearLayout4;
+    Fragment diagnosis;
+    Fragment view_all_followup;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -92,7 +101,8 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
         id = intent.getIntExtra("id",0);
         parent = intent.getStringExtra("parent");
         Tabselected = intent.getIntExtra("tab",0);
-        sliderFunction(Tabselected);
+            diagnosis= Diagnosis.newInstance(0,id);
+            view_all_followup = view_all_versions.newInstance(1,id);
         final ActionBar actionBar = getSupportActionBar();
         Patient patient = databaseHandler.getPatient(id);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(PatientProfileActivity.this);
@@ -108,10 +118,15 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
             }
         });
        // actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
-        LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
-        LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
-        LinearLayout linearLayout4 = (LinearLayout)findViewById(R.id.linearLayoutAddNextFollowupDateHelp);
+             linearLayout  = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
+              linearLayout1= (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
+          linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
+         linearLayout4 = (LinearLayout)findViewById(R.id.linearLayoutAddNextFollowupDateHelp);
+            relativeLayoutMonetory = (RelativeLayout) findViewById(R.id.relativeLayoutMonetoryData);
+            relativeLayoutClinicalData = (RelativeLayout)findViewById(R.id.relativeLayoutClinicalData);
+            sliderFunction(Tabselected);
+            //FlipAnimation flipAnimation = new FlipAnimation(relativeLayoutClinicalData, relativeLayoutMonetory);
+
         helpLayout = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
         if(firstTime) {
             helpLayout.setVisibility(View.VISIBLE);
@@ -131,7 +146,7 @@ public class PatientProfileActivity extends AppCompatActivity implements ActionB
             }
         });
         helpLayout = (RelativeLayout)findViewById(R.id.relativeLayoutHelp);
-helpLayout.setOnClickListener(new View.OnClickListener() {
+        helpLayout.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
         helpLayout.setVisibility(View.GONE);
@@ -292,6 +307,19 @@ helpLayout.setOnClickListener(new View.OnClickListener() {
         displayPatientData(patient);
 
     }
+    private void flipCard()
+    {   View rootLayout = (View) findViewById(R.id.relativeLayoutFlip);
+
+
+        FlipAnimation flipAnimation = new FlipAnimation(relativeLayoutClinicalData, relativeLayoutMonetory);
+
+        if (relativeLayoutClinicalData.getVisibility() == View.GONE)
+        {
+            flipAnimation.reverse();
+        }
+        rootLayout.startAnimation(flipAnimation);
+    }
+
 
     public void showDocuments()
     {
@@ -713,6 +741,18 @@ time time;
             case R.id.action_delete:
                 deletePatientProfile();
                 break;
+            case R.id.action_dues:
+                if (relativeLayoutClinicalData.getVisibility() == View.GONE)
+                {
+                    item.setIcon(R.drawable.ic_action_monetory);
+                }
+                else
+                {
+                    item.setIcon(R.drawable.ic_action_clinical_data);
+                }
+
+                flipCard();
+                break;
 //
             case R.id.action_help:
                 if(helpLayout.getVisibility()==View.VISIBLE)
@@ -926,9 +966,9 @@ time time;
 
     public void sliderFunction(int position)
     {
-        LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
-        LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
-        LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
+//        LinearLayout  linearLayout = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsDiagnosis);
+//        LinearLayout  linearLayout1 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsFollowUp);
+//        LinearLayout  linearLayout2 = (LinearLayout)findViewById(R.id.linearLayoutPatientProfileTabsContact);
         TextView textView = (TextView)findViewById(R.id.textView);
         TextView textView1 = (TextView)findViewById(R.id.textView41);
         TextView textView2 = (TextView)findViewById(R.id.textView42);
@@ -993,10 +1033,17 @@ time time;
         public Fragment getItem(int position) {
 
             if(position == 0)
-            return Diagnosis.newInstance(position,id);
+            {
+
+                //return Diagnosis.newInstance(position,id);
+                return diagnosis;
+            }
+
             else if(position == 1)
             {
-                return view_all_versions.newInstance(position,id);
+
+                return view_all_followup;
+                //return view_all_versions.newInstance(position,id);
             }
 else
                 return Contact_Fragment.newInstance(position, id);
