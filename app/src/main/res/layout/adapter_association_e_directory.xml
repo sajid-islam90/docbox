@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#e0e0e0"
+    android:padding="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+        android:background="#fff"
+        android:elevation="2dp"
+        app:cardCornerRadius="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imgDoctorEDirectory"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/docbox_boy"
+                android:layout_width="90dp"
+                android:layout_height="90dp" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/imgDoctorEDirectory"
+                android:id="@+id/textNameEDirectory"
+                android:layout_alignParentTop="true"
+                android:text="Deepak Agrawal"
+                android:textColor="#333333"
+                android:typeface="sans"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textNameEDirectory"
+                android:textColor="#666"
+                android:text="MS Orthopaedics"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorEDirectory"
+                android:id="@+id/textDesignationEDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:id="@+id/imgAddEDirectoryContact"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/ic_input_add"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:layout_below="@+id/textDesignationEDirectory"
+                android:textColor="#666"
+                android:text="9876543210"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorEDirectory"
+                android:id="@+id/textNumber1EDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textDesignationEDirectory"
+                android:textColor="#666"
+                android:text="9876543210"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/textNumber1EDirectory"
+                android:id="@+id/textNumber2EDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textNumber1EDirectory"
+                android:textColor="#666"
+                android:text="Lucknow"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorEDirectory"
+                android:id="@+id/textCityEDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textCityEDirectory"
+                android:textColor="#666"
+                android:text="deepak.agrawal@rediff.co.in"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="4dp"
+                android:layout_toRightOf="@+id/imgDoctorEDirectory"
+                android:id="@+id/textEmailEDirectory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

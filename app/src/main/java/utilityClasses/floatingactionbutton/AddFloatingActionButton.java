@@ -16,7 +16,7 @@ import com.elune.sajid.myapplication.R;
 
 public class AddFloatingActionButton extends FloatingActionButton {
   int mPlusColor;
-
+  boolean MODE_NAVIGATION = false;
   public AddFloatingActionButton(Context context) {
     this(context, null);
   }
@@ -61,30 +61,39 @@ public class AddFloatingActionButton extends FloatingActionButton {
     throw new UnsupportedOperationException("Use FloatingActionButton if you want to use custom icon");
   }
 
+  public void setMenuMode(boolean mode){
+    MODE_NAVIGATION = mode;
+  }
+
   @Override
   Drawable getIconDrawable() {
-    final float iconSize = getDimension(R.dimen.fab_icon_size);
-    final float iconHalfSize = iconSize / 2f;
 
-    final float plusSize = getDimension(R.dimen.fab_plus_icon_size);
-    final float plusHalfStroke = getDimension(R.dimen.fab_plus_icon_stroke) / 2f;
-    final float plusOffset = (iconSize - plusSize) / 2f;
+    if (MODE_NAVIGATION) {
+      return getContext().getResources().getDrawable(R.drawable.ic_hamburger);
+    } else {
+      final float iconSize = getDimension(R.dimen.fab_icon_size);
+      final float iconHalfSize = iconSize / 2f;
 
-    final Shape shape = new Shape() {
-      @Override
-      public void draw(Canvas canvas, Paint paint) {
-        canvas.drawRect(plusOffset, iconHalfSize - plusHalfStroke, iconSize - plusOffset, iconHalfSize + plusHalfStroke, paint);
-        canvas.drawRect(iconHalfSize - plusHalfStroke, plusOffset, iconHalfSize + plusHalfStroke, iconSize - plusOffset, paint);
-      }
-    };
+      final float plusSize = getDimension(R.dimen.fab_plus_icon_size);
+      final float plusHalfStroke = getDimension(R.dimen.fab_plus_icon_stroke) / 2f;
+      final float plusOffset = (iconSize - plusSize) / 2f;
 
-    ShapeDrawable drawable = new ShapeDrawable(shape);
+      final Shape shape = new Shape() {
+        @Override
+        public void draw(Canvas canvas, Paint paint) {
+          canvas.drawRect(plusOffset, iconHalfSize - plusHalfStroke, iconSize - plusOffset, iconHalfSize + plusHalfStroke, paint);
+          canvas.drawRect(iconHalfSize - plusHalfStroke, plusOffset, iconHalfSize + plusHalfStroke, iconSize - plusOffset, paint);
+        }
+      };
 
-    final Paint paint = drawable.getPaint();
-    paint.setColor(mPlusColor);
-    paint.setStyle(Style.FILL);
-    paint.setAntiAlias(true);
+      ShapeDrawable drawable = new ShapeDrawable(shape);
 
-    return drawable;
+      final Paint paint = drawable.getPaint();
+      paint.setColor(mPlusColor);
+      paint.setStyle(Style.FILL);
+      paint.setAntiAlias(true);
+
+      return drawable;
+    }
   }
 }

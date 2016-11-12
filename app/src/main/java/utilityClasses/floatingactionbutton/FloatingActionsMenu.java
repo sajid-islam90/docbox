@@ -45,6 +45,7 @@ public class FloatingActionsMenu extends ViewGroup {
   private int mAddButtonSize;
   private boolean mAddButtonStrokeVisible;
   private int mExpandDirection;
+  private boolean mModeNavigation = false;
 
   private int mButtonSpacing;
   private int mLabelsMargin;
@@ -99,6 +100,7 @@ public class FloatingActionsMenu extends ViewGroup {
     mAddButtonColorPressed = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorPressed, getColor(R.color.buttonsColorOnPressed));
     mAddButtonSize = attr.getInt(R.styleable.FloatingActionsMenu_fab_addButtonSize, FloatingActionButton.SIZE_NORMAL);
     mAddButtonStrokeVisible = attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
+    mModeNavigation = attr.getBoolean(R.styleable.FloatingActionsMenu_fab_menuModeNavigation, false);
     mExpandDirection = attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
     mLabelsStyle = attr.getResourceId(R.styleable.FloatingActionsMenu_fab_labelStyle, 0);
     mLabelsPosition = attr.getInt(R.styleable.FloatingActionsMenu_fab_labelsPosition, LABELS_ON_LEFT_SIDE);
@@ -159,7 +161,12 @@ public class FloatingActionsMenu extends ViewGroup {
 
       @Override
       Drawable getIconDrawable() {
-        final RotatingDrawable rotatingDrawable = new RotatingDrawable(super.getIconDrawable());
+        final RotatingDrawable rotatingDrawable;
+
+        super.setMenuMode(mModeNavigation);
+
+        rotatingDrawable = new RotatingDrawable(super.getIconDrawable());
+
         mRotatingDrawable = rotatingDrawable;
 
         final OvershootInterpolator interpolator = new OvershootInterpolator();

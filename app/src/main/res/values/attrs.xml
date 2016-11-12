@@ -33,6 +33,16 @@
     <declare-styleable name="AddFloatingActionButton">
         <attr name="fab_plusIconColor" format="color"/>
     </declare-styleable>
+    <declare-styleable name="DiagonalLayout">
+        <attr name="diagonal_angle" format="integer" />
+        <attr name="diagonal_handleMargins" format="boolean"/>
+        <attr name="diagonal_gravity">
+            <flag name="left" value="1" />
+            <flag name="right" value="2" />
+            <flag name="bottom" value="4" />
+            <flag name="top" value="8"/>
+        </attr>
+    </declare-styleable>
     <declare-styleable name="FloatingActionsMenu">
         <attr name="fab_addButtonColorPressed" format="color"/>
         <attr name="fab_addButtonColorNormal" format="color"/>
@@ -42,6 +52,7 @@
         </attr>
         <attr name="fab_addButtonPlusIconColor" format="color"/>
         <attr name="fab_addButtonStrokeVisible" format="boolean"/>
+        <attr name="fab_menuModeNavigation" format="boolean"/>
         <attr name="fab_labelStyle" format="reference"/>
         <attr name="fab_labelsPosition" format="enum">
             <enum name="left" value="0"/>

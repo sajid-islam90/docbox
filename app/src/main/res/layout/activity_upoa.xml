@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+    <com.diagonal.DiagonalLayout
+        android:id="@+id/diagonalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="266dp"
+        diagonal:diagonal_angle="10"
+        android:elevation="10dp"
+        android:paddingBottom="16dp"
+        diagonal:diagonal_gravity="right">
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:background="@drawable/upoa_back4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_gravity="top|left"
+            android:background="@drawable/ioa_logo"
+            android:layout_width="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Uttar Pradesh Orthopaedic Association"
+            android:textColor="@android:color/white"
+            android:layout_gravity="top|left"
+            android:textStyle="bold"
+            android:lines="2"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="80dp"
+            android:textSize="17sp"
+            />
+
+    </com.diagonal.DiagonalLayout>
+
+    <utilityClasses.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabMenuAssociations"
+        android:elevation="17dp"
+        app:fab_addButtonColorNormal="@color/green"
+        app:fab_expandDirection="down"
+        android:layout_margin="10dp"
+        app:fab_labelStyle="@style/menu_labels_style2"
+        app:fab_labelsPosition="left"
+        app:fab_menuModeNavigation="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true">
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_title="Change Association"
+            app:fab_size="mini"
+            app:fab_colorNormal="@color/green"
+            app:fab_icon="@drawable/ic_action_video"
+            android:id="@+id/menuChangeAssociation" />
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_title="Contact Us"
+            app:fab_colorNormal="@color/green"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_action_video"
+            android:id="@+id/menuContactUs" />
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_title="Notifications"
+            app:fab_size="mini"
+            app:fab_colorNormal="@color/green"
+            app:fab_icon="@drawable/ic_action_video"
+            android:id="@+id/menuNotifications" />
+        <utilityClasses.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_size="mini"
+            app:fab_colorNormal="@color/green"
+            app:fab_icon="@drawable/ic_action_video"
+            app:fab_title="UPOA Membership"
+            android:id="@+id/menuMembership" />
+
+    </utilityClasses.floatingactionbutton.FloatingActionsMenu>
+
+    <View
+        android:visibility="gone"
+        android:background="#bbffffff"
+        android:id="@+id/overlayAssociations"
+        android:elevation="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:elevation="15dp"
+        android:scaleType="fitCenter"
+        android:padding="17dp"
+        android:clickable="true"
+        android:id="@+id/imgFAB1"
+        android:src="@android:drawable/arrow_up_float"
+        android:background="@drawable/circle"
+        android:layout_marginTop="166dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <ImageView
+        android:elevation="15dp"
+        android:scaleType="fitCenter"
+        android:padding="17dp"
+        android:id="@+id/imgFAB2"
+        android:src="@android:drawable/arrow_up_float"
+        android:background="@drawable/circle"
+        android:layout_marginTop="186dp"
+        android:layout_marginLeft="50dp"
+        android:clickable="true"
+        android:layout_toRightOf="@+id/imgFAB1"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <ImageView
+        android:elevation="15dp"
+        android:scaleType="fitCenter"
+        android:padding="17dp"
+        android:id="@+id/imgFAB3"
+        android:src="@android:drawable/arrow_up_float"
+        android:background="@drawable/circle"
+        android:layout_marginTop="204dp"
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@+id/imgFAB2"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <ImageView
+        android:elevation="15dp"
+        android:scaleType="fitCenter"
+        android:padding="17dp"
+        android:id="@+id/imgFAB4"
+        android:clickable="true"
+        android:layout_marginTop="221dp"
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@+id/imgFAB3"
+        android:src="@android:drawable/arrow_up_float"
+        android:background="@drawable/circle"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#717171"
+        android:id="@+id/textEvents"
+        android:layout_below="@+id/imgFAB4"
+        android:text="UPCOMING EVENTS"
+        android:typeface="serif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!--<View-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignRight="@id/textEvents"-->
+        <!--android:layout_below="@+id/textEvents"-->
+        <!--android:background="#717171"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp" />-->
+
+    <ListView
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textEvents"
+        android:id="@+id/listUpcomingAssociationEvents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+</RelativeLayout>

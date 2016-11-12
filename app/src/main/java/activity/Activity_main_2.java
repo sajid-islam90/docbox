@@ -714,6 +714,10 @@ public class  Activity_main_2 extends AppCompatActivity
         pdia1.setCanceledOnTouchOutside(false);
 
         hasHelper = prefs.getBoolean("hasHelper", false);
+        if(position == 10){
+            //startActivity(new Intent(Activity_main_2.this, AssociationsActivity.class));
+            startActivity(new Intent(Activity_main_2.this ,UPOA_Activity.class));
+        }
         if (position == 0) {
 
             {

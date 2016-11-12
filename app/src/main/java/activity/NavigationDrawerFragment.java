@@ -190,7 +190,10 @@ RelativeLayout relativeLayout = (RelativeLayout)mView.findViewById(R.id.profile_
         item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_verify));
         items.add(item);
 
-
+        item =new Item();
+        item.setTitle(getString(R.string.nav_drawer_item11));
+        item.setBmp(BitmapFactory.decodeResource(getResources(), R.drawable.ic_nav_drawer_verify));
+        items.add(item);
 
 
 

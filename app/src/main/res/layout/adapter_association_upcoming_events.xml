@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="2dp"
+    android:background="#e0e0e0"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/llTOP"
+        android:weightSum="4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_margin="1dp"
+            android:padding="5dp"
+            android:text=" 13 - 15\nJan '2017"
+            android:textSize="15sp"
+            android:textColor="#919191"
+            android:gravity="center"
+            android:typeface="sans"
+            android:background="#fff"
+            android:id="@+id/textAssociationEventDate"
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_margin="1dp"
+            android:padding="5dp"
+            android:text="BOS Shoulder Course"
+            android:textSize="17sp"
+            android:textColor="#818181"
+            android:gravity="center"
+            android:typeface="sans"
+            android:background="#fff"
+            android:id="@+id/textAssociationEventTitle"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@+id/llTOP"
+        android:orientation="horizontal"
+        android:id="@+id/llBOT"
+        android:weightSum="4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_margin="1dp"
+            android:padding="5dp"
+            android:text="04 : 45 pm"
+            android:textSize="15sp"
+            android:textColor="#919191"
+            android:gravity="center"
+            android:typeface="sans"
+            android:background="#fff"
+            android:id="@+id/textAssociationEventTime"
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:layout_margin="1dp"
+            android:background="#fff"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:padding="2dp"
+                android:layout_margin="3dp"
+                android:src="@drawable/ic_marker"
+                android:layout_width="26dp"
+                android:layout_height="26dp" />
+            <TextView
+                android:layout_marginLeft="-5dp"
+                android:padding="5dp"
+                android:layout_gravity="center_vertical"
+                android:text="KEM Hospital, Parel, Mumbai"
+                android:textSize="17sp"
+                android:textColor="#818181"
+                android:gravity="center"
+                android:typeface="sans"
+                android:background="#fff"
+                android:id="@+id/textAssociationEventLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

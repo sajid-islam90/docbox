@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#e0e0e0"
+    android:padding="1dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+        android:background="#fff"
+        android:elevation="2dp"
+        app:cardCornerRadius="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imgDoctorExecCouncil"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/docbox_boy"
+                android:layout_width="90dp"
+                android:layout_height="90dp" />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/imgDoctorExecCouncil"
+                android:id="@+id/textNameExecCouncil"
+                android:layout_alignParentTop="true"
+                android:text="Dr Aseem Parekh"
+                android:textColor="#333333"
+                android:typeface="serif"
+                android:textStyle="normal"
+                android:textSize="17sp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textNameExecCouncil"
+                android:textColor="#666"
+                android:text="President"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorExecCouncil"
+                android:id="@+id/textDesignationExecCouncil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_margin="5dp"
+                android:id="@+id/imgAddExecCouncil"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitXY"
+                android:padding="5dp"
+                android:src="@android:drawable/ic_input_add"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:layout_below="@+id/textDesignationExecCouncil"
+                android:textColor="#666"
+                android:text="Call : "
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorExecCouncil"
+                android:id="@+id/textCallExecCouncil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textDesignationExecCouncil"
+                android:textColor="#666"
+                android:text="9876543210"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/textCallExecCouncil"
+                android:id="@+id/textNumberExecCouncil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textNumberExecCouncil"
+                android:textColor="#666"
+                android:text="Email :"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imgDoctorExecCouncil"
+                android:id="@+id/textMailExecCouncil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/textNumberExecCouncil"
+                android:textColor="#666"
+                android:text="deepak.agrawal@rediff.co.in"
+                android:typeface="normal"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="4dp"
+                android:layout_toRightOf="@+id/textMailExecCouncil"
+                android:id="@+id/textEMailExecCouncil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

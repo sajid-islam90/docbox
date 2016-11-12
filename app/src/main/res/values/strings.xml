@@ -65,6 +65,7 @@
     <string name="nav_drawer_item8">Share</string>
     <string name="nav_drawer_item9">Feedback</string>
     <string name="nav_drawer_item10">News</string>
+    <string name="nav_drawer_item11">My Associations</string>
 
     <string name="delete_button">"Delete Record</string>
     <string name="edit_button">"Edit Record</string>
