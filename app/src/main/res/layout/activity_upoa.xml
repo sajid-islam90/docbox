@@ -24,22 +24,22 @@
             android:layout_gravity="top|left"
             android:background="@drawable/ioa_logo"
             android:layout_width="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
             android:layout_height="50dp" />
 
         <TextView
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Uttar Pradesh Orthopaedic Association"
+            android:text="Uttar Pradesh State Ophthalmological Society"
             android:textColor="@android:color/white"
             android:layout_gravity="top|left"
             android:textStyle="bold"
             android:lines="2"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="80dp"
-            android:textSize="17sp"
+            android:typeface="sans"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="75dp"
+            android:textSize="16sp"
             />
 
     </com.diagonal.DiagonalLayout>
@@ -63,7 +63,8 @@
             app:fab_title="Change Association"
             app:fab_size="mini"
             app:fab_colorNormal="@color/green"
-            app:fab_icon="@drawable/ic_action_video"
+            app:fab_icon="@drawable/icon_out"
+            android:visibility="gone"
             android:id="@+id/menuChangeAssociation" />
         <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -71,7 +72,7 @@
             app:fab_title="Contact Us"
             app:fab_colorNormal="@color/green"
             app:fab_size="mini"
-            app:fab_icon="@drawable/ic_action_video"
+            app:fab_icon="@drawable/icon_contact_association"
             android:id="@+id/menuContactUs" />
         <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -79,15 +80,15 @@
             app:fab_title="Notifications"
             app:fab_size="mini"
             app:fab_colorNormal="@color/green"
-            app:fab_icon="@drawable/ic_action_video"
+            app:fab_icon="@drawable/icon_notify"
             android:id="@+id/menuNotifications" />
         <utilityClasses.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_size="mini"
             app:fab_colorNormal="@color/green"
-            app:fab_icon="@drawable/ic_action_video"
-            app:fab_title="UPOA Membership"
+            app:fab_icon="@drawable/icon_membership"
+            app:fab_title="UPSOS Membership"
             android:id="@+id/menuMembership" />
 
     </utilityClasses.floatingactionbutton.FloatingActionsMenu>
@@ -107,7 +108,7 @@
         android:padding="17dp"
         android:clickable="true"
         android:id="@+id/imgFAB1"
-        android:src="@android:drawable/arrow_up_float"
+        android:src="@drawable/icon_exec_council"
         android:background="@drawable/circle"
         android:layout_marginTop="166dp"
         android:layout_alignParentLeft="true"
@@ -119,7 +120,7 @@
         android:scaleType="fitCenter"
         android:padding="17dp"
         android:id="@+id/imgFAB2"
-        android:src="@android:drawable/arrow_up_float"
+        android:src="@drawable/icon_e_directory"
         android:background="@drawable/circle"
         android:layout_marginTop="186dp"
         android:layout_marginLeft="50dp"
@@ -133,7 +134,7 @@
         android:scaleType="fitCenter"
         android:padding="17dp"
         android:id="@+id/imgFAB3"
-        android:src="@android:drawable/arrow_up_float"
+        android:src="@drawable/icon_announcements"
         android:background="@drawable/circle"
         android:layout_marginTop="204dp"
         android:layout_marginLeft="50dp"
@@ -150,24 +151,151 @@
         android:layout_marginTop="221dp"
         android:layout_marginLeft="50dp"
         android:layout_toRightOf="@+id/imgFAB3"
-        android:src="@android:drawable/arrow_up_float"
+        android:src="@drawable/icon_gallery"
         android:background="@drawable/circle"
         android:layout_width="48dp"
         android:layout_height="48dp" />
 
+    <ImageView
+        android:layout_marginTop="-10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/nayan_utsav_logo"
+        android:layout_below="@+id/imgFAB4"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageNayanUtsavLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
     <TextView
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:layout_alignParentLeft="true"
-        android:textSize="17sp"
+        android:textSize="21sp"
         android:textStyle="bold"
-        android:textColor="#717171"
+        android:visibility="gone"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/buttonsColor"
         android:id="@+id/textEvents"
         android:layout_below="@+id/imgFAB4"
-        android:text="UPCOMING EVENTS"
+        android:text="Nayan Utsav 2016"
         android:typeface="serif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:clickable="true"
+        android:layout_below="@+id/imageNayanUtsavLogo"
+        android:id="@+id/layoutAssociationSubs1"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_gravity="start|center_vertical"
+            android:background="#717171"
+            android:rotation="90"
+            android:layout_width="24dp"
+            android:layout_height="2dp" />
+        <TextView
+            android:text="Highlights"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/textSubs1"
+            android:layout_marginLeft="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:clickable="true"
+        android:layout_below="@+id/layoutAssociationSubs1"
+        android:id="@+id/layoutAssociationSubs2"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:rotation="90"
+            android:layout_gravity="start|center_vertical"
+            android:background="#717171"
+            android:layout_width="24dp"
+            android:layout_height="2dp" />
+        <TextView
+            android:text="Subjects Covered"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/textSubs2"
+            android:layout_marginLeft="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:clickable="true"
+        android:layout_below="@+id/layoutAssociationSubs2"
+        android:id="@+id/layoutAssociationSubs3"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_gravity="start|center_vertical"
+            android:background="#717171"
+            android:rotation="90"
+            android:layout_width="24dp"
+            android:layout_height="2dp" />
+        <TextView
+            android:text="Conference Schedule"
+            android:id="@+id/textSubs3"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:clickable="true"
+        android:layout_below="@+id/layoutAssociationSubs3"
+        android:id="@+id/layoutAssociationSubs4"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_gravity="start|center_vertical"
+            android:background="#717171"
+            android:rotation="90"
+            android:layout_width="24dp"
+            android:layout_height="2dp" />
+        <TextView
+            android:text="Sponsors"
+            android:id="@+id/textSubs4"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
     <!--<View-->
         <!--android:layout_marginLeft="20dp"-->
         <!--android:layout_alignParentLeft="true"-->
@@ -180,6 +308,7 @@
     <ListView
         android:layout_marginTop="10dp"
         android:layout_below="@+id/textEvents"
+        android:visibility="gone"
         android:id="@+id/listUpcomingAssociationEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

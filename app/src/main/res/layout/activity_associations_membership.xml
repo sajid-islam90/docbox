@@ -1,5 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:id="@+id/textHeaderMembership"
+        android:text="Apply for UPSOS Membership"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/text1Membership"
+        android:layout_below="@+id/textHeaderMembership"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:typeface="sans"
+        android:textSize="13sp"
+        android:text="Instructions will be as follows:"
+        android:textColor="#666666"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textColor="#666666"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/text2Membership"
+        android:layout_alignParentLeft="true"
+        android:text="-  Download the form in the link mentioned below."
+        android:layout_below="@+id/text1Membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textColor="#666666"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/text3Membership"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"
+        android:text="-  Please fill the form completely (incomplete\n   forms without proper documents will\n   not be accepted)."
+        android:layout_below="@+id/text2Membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textColor="#666666"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/text4Membership"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"
+        android:text="-  Please take photographs of the form and\n   the relevant documents as mentioned in the form."
+        android:layout_below="@+id/text3Membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textColor="#666666"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/text5Membership"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"
+        android:text="-  Upload the form and the relevant document photos\n   using the upload button."
+        android:layout_below="@+id/text4Membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textColor="#666666"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/text6Membership"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"
+        android:text="-  Once we have received your complete application\n   and have reviewed it you will receive an email\n   with payment details for making the\n   necessary payment."
+        android:layout_below="@+id/text5Membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:backgroundTint="#777777"
+        android:text="Download UPSOS membership form"
+        android:layout_below="@+id/text6Membership"
+        android:id="@+id/btnDownloadMembershipForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:background="@drawable/box_drawable"
+        android:hint="Notes"
+        android:padding="5dp"
+        android:textColor="#333"
+        android:textColorHint="#777"
+        android:gravity="start"
+        android:layout_below="@+id/btnDownloadMembershipForm"
+        android:layout_margin="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <utilityClasses.floatingactionbutton.FloatingActionButton
+        android:src="@drawable/ic_help_right_arrow"
+        android:padding="10dp"
+        app:fab_size="normal"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:backgroundTint="#777777"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
 </RelativeLayout>

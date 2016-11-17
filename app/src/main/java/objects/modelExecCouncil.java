@@ -11,6 +11,15 @@ public class modelExecCouncil {
     String Phone;
     String Email;
     String ImageUrl;
+    int Drawableid = -234;
+
+    public int getDrawableid() {
+        return Drawableid;
+    }
+
+    public void setDrawableid(int drawableid) {
+        Drawableid = drawableid;
+    }
 
     public String getName() {
         return Name;

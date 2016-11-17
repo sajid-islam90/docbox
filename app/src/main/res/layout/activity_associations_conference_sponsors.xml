@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_alignParentTop="true"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/img_sponsor_goibibo"
+                android:id="@+id/imgSponsor1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_below="@+id/imgSponsor1"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/img_sponsor_makemytrip"
+                android:id="@+id/imgSponsor2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_below="@+id/imgSponsor2"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/img_sponsor_oyo"
+                android:id="@+id/imgSponsor3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_below="@+id/imgSponsor3"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/img_sponsor_yatra"
+                android:id="@+id/imgSponsor4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

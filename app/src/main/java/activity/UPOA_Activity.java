@@ -1,20 +1,18 @@
 package activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.elune.sajid.myapplication.R;
 
 import java.util.ArrayList;
 
-import adapters.AssociationEventsAdapter;
 import objects.modelAssociationEvent;
 import utilityClasses.floatingactionbutton.FloatingActionButton;
 import utilityClasses.floatingactionbutton.FloatingActionsMenu;
@@ -33,33 +31,35 @@ public class UPOA_Activity extends AppCompatActivity {
 
     ImageView img1, img2, img3, img4;
 
-    String [] dates = new String [] {
-        " 19 - 20\nNov '2016",
-        " 13 - 15\nJan '2017",
-        " 19 - 20\nNov '2016",
-        " 13 - 15\nJan '2017",
-    };
+    LinearLayout layout1, layout2, layout3, layout4;
 
-    String [] times = new String[] {
-        "08 : 00 am",
-        "04 : 45 pm",
-        "08 : 00 am",
-        "04 : 45 pm",
-    };
-
-    String [] titles = new String [] {
-        "Basic Concepts in Deformity Correction",
-        "BOS Shoulder Course",
-        "Basic Concepts in Deformity Correction",
-        "BOS Shoulder Course",
-    };
-
-    String [] locations = new String [] {
-        "Dept. of Orthopaedic, Sir J. J. Hospital",
-        "KEM Hospital, Parel, Mumbai",
-        "Dept. of Orthopaedic, Sir J. J. Hospital",
-        "KEM Hospital, Parel, Mumbai"
-    };
+//    String [] dates = new String [] {
+//        " 19 - 20\nNov '2016",
+//        " 13 - 15\nJan '2017",
+//        " 19 - 20\nNov '2016",
+//        " 13 - 15\nJan '2017",
+//    };
+//
+//    String [] times = new String[] {
+//        "08 : 00 am",
+//        "04 : 45 pm",
+//        "08 : 00 am",
+//        "04 : 45 pm",
+//    };
+//
+//    String [] titles = new String [] {
+//        "Basic Concepts in Deformity Correction",
+//        "BOS Shoulder Course",
+//        "Basic Concepts in Deformity Correction",
+//        "BOS Shoulder Course",
+//    };
+//
+//    String [] locations = new String [] {
+//        "Dept. of Orthopaedic, Sir J. J. Hospital",
+//        "KEM Hospital, Parel, Mumbai",
+//        "Dept. of Orthopaedic, Sir J. J. Hospital",
+//        "KEM Hospital, Parel, Mumbai"
+//    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,21 +81,26 @@ public class UPOA_Activity extends AppCompatActivity {
         fab3 = (FloatingActionButton)findViewById(R.id.menuContactUs);
         fab4 = (FloatingActionButton)findViewById(R.id.menuChangeAssociation);
 
-        for (int i = 0; i < titles.length; i++){
-            modelAssociationEvent event = new modelAssociationEvent();
-            event.setDate(dates[i]);
-            event.setTime(times[i]);
-            event.setTitle(titles[i]);
-            event.setLocation(locations[i]);
-            listEvents.add(event);
-        }
+        layout1 = (LinearLayout) findViewById(R.id.layoutAssociationSubs1);
+        layout2 = (LinearLayout)findViewById(R.id.layoutAssociationSubs2);
+        layout3 = (LinearLayout)findViewById(R.id.layoutAssociationSubs3);
+        layout4 = (LinearLayout)findViewById(R.id.layoutAssociationSubs4);
 
-        Button btnLoadExtra = new Button(this);
-        btnLoadExtra.setText("View All");
-        btnLoadExtra.setBackgroundColor(Color.WHITE);
-        btnLoadExtra.setTextColor(Color.GRAY);
-        listViewEvents.setAdapter(new AssociationEventsAdapter(this, listEvents));
-        listViewEvents.addFooterView(btnLoadExtra);
+//        for (int i = 0; i < titles.length; i++){
+//            modelAssociationEvent event = new modelAssociationEvent();
+//            event.setDate(dates[i]);
+//            event.setTime(times[i]);
+//            event.setTitle(titles[i]);
+//            event.setLocation(locations[i]);
+//            listEvents.add(event);
+//        }
+//
+//        Button btnLoadExtra = new Button(this);
+//        btnLoadExtra.setText("View All");
+//        btnLoadExtra.setBackgroundColor(Color.WHITE);
+//        btnLoadExtra.setTextColor(Color.GRAY);
+//        listViewEvents.setAdapter(new AssociationEventsAdapter(this, listEvents));
+//        listViewEvents.addFooterView(btnLoadExtra);
 
         menuFab.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -165,6 +170,35 @@ public class UPOA_Activity extends AppCompatActivity {
                 startActivity(new Intent(UPOA_Activity.this, AssociationGalleryActivity.class));
             }
         });
+
+        layout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UPOA_Activity.this, AssociationConferenceHighlightsActivity.class));
+            }
+        });
+
+        layout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UPOA_Activity.this, AssociationConferenceSubjectsActivity.class));
+            }
+        });
+
+        layout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UPOA_Activity.this, AssociationConferenceScheduleActivity.class));
+            }
+        });
+
+        layout4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UPOA_Activity.this, AssociationConferenceSponsorsActivity.class));
+            }
+        });
+
 
     }
 

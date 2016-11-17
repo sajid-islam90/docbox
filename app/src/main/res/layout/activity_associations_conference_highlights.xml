@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#e0e0e0"
+    android:padding="5dp"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:background="#fff"
+        android:textColor="#555555"
+        android:padding="15dp"
+        android:gravity="start"
+        android:textSize="16sp"
+        android:text="Renowned Faculty from UP and out of UP\n
+Focus on young ophthalmologists( in college or job or private practice- they have different sets of requirements and very much interested to learn and add value to their carrier)
+Government doctors (Modern practice in limited resources)
+and active participation of Senior Ophthalmologists (more than 65yrs) our respected retired teachers, Ophthalmologists in neighboring states"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

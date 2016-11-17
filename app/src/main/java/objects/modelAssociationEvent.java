@@ -10,6 +10,15 @@ public class modelAssociationEvent {
     String time;
     String title;
     String location;
+    String details;
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
     public String getDate() {
         return date;

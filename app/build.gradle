@@ -62,11 +62,13 @@ dependencies {
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/android-async-http-1.4.9.jar')
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/json-simple-1.1.jar')
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/ftp4j-1.7.2.jar')
+    compile files('/Users/romichandra/AndroidStudioProjects/docbox/poi-3.7.jar')
+
 //noinspection GradleCompatible,GradleCompatible
 //    compile 'com.android.support:recyclerview-v7:24.0.0-alpha1'
 //noinspection GradleCompatible
 //compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/com.fasterxml.jackson.databind.jar')
-  //  compile files('/Users/romichandra/AndroidStudioProjects/docbox/com.fasterxml.jackson.core.jar')
+    //  compile files('/Users/romichandra/AndroidStudioProjects/docbox/com.fasterxml.jackson.core.jar')
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/volley.jar')
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/httpmime-4.2.4.jar')
     compile files('/Users/romichandra/AndroidStudioProjects/docbox/httpclient-4.4.1.1.jar')
@@ -77,40 +79,36 @@ dependencies {
 // compile files('C:/Users/sajid/AndroidStudioProjects/MyApplication/android-support-design.jar')
     //compile files('/Users/romichandra/AndroidStudioProjects/docbox/razorpay-android-0.11.1.jar')
 
-
-
-
-
-
-
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.google.android.gms:play-services:9.4.0'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
-    compile 'pl.bclogic:pulsator4droid:1.0.3'
-
 //    compile 'com.loopj.android:android-async-http:1.4.9'
 //    compile files('/Users/romichandra/AndroidStudioProjects/docbox/json-simple-1.1.jar')
     //compile 'org.apache.clerezza.ext:org.json.simple:0.4'
-    compile 'com.razorpay:checkout:1.0.2'
-   // compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    // compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 //    compile 'org.apache.james:apache-mime4j:0.7.2'
 //    compile files('/Users/romichandra/AndroidStudioProjects/docbox/org.apache.servicemix.bundles.httpcore-4.0-alpha6_1.jar')
 //    compile files('/Users/romichandra/AndroidStudioProjects/docbox/httpclient-4.4.1.1.jar')
 //    compile files('/Users/romichandra/AndroidStudioProjects/docbox/org.apache.commons.io.jar')
 //
-//    compile files('/Users/romichandra/AndroidStudioProjects/docbox/httpmime-4.3.jar')
 
-   // compile 'org.jsoup:jsoup:1.8.3'
-    compile 'com.firebase:firebase-client-android:2.5.2+'
+    //    compile files('/Users/romichandra/AndroidStudioProjects/docbox/httpmime-4.3.jar')
+
+    // compile 'org.jsoup:jsoup:1.8.3'
+    //compile project(':ParticleView')
+    //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    //compile 'com.firebase:firebase-client-android:2.5.2.+'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'pl.bclogic:pulsator4droid:1.0.3'
+    compile 'com.razorpay:checkout:1.0.2'
     compile 'com.leocardz:link-preview:1.2.1@aar'
+    compile 'com.google.firebase:firebase-core:9.8.0'
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'me.spark:submitbutton:1.0.1'
     compile 'com.hkm:hkmprocessbuttons:1.2.4'
-    //compile project(':ParticleView')
     compile 'me.wangyuwei:ParticleView:1.0.4'
-    //compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile 'com.android.support:support-v4:24.2.1'
 }
 

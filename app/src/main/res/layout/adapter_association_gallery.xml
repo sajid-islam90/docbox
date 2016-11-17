@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#e0e0e0" android:padding="2dp"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:background="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_alignParentTop="true"
+            android:id="@+id/imgVideoThumbnail"
+            android:layout_alignParentLeft="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <ImageView
+            android:scaleType="centerInside"
+            android:layout_margin="5dp"
+            android:src="@drawable/playyoutube"
+            android:layout_alignParentTop="true"
+            android:id="@+id/imgVideoThumbnailPlay"
+            android:layout_alignParentLeft="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <TextView
+            android:textSize="17sp"
+            android:textColor="#444444"
+            android:gravity="start"
+            android:id="@+id/textTitleGallery"
+            android:text="Keny Growth Modulations Merge"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/imgVideoThumbnail"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -300,7 +300,26 @@
             android:theme="@style/MainActivity"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name="activity.AssociationConferenceScheduleActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="activity.AssociationConferenceHighlightsActivity"
+            android:theme="@style/MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="activity.AssociationConferenceSubjectsActivity"
+            android:theme="@style/MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="activity.AssociationConferenceSponsorsActivity"
+            android:theme="@style/MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="activity.AssociationConferenceScheduleDetailsActivity"
+            android:theme="@style/MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <service android:name="services.TimeService"/>
     </application>
 
